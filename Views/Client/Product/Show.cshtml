@@ -1,0 +1,38 @@
+@model IEnumerable<FastFoodShop.Domain.Entities.Product>
+@{
+    ViewData["Title"] = "Sản phẩm - Cửa Hàng Đồ Ăn Nhanh";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"]</title>
+    <link href="~/client/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/client/css/style.css" rel="stylesheet" />
+</head>
+<body>
+    @await Html.PartialAsync("~/Views/Client/Layout/_Header.cshtml")
+
+    <div class="container py-5">
+        <div class="row g-4">
+            @foreach (var p in Model ?? Enumerable.Empty<FastFoodShop.Domain.Entities.Product>())
+            {
+                <div class="col-md-3">
+                    <div class="card h-100">
+                        <img src="~/images/product/@p.Image" class="card-img-top" alt="product" />
+                        <div class="card-body">
+                            <h5 class="card-title">@p.Name</h5>
+                            <a href="/product/@p.Id" class="btn btn-primary">Xem chi tiết</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    @await Html.PartialAsync("~/Views/Client/Layout/_Footer.cshtml")
+    <script src="~/client/js/main.js"></script>
+</body>
+</html>

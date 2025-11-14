@@ -1,0 +1,150 @@
+@model FastFoodShop.Domain.Entities.Product
+@{
+    ViewData["Title"] = "Create Product - FastFood Shop";
+    Layout = null; // tự include header/sidebar/footer
+    Func<string, string> invalid = name =>
+    (ViewData.ModelState.TryGetValue(name, out var e) && e.Errors.Count > 0) ? "is-invalid" : "";
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="FastFood Shop" />
+    <meta name="author" content="FastFood Shop" />
+    <title>@ViewData["Title"]</title>
+    <link href="~/css/styles.css" rel="stylesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(() => {
+            const avatarFile = $("#avatarFile");
+            avatarFile.change(function (e) {
+                const imgURL = URL.createObjectURL(e.target.files[0]);
+                $("#avatarPreview").attr("src", imgURL);
+                $("#avatarPreview").css({ "display": "block" });
+            });
+        });
+    </script>
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+</head>
+
+<body class="sb-nav-fixed">
+    @await Html.PartialAsync("~/Views/Admin/Layout/_Header.cshtml")
+
+    <div id="layoutSidenav">
+        @await Html.PartialAsync("~/Views/Admin/Layout/_Sidebar.cshtml")
+
+        <div id="layoutSidenav_content">
+            <main>
+                <div class="container-fluid px-4">
+                    <h1 class="mt-4">Products</h1>
+                    <ol class="breadcrumb mb-4">
+                        <li class="breadcrumb-item">
+                            <a asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a asp-controller="Product" asp-action="Index">Product</a>
+                        </li>
+                        <li class="breadcrumb-item active">Create</li>
+                    </ol>
+
+                    <div class="mt-5">
+                        <div class="row">
+                            <div class="col-md-6 col-12 mx-auto">
+                                <h3>Create a product</h3>
+                                <hr />
+
+                                <!-- Summary lỗi -->
+                                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                                <form asp-controller="Product" asp-action="Create" method="post"
+                                    enctype="multipart/form-data" class="row g-3 needs-validation" novalidate>
+                                    @Html.AntiForgeryToken()
+
+                                    <div class="mb-3 col-12 col-md-6">
+                                        <label asp-for="Name" class="form-label"></label>
+                                        <input asp-for="Name" class="form-control @(invalid(nameof(Model.Name)))" />
+                                        <span asp-validation-for="Name" class="invalid-feedback"></span>
+                                    </div>
+
+                                    
+
+                                    <div class="mb-3 col-12">
+                                        <label asp-for="DetailDesc" class="form-label"></label>
+                                        <textarea asp-for="DetailDesc"
+                                            class="form-control @(invalid(nameof(Model.DetailDesc)))"></textarea>
+                                        <span asp-validation-for="DetailDesc" class="invalid-feedback"></span>
+                                    </div>
+
+                                    <div class="mb-3 col-12 col-md-6">
+                                        <label asp-for="ShortDesc" class="form-label"></label>
+                                        <input asp-for="ShortDesc"
+                                            class="form-control @(invalid(nameof(Model.ShortDesc)))" />
+                                        <span asp-validation-for="ShortDesc" class="invalid-feedback"></span>
+                                    </div>
+
+                                    
+
+                                    
+
+                                    <div class="mb-3 col-12 col-md-6">
+                                        <label class="form-label">Category</label>
+                                        <select class="form-select" name="CategoryId">
+                                            <option value="">-- chọn category --</option>
+                                            @foreach (var c in (IEnumerable<FastFoodShop.Domain.Entities.Category>)ViewBag.Categories ?? Enumerable.Empty<FastFoodShop.Domain.Entities.Category>())
+                                            {
+                                                <option value="@c.Id">@c.Name</option>
+                                            }
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-3 col-12 col-md-6">
+                                        <label class="form-label">Kích hoạt</label>
+                                        <input type="checkbox" class="form-check-input" name="IsActive" checked="checked" />
+                                    </div>
+
+                                    <div class="mb-3 col-12 col-md-6">
+                                        <label for="avatarFile" class="form-label">Image:</label>
+                                        <input asp-for="Image" class="form-control @(invalid(nameof(Model.Image)))"
+                                            type="file" id="avatarFile" accept=".png, .jpg, .jpeg" />
+                                        <span asp-validation-for="Image" class="invalid-feedback"></span>
+                                    </div>
+
+                                    <div class="col-12 mb-3">
+                                        <img style="max-height: 250px; display: none;" alt="avatar preview"
+                                            id="avatarPreview" />
+                                    </div>
+
+                                    <div class="col-12 mb-5">
+                                        <button type="submit" class="btn btn-primary">Create</button>
+                                    </div>
+                                </form>
+
+                                <!-- Scripts validator -->
+                                <script
+                                    src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"
+                                    integrity="sha512-rstIgDs0xPgmG6RXCwD3B0ZsM8j2B3SLS7nCp1H8RB31i5lGmG6Z1dGqv7f4aV1Qe+8pGLvYk5WvQFqkj9S0Vg=="
+                                    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+                                <script
+                                    src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"
+                                    integrity="sha512-4mXwGq5ZgJdAQq5I8v1oHk2q7+8w7c6y4r1a8W2nH2u0m0iZ7Q7Bf8bI9Z8x4y7Q6yCw4RZQ8iC7k3r3sC2D2Q=="
+                                    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            @await Html.PartialAsync("~/Views/Admin/Layout/_Footer.cshtml")
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        crossorigin="anonymous"></script>
+    <script src="~/js/scripts.js"></script>
+</body>
+
+</html>

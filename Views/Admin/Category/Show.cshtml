@@ -1,0 +1,53 @@
+@model IEnumerable<FastFoodShop.Domain.Entities.Category>
+@{
+    ViewData["Title"] = "Categories - FastFood Shop";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"]</title>
+    <link href="~/css/styles.css" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+</head>
+<body class="sb-nav-fixed">
+@await Html.PartialAsync("~/Views/Admin/Layout/_Header.cshtml")
+<div id="layoutSidenav">
+@await Html.PartialAsync("~/Views/Admin/Layout/_Sidebar.cshtml")
+<div id="layoutSidenav_content">
+<main>
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Categories</h1>
+    <a class="btn btn-primary mb-3" asp-controller="Category" asp-action="Create">Create</a>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Active</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var c in Model ?? Enumerable.Empty<FastFoodShop.Domain.Entities.Category>())
+        {
+            <tr>
+                <td>@c.Name</td>
+                <td>@c.Description</td>
+                <td>@(c.IsActive ? "Yes" : "No")</td>
+                <td>
+                    <a class="btn btn-sm btn-warning" asp-controller="Category" asp-action="Update" asp-route-id="@c.Id">Edit</a>
+                    <a class="btn btn-sm btn-danger" asp-controller="Category" asp-action="DeleteConfirm" asp-route-id="@c.Id">Delete</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+</main>
+@await Html.PartialAsync("~/Views/Admin/Layout/_Footer.cshtml")
+</div>
+</div>
+</body>
+</html>

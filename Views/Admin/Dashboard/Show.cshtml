@@ -1,0 +1,92 @@
+@{
+    ViewData["Title"] = "Dashboard - FastFood Shop";
+    Layout = null; // vì đang tự include header/sidebar/footer, chưa dùng layout tổng
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="FastFood Shop" />
+    <meta name="author" content="FastFood Shop" />
+    <title>@ViewData["Title"]</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
+    <link href="~/css/styles.css" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+</head>
+
+<body class="sb-nav-fixed">
+    @* Header *@
+    @await Html.PartialAsync("~/Views/Admin/Layout/_Header.cshtml")
+
+    <div id="layoutSidenav">
+        @* Sidebar *@
+        @await Html.PartialAsync("~/Views/Admin/Layout/_Sidebar.cshtml")
+
+        <div id="layoutSidenav_content">
+            <main>
+                <div class="container-fluid px-4">
+                    <h1 class="mt-4">Dashboard</h1>
+                    <ol class="breadcrumb mb-4">
+                        <li class="breadcrumb-item active">Thống kê</li>
+                    </ol>
+
+                    <div class="row">
+                        <div class="col-xl-4 col-md-6">
+                            <div class="card bg-primary text-white mb-4">
+                                <div class="card-body">Số lượng User (@ViewBag.CountUsers)</div>
+                                <div class="card-footer d-flex align-items-center justify-content-between">
+                                    <a class="small text-white stretched-link" asp-controller="User"
+                                        asp-action="Index">View Details</a>
+                                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-4 col-md-6">
+                            <div class="card bg-danger text-white mb-4">
+                                <div class="card-body">Số lượng Product (@ViewBag.CountProducts)</div>
+                                <div class="card-footer d-flex align-items-center justify-content-between">
+                                    <a class="small text-white stretched-link" asp-controller="Product"
+                                        asp-action="Index">View Details</a>
+                                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-4 col-md-6">
+                            <div class="card bg-success text-white mb-4">
+                                <div class="card-body">Số lượng Order (@ViewBag.CountOrders)</div>
+                                <div class="card-footer d-flex align-items-center justify-content-between">
+                                    <a class="small text-white stretched-link" asp-controller="Order"
+                                        asp-action="Index">View Details</a>
+                                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </main>
+
+            @* Footer *@
+            @await Html.PartialAsync("~/Views/Admin/Layout/_Footer.cshtml")
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        crossorigin="anonymous"></script>
+    <script src="~/js/scripts.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+    <script src="~/js/chart-area-demo.js"></script>
+    <script src="~/js/chart-bar-demo.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js"
+        crossorigin="anonymous"></script>
+    <script src="~/js/datatables-simple-demo.js"></script>
+</body>
+
+</html>

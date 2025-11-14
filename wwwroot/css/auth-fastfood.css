@@ -1,0 +1,172 @@
+/* ===== FastFood Auth Theme (auth-fastfood.css) ===== */
+:root {
+    --ff-primary: #FF4D4F;
+    /* đỏ cam */
+    --ff-primary-700: #e63f41;
+    --ff-accent: #FFD166;
+    /* vàng */
+    --ff-text: #111827;
+    --ff-bg: #FFF9F0;
+    --ff-ring: rgba(255, 77, 79, .35);
+    --radius: 16px;
+    --shadow: 0 10px 30px rgba(17, 24, 39, .12);
+}
+
+/* Nền hiện đại, hợp thời */
+body.bg-primary {
+    background:
+        radial-gradient(1000px 600px at 10% -10%, rgba(255, 209, 102, .45), transparent 60%),
+        radial-gradient(1200px 700px at 110% 10%, rgba(255, 77, 79, .35), transparent 60%),
+        linear-gradient(180deg, #fff, var(--ff-bg)) !important;
+    min-height: 100vh;
+}
+
+/* Card login kiểu “glass” */
+.card.shadow-lg.border-0.rounded-lg,
+.card.auth-card {
+    border: 0 !important;
+    border-radius: calc(var(--radius) + 4px) !important;
+    background: rgba(255, 255, 255, .86) !important;
+    backdrop-filter: blur(10px);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+/* Header card nhẹ nhàng */
+.card-header {
+    background: linear-gradient(135deg, rgba(255, 77, 79, .06), rgba(255, 209, 102, .06)) !important;
+    border: 0 !important;
+}
+
+.card-header h3,
+.card-header h1,
+.card-header .h4 {
+    font-weight: 600;
+    margin: 0;
+}
+
+/* Nút chính theo brand */
+.btn-primary {
+    --bs-btn-bg: var(--ff-primary) !important;
+    --bs-btn-border-color: var(--ff-primary) !important;
+    --bs-btn-hover-bg: var(--ff-primary-700) !important;
+    --bs-btn-hover-border-color: var(--ff-primary-700) !important;
+    --bs-btn-focus-shadow-rgb: 255, 77, 79 !important;
+    border-radius: 12px !important;
+    font-weight: 600;
+}
+
+/* Input tròn, focus ring đẹp */
+.form-control {
+    border-radius: 12px !important;
+    border: 1px solid rgba(17, 24, 39, .12) !important;
+}
+
+.form-control:focus {
+    border-color: var(--ff-primary) !important;
+    box-shadow: 0 0 0 .25rem var(--ff-ring) !important;
+}
+
+.form-floating>label {
+    color: #6b7280;
+}
+
+/* Alert lỗi chung gọn gàng */
+.alert-danger {
+    border-radius: 12px;
+    padding: .6rem .8rem;
+}
+
+/* Link phụ */
+.a-register,
+a.link,
+a.small {
+    text-decoration: none;
+}
+
+.a-register,
+a.link {
+    color: var(--ff-primary);
+    font-weight: 600;
+}
+
+.a-register:hover,
+a.link:hover {
+    color: var(--ff-primary-700);
+    text-decoration: underline;
+}
+
+/* Nút hiện/ẩn mật khẩu (nếu có button đặt trong group) */
+.field-icon-btn,
+#togglePassword {
+    position: absolute;
+    right: .5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 0;
+    background: transparent;
+    color: #6b7280;
+    padding: .25rem .4rem;
+}
+
+/* Khoảng cách & chữ nhỏ trợ giúp */
+.help-text,
+.form-text {
+    font-size: .85rem;
+    color: #6b7280;
+}
+
+/* Divider “hoặc” cho social login (nếu bạn có) */
+.divider {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    color: #6b7280;
+    font-size: .9rem;
+    margin: 1.25rem 0;
+}
+
+.divider::before,
+.divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(17, 24, 39, .12), transparent);
+}
+
+/* Nút social (tùy dùng) */
+.social-btn {
+    border: 1px solid rgba(17, 24, 39, .12);
+    border-radius: 12px;
+    padding: .65rem .9rem;
+    font-weight: 600;
+    background: #fff;
+    display: flex;
+    gap: .55rem;
+    align-items: center;
+    justify-content: center;
+}
+
+.social-btn:hover {
+    background: #f8fafc;
+}
+
+/* Tối ưu mobile */
+@media (max-width: 576px) {
+    .card-body {
+        padding: 1.25rem !important;
+    }
+
+    .btn.btn-lg {
+        padding-top: .8rem;
+        padding-bottom: .8rem;
+    }
+}
+
+/* Tôn trọng người dùng không thích animation */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        transition: none !important;
+        animation: none !important;
+    }
+}

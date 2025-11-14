@@ -1,0 +1,161 @@
+@using System.Security.Claims
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@inject FastFoodShop.Domain.Interfaces.IProductService ProductService
+
+@{
+    var isAuth = User?.Identity?.IsAuthenticated == true;
+    var cartDistinct = 0;
+
+    if (isAuth)
+    {
+        var email = User.FindFirst(ClaimTypes.Email)?.Value ?? User?.Identity?.Name;
+        if (!string.IsNullOrWhiteSpace(email))
+        {
+            // ✅ Đếm trực tiếp từ DB để hiển thị đúng ngay lần đầu
+            cartDistinct = await ProductService.GetDistinctCountByEmailAsync(email);
+        }
+    }
+}
+
+
+<div id="siteHeader" class="container-fluid fixed-top">
+    <!-- Topbar (giữ như template gốc) -->
+    <div class="container topbar bg-primary d-none d-lg-block">
+        <div class="d-flex justify-content-between">
+            <div class="top-info ps-2">
+                <small class="me-3">
+                    <i class="fas fa-map-marker-alt me-2 text-secondary"></i>
+                    <a href="#" class="text-white">123 Street, New York</a>
+                </small>
+                <small class="me-3">
+                    <i class="fas fa-envelope me-2 text-secondary"></i>
+                    <a href="mailto:Email@Example.com" class="text-white">Email@Example.com</a>
+                </small>
+            </div>
+            <div class="top-link pe-2">
+                <a href="#" class="text-white"><small class="text-white mx-2">Privacy Policy</small>/</a>
+                <a href="#" class="text-white"><small class="text-white mx-2">Terms of Use</small>/</a>
+                <a href="#" class="text-white"><small class="text-white ms-2">Sales and Refunds</small></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navbar (đã thay bằng Razor + logic của bạn) -->
+    <div class="container px-0">
+        <nav class="navbar navbar-light bg-white navbar-expand-xl">
+            <a href="/" class="navbar-brand">
+                <h1 class="text-primary display-6">FastFood Shop</h1>
+            </a>
+
+            <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="fa fa-bars text-primary"></span>
+            </button>
+
+            <div class="collapse navbar-collapse bg-white justify-content-between" id="navbarCollapse">
+                <!-- Menu trái -->
+                <div class="navbar-nav mx-auto">
+                    <a href="/" class="nav-item nav-link">
+                        Trang Chủ
+                    </a>
+
+                    <a href="/products" class="nav-item nav-link">
+                        Sản Phẩm
+                    </a>
+
+                    <!-- Dropdown Pages (nếu có route tương ứng thì giữ, không thì xoá) -->
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" id="pagesMenu" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            Trang
+                        </a>
+                        <div class="dropdown-menu m-0 bg-secondary rounded-0" aria-labelledby="pagesMenu">
+                            <a href="/cart" class="dropdown-item">Giỏ hàng</a>
+                            <a href="/checkout" class="dropdown-item">Thanh toán</a>
+                            <a asp-controller="Home" asp-action="Testimonial" class="dropdown-item">Đánh giá</a>
+                            <a asp-controller="Home" asp-action="NotFound404" class="dropdown-item">404 Page</a>
+                        </div>
+                    </div>
+
+                    <a asp-controller="Home" asp-action="Contact" class="nav-item nav-link">Liên hệ</a>
+
+                    @* Hiển thị menu Admin nếu có quyền *@
+                    @if (User?.IsInRole("ADMIN") == true)
+                    {
+                        <a href="/admin" class="nav-item nav-link">
+                            Quản trị
+                        </a>
+                    }
+                </div>
+
+                <!-- Cụm icon phải -->
+                <div class="d-flex m-3 me-0">
+                    <!-- Search (nếu có modal #searchModal) -->
+                    <button class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4"
+                        type="button" data-bs-toggle="modal" data-bs-target="#searchModal">
+                        <i class="fas fa-search text-primary"></i>
+                    </button>
+
+                    @if (isAuth)
+                    {
+                        <!-- Giỏ hàng -->
+                        <a href="/cart"
+                            class="position-relative me-4 my-auto text-decoration-none" title="Giỏ hàng">
+                            <i class="fa fa-shopping-bag fa-2x text-primary"></i>
+                            <span id="sumCart"
+                                class="position-absolute rounded-circle d-flex align-items-center justify-content-center px-1
+                                                     @(cartDistinct > 0 ? "bg-danger text-white" : "bg-secondary text-dark")"
+                                style="top:-5px; left:15px; height:20px; min-width:20px;">
+                                @cartDistinct
+                            </span>
+                        </a>
+
+                        <!-- User dropdown -->
+                        <div class="dropdown my-auto">
+                            <a href="#" id="dropdownMenuLink" class="text-primary" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                <i class="fas fa-user fa-2x"></i>
+                            </a>
+
+                            <ul class="dropdown-menu dropdown-menu-end p-4" aria-labelledby="dropdownMenuLink">
+                                <li class="d-flex align-items-center flex-column" style="min-width:300px;">
+                                    <img src="@Url.Content("~/images/avatar/" + (User?.FindFirst("avatar")?.Value ?? (string)ViewBag.Avatar ?? "default.png"))"
+                                        alt="avatar"
+                                        style="width:150px; height:150px; border-radius:50%; object-fit:cover;" />
+                                    <div class="text-center my-3">
+                                        @(User?.FindFirst("full_name")?.Value
+                                                                            ?? User?.Identity?.Name
+                                                                            ?? (string)ViewBag.FullName
+                                                                            ?? "Tài khoản")
+                                    </div>
+                                </li>
+
+                                <li><a class="dropdown-item" asp-controller="Account" asp-action="Manage">Quản lý tài
+                                        khoản</a></li>
+                                <li><a class="dropdown-item" asp-controller="Orders" asp-action="History">Lịch sử mua
+                                        hàng</a></li>
+                                <li>
+                                    <hr class="dropdown-divider" />
+                                </li>
+                                <li>
+                                    <form action="/logout" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <button class="dropdown-item" type="submit">Đăng xuất</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    }
+                    else
+                    {
+                        <a href="/login"
+                            class="a-login position-relative me-4 my-auto text-decoration-none">
+                            Đăng nhập
+                        </a>
+                    }
+                </div>
+            </div>
+        </nav>
+    </div>
+</div>

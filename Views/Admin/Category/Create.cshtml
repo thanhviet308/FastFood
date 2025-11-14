@@ -1,0 +1,46 @@
+@model FastFoodShop.Domain.Entities.Category
+@{
+    ViewData["Title"] = "Create Category - FastFood Shop";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"]</title>
+    <link href="~/css/styles.css" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+</head>
+<body class="sb-nav-fixed">
+@await Html.PartialAsync("~/Views/Admin/Layout/_Header.cshtml")
+<div id="layoutSidenav">
+@await Html.PartialAsync("~/Views/Admin/Layout/_Sidebar.cshtml")
+<div id="layoutSidenav_content">
+<main>
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Create Category</h1>
+    <form method="post" asp-controller="Category" asp-action="Create" class="row g-3">
+        @Html.AntiForgeryToken()
+        <div class="col-md-6">
+            <label asp-for="Name" class="form-label"></label>
+            <input asp-for="Name" class="form-control" />
+        </div>
+        <div class="col-md-6">
+            <label asp-for="IsActive" class="form-label"></label>
+            <input asp-for="IsActive" class="form-check-input" />
+        </div>
+        <div class="col-12">
+            <label asp-for="Description" class="form-label"></label>
+            <textarea asp-for="Description" class="form-control"></textarea>
+        </div>
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary">Create</button>
+        </div>
+    </form>
+</div>
+</main>
+@await Html.PartialAsync("~/Views/Admin/Layout/_Footer.cshtml")
+</div>
+</div>
+</body>
+</html>

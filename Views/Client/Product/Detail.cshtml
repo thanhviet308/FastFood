@@ -1,0 +1,54 @@
+@model FastFoodShop.Domain.Entities.Product
+@{
+    ViewData["Title"] = "Chi tiết sản phẩm - Cửa Hàng Đồ Ăn Nhanh";
+    Layout = null;
+    var variants = (IEnumerable<FastFoodShop.Domain.Entities.ProductVariant>)ViewBag.Variants ?? Enumerable.Empty<FastFoodShop.Domain.Entities.ProductVariant>();
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"]</title>
+    <link href="~/client/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/client/css/style.css" rel="stylesheet" />
+</head>
+<body>
+    @await Html.PartialAsync("~/Views/Client/Layout/_Header.cshtml")
+
+    <div class="container py-5">
+        <div class="row">
+            <div class="col-md-6">
+                <img class="img-fluid" src="~/images/product/@Model.Image" alt="product" />
+            </div>
+            <div class="col-md-6">
+                <h3>@Model.Name</h3>
+                <p>@Model.ShortDesc</p>
+
+                <form method="post" asp-controller="Item" asp-action="HandleAddProductFromViewDetail" class="mt-3">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <div class="mb-3">
+                        <label class="form-label">Biến thể</label>
+                        <select class="form-select" name="variantId">
+                            <option value="">-- mặc định --</option>
+                            @foreach (var v in variants)
+                            {
+                                <option value="@v.Id">@v.VariantName - @string.Format("{0:N0} đ", v.Price)</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3 d-flex align-items-center">
+                        <label class="form-label me-2">Số lượng</label>
+                        <input class="form-control" type="number" name="quantity" value="1" style="max-width:120px" />
+                    </div>
+                    <button class="btn btn-primary" type="submit">Thêm vào giỏ</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    @await Html.PartialAsync("~/Views/Client/Layout/_Footer.cshtml")
+    <script src="~/client/js/main.js"></script>
+</body>
+</html>

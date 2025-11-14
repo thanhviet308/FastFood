@@ -1,0 +1,115 @@
+/* ===== FastFood Footer ===== */
+:root {
+    --ff-primary: #FF4D4F;
+    --ff-primary-700: #e63f41;
+    --ff-accent: #FFD166;
+    --ff-text: #F9FAFB;
+    --ff-muted: #9CA3AF;
+    --ff-border: #2b2f36;
+    --radius: 14px;
+}
+
+.ff-footer {
+    background: radial-gradient(900px 500px at 100% 0%, rgba(255, 77, 79, .12), transparent 60%), #0f172a;
+    /* slate-900 */
+    border-top: 1px solid rgba(255, 255, 255, .06);
+}
+
+.ff-footer .ff-footer-top {
+    border-bottom: 1px solid rgba(255, 255, 255, .08);
+}
+
+.ff-logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+    background: conic-gradient(from 210deg, var(--ff-primary), #ff8c4d, var(--ff-accent));
+    color: #fff;
+    font-weight: 700;
+    box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .35);
+}
+
+.ff-social a {
+    transition: opacity .2s ease;
+}
+
+.ff-social a:hover {
+    opacity: .8;
+    color: #fff;
+}
+
+.ff-links li {
+    margin-bottom: .35rem;
+}
+
+.ff-links a {
+    color: #cbd5e1;
+    text-decoration: none;
+}
+
+.ff-links a:hover {
+    color: #fff;
+    text-decoration: underline;
+}
+
+.ff-newsletter .input-group-text {
+    background: #0b1222;
+    color: #94a3b8;
+    border: 1px solid var(--ff-border);
+    border-right: 0;
+    border-radius: 12px 0 0 12px;
+}
+
+.ff-newsletter .form-control {
+    background: #0b1222;
+    color: #e5e7eb;
+    border: 1px solid var(--ff-border);
+    border-left: 0;
+    border-radius: 0 12px 12px 0;
+}
+
+.ff-newsletter .form-control::placeholder {
+    color: #94a3b8;
+}
+
+.ff-newsletter .form-control:focus {
+    border-color: var(--ff-primary);
+    box-shadow: 0 0 0 .25rem rgba(255, 77, 79, .25);
+}
+
+.ff-newsletter .btn {
+    border-radius: 12px;
+    font-weight: 600;
+    background: var(--ff-primary);
+    border-color: var(--ff-primary);
+}
+
+.ff-newsletter .btn:hover {
+    background: var(--ff-primary-700);
+    border-color: var(--ff-primary-700);
+}
+
+.ff-contact .text-primary {
+    color: var(--ff-accent) !important;
+}
+
+.ff-payments img {
+    filter: brightness(1) contrast(1.05);
+    margin-right: .6rem;
+}
+
+.ff-bottom {
+    background: #0b1222;
+    border-top: 1px solid rgba(255, 255, 255, .06);
+}
+
+/* Responsive tweaks */
+@media (max-width: 576px) {
+    .ff-newsletter .btn {
+        display: none;
+    }
+
+    /* gọn trên mobile; submit bằng Enter */
+}

@@ -1,0 +1,106 @@
+@model FastFoodShop.Domain.Entities.Product
+@{
+    ViewData["Title"] = "Detail Product - FastFood Shop";
+    Layout = null; // tự include header/sidebar/footer
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="FastFood Shop" />
+    <meta name="author" content="FastFood Shop" />
+    <title>@ViewData["Title"]</title>
+    <link href="~/css/styles.css" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+</head>
+
+<body class="sb-nav-fixed">
+    @await Html.PartialAsync("~/Views/Admin/Layout/_Header.cshtml")
+
+    <div id="layoutSidenav">
+        @await Html.PartialAsync("~/Views/Admin/Layout/_Sidebar.cshtml")
+
+        <div id="layoutSidenav_content">
+            <main>
+                <div class="container-fluid px-4">
+                    <h1 class="mt-4">Products</h1>
+                    <ol class="breadcrumb mb-4">
+                        <li class="breadcrumb-item">
+                            <a asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a asp-controller="Product" asp-action="Index">Product</a>
+                        </li>
+                        <li class="breadcrumb-item active">View detail</li>
+                    </ol>
+
+                    <div class="container mt-5">
+                        <div class="row">
+                            <div class="col-12 mx-auto">
+                                <div class="d-flex justify-content-between">
+                                    <h3>Product detail with id = @Model.Id</h3>
+                                </div>
+
+                                <hr />
+
+                                    <div class="card" style="width: 60%">
+                                    <img class="card-img-top" src="~/images/product/@Model.Image"
+                                        asp-append-version="true" alt="product image" />
+
+                                    <div class="card-header">
+                                        Product information
+                                    </div>
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item">ID: @Model.Id</li>
+                                        <li class="list-group-item">Name: @Model.Name</li>
+                                        
+                                        <li class="list-group-item">Category: @(Model.Category?.Name ?? "-")</li>
+                                        <li class="list-group-item">Active: @(Model.IsActive ? "Yes" : "No")</li>
+                                        <li class="list-group-item">Short Description: @Model.ShortDesc</li>
+                                        <li class="list-group-item">Detail Description: @Model.DetailDesc</li>
+                                    </ul>
+                                </div>
+                                <div class="mt-4">
+                                    <h5>Variants</h5>
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Price</th>
+                                                <th>Active</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var v in (IEnumerable<FastFoodShop.Domain.Entities.ProductVariant>)ViewBag.Variants ?? Enumerable.Empty<FastFoodShop.Domain.Entities.ProductVariant>())
+                                            {
+                                                <tr>
+                                                    <td>@v.VariantName</td>
+                                                    <td>@string.Format("{0:N0} đ", v.Price)</td>
+                                                    <td>@(v.IsActive ? "Yes" : "No")</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <a asp-controller="Product" asp-action="Index" class="btn btn-success mt-3">Back</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            @await Html.PartialAsync("~/Views/Admin/Layout/_Footer.cshtml")
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        crossorigin="anonymous"></script>
+    <script src="~/js/scripts.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,40 @@
+@* Views/Admin/Shared/_Sidebar.cshtml *@
+
+<div id="layoutSidenav_nav">
+    <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+        <div class="sb-sidenav-menu">
+            <div class="nav">
+                <div class="sb-sidenav-menu-heading">Features</div>
+
+                <a class="nav-link" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">
+                    <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                    Dashboard
+                </a>
+
+                <a class="nav-link" asp-controller="User" asp-action="Index">
+                    <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                    User
+                </a>
+
+                <a class="nav-link" asp-controller="Product" asp-action="Index">
+                    <div class="sb-nav-link-icon"><i class="fas fa-box"></i></div>
+                    Product
+                </a>
+
+                <a class="nav-link" asp-controller="Category" asp-action="Index">
+                    <div class="sb-nav-link-icon"><i class="fas fa-tags"></i></div>
+                    Categories
+                </a>
+
+                <a class="nav-link" asp-area="Admin" asp-controller="Order" asp-action="Index">
+                    <div class="sb-nav-link-icon"><i class="fas fa-shopping-cart"></i></div>
+                    Order
+                </a>
+            </div>
+        </div>
+        <div class="sb-sidenav-footer">
+            <div class="small">Logged in as:</div>
+            FastFood Shop
+        </div>
+    </nav>
+</div>
