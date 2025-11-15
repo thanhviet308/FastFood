@@ -482,7 +482,6 @@ D:\ASP.NET\FastFoodShop\FastFoodShop\obj\Debug\net9.0\scopedcss\projectbundle\Fa
 D:\ASP.NET\FastFoodShop\FastFoodShop\obj\Debug\net9.0\compressed\ehpv5j4xe8-6j3bm6cpjb.gz
 D:\ASP.NET\FastFoodShop\FastFoodShop\obj\Debug\net9.0\compressed\spskdq0hl9-c2tiyv64ts.gz
 D:\ASP.NET\FastFoodShop\FastFoodShop\obj\Debug\net9.0\compressed\2v66ogo9xe-q1cjwnpumj.gz
-D:\ASP.NET\FastFoodShop\FastFoodShop\obj\Debug\net9.0\compressed\0ix6k9kfzw-j804bxzar4.gz
 D:\ASP.NET\FastFoodShop\FastFoodShop\obj\Debug\net9.0\compressed\3ujzfix3m5-cbfgf787io.gz
 D:\ASP.NET\FastFoodShop\FastFoodShop\obj\Debug\net9.0\compressed\ivu15k4w04-agp80tu62r.gz
 D:\ASP.NET\FastFoodShop\FastFoodShop\obj\Debug\net9.0\compressed\ysm4ixe42z-st1cbwfwo5.gz
@@ -557,7 +556,6 @@ D:\ASP.NET\FastFoodShop\FastFoodShop\obj\Debug\net9.0\compressed\aawx5jy8kn-wjrh
 D:\ASP.NET\FastFoodShop\FastFoodShop\obj\Debug\net9.0\compressed\o3fe0b6zoc-9g3mw2urxf.gz
 D:\ASP.NET\FastFoodShop\FastFoodShop\obj\Debug\net9.0\compressed\1uw4sw4uas-lwwzpmg21w.gz
 D:\ASP.NET\FastFoodShop\FastFoodShop\obj\Debug\net9.0\compressed\hpulw1ottd-b9sayid5wm.gz
-D:\ASP.NET\FastFoodShop\FastFoodShop\obj\Debug\net9.0\compressed\ou7x9jov6q-hpgr66c7mc.gz
 D:\ASP.NET\FastFoodShop\FastFoodShop\obj\Debug\net9.0\compressed\jq6lngde78-61n19gt1b8.gz
 D:\ASP.NET\FastFoodShop\FastFoodShop\obj\Debug\net9.0\compressed\5t10mnecr0-g1bcqwktbt.gz
 D:\ASP.NET\FastFoodShop\FastFoodShop\obj\Debug\net9.0\compressed\x357zc47ov-brjq0h443p.gz
@@ -625,8 +623,6 @@ D:\ASP.NET\FastFoodShop\FastFoodShop\obj\Debug\net9.0\compressed\6qmjyla2rl-2z0n
 D:\ASP.NET\FastFoodShop\FastFoodShop\obj\Debug\net9.0\compressed\0o5q6j774w-muycvpuwrr.gz
 D:\ASP.NET\FastFoodShop\FastFoodShop\obj\Debug\net9.0\compressed\jx025isbmi-87fc7y1x7t.gz
 D:\ASP.NET\FastFoodShop\FastFoodShop\obj\Debug\net9.0\compressed\szj0hazv9z-mlv21k5csn.gz
-D:\ASP.NET\FastFoodShop\FastFoodShop\obj\Debug\net9.0\compressed\k6ma0zaxo4-zsj96p618d.gz
-D:\ASP.NET\FastFoodShop\FastFoodShop\obj\Debug\net9.0\compressed\2exfts1o4j-zsj96p618d.gz
 D:\ASP.NET\FastFoodShop\FastFoodShop\obj\Debug\net9.0\staticwebassets.build.json
 D:\ASP.NET\FastFoodShop\FastFoodShop\obj\Debug\net9.0\staticwebassets.build.json.cache
 D:\ASP.NET\FastFoodShop\FastFoodShop\obj\Debug\net9.0\staticwebassets.development.json
@@ -634,3 +630,11 @@ D:\ASP.NET\FastFoodShop\FastFoodShop\obj\Debug\net9.0\staticwebassets.build.endp
 D:\ASP.NET\FastFoodShop\FastFoodShop\obj\Debug\net9.0\FastFood.1CEBAE17.Up2Date
 D:\ASP.NET\FastFoodShop\FastFoodShop\obj\Debug\net9.0\FastFoodShop.genruntimeconfig.cache
 D:\ASP.NET\FastFoodShop\FastFoodShop\obj\Debug\net9.0\ref\FastFoodShop.dll
+D:\ASP.NET\FastFoodShop\FastFoodShop\obj\Debug\net9.0\FastFoodShop.sourcelink.json
+D:\ASP.NET\FastFoodShop\FastFoodShop\obj\Debug\net9.0\compressed\hbx17rqavm-so8mw7jy6f.gz
+D:\ASP.NET\FastFoodShop\FastFoodShop\obj\Debug\net9.0\compressed\k6ma0zaxo4-u76jkd3u0u.gz
+D:\ASP.NET\FastFoodShop\FastFoodShop\obj\Debug\net9.0\compressed\2exfts1o4j-u76jkd3u0u.gz
+D:\ASP.NET\FastFoodShop\FastFoodShop\obj\Debug\net9.0\compressed\5rfc55vtuo-brmbjq9vyw.gz
+D:\ASP.NET\FastFoodShop\FastFoodShop\obj\Debug\net9.0\compressed\ou7x9jov6q-j7xxyqppv5.gz
+D:\ASP.NET\FastFoodShop\FastFoodShop\obj\Debug\net9.0\compressed\f865fgxdv7-70pwj8pxmz.gz
+D:\ASP.NET\FastFoodShop\FastFoodShop\obj\Debug\net9.0\compressed\0ix6k9kfzw-6tyotm49dv.gz

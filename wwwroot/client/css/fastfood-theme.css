@@ -1,0 +1,641 @@
+/*******************************
+ * FastFood Shop Theme Styles *
+ *******************************/
+
+/* Color Scheme - Fast Food Theme */
+:root {
+    --ff-primary: #FF6B35;
+    /* Orange - Energy & Appetite */
+    --ff-secondary: #F7931E;
+    /* Golden Yellow - Warmth & Happiness */
+    --ff-accent: #ED1C24;
+    /* Red - Passion & Urgency */
+    --ff-dark: #2C3E50;
+    /* Dark Blue - Professional & Trust */
+    --ff-light: #F8F9FA;
+    /* Light Gray - Clean & Modern */
+    --ff-success: #28A745;
+    /* Green - Fresh & Healthy */
+    --ff-warning: #FFC107;
+    /* Amber - Attention & Caution */
+
+    /* Typography */
+    --ff-font-primary: 'Poppins', sans-serif;
+    --ff-font-secondary: 'Montserrat', sans-serif;
+    --ff-font-display: 'Bebas Neue', cursive;
+}
+
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&family=Bebas+Neue&display=swap');
+
+/* Global Styles */
+body {
+    font-family: var(--ff-font-primary);
+    line-height: 1.6;
+    color: var(--ff-dark);
+}
+
+/* Header & Navigation */
+.ff-header {
+    background: linear-gradient(135deg, var(--ff-primary) 0%, var(--ff-secondary) 100%);
+    box-shadow: 0 4px 20px rgba(255, 107, 53, 0.3);
+}
+
+.ff-navbar-brand {
+    font-family: var(--ff-font-display);
+    font-size: 2.5rem;
+    font-weight: 400;
+    color: white !important;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    letter-spacing: 2px;
+}
+
+.ff-nav-link {
+    font-family: var(--ff-font-secondary);
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: white !important;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.ff-nav-link:hover {
+    color: var(--ff-warning) !important;
+    transform: translateY(-2px);
+}
+
+.ff-nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 3px;
+    bottom: -5px;
+    left: 50%;
+    background-color: var(--ff-warning);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+.ff-nav-link:hover::after {
+    width: 100%;
+}
+
+/* Buttons */
+.ff-btn-primary {
+    background: linear-gradient(135deg, var(--ff-primary) 0%, var(--ff-accent) 100%);
+    border: none;
+    border-radius: 50px;
+    font-family: var(--ff-font-secondary);
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 12px 30px;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4);
+}
+
+.ff-btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(255, 107, 53, 0.6);
+    color: white;
+}
+
+.ff-btn-secondary {
+    background: linear-gradient(135deg, var(--ff-secondary) 0%, var(--ff-warning) 100%);
+    border: none;
+    border-radius: 50px;
+    font-family: var(--ff-font-secondary);
+    font-weight: 600;
+    padding: 10px 25px;
+    color: var(--ff-dark);
+    transition: all 0.3s ease;
+}
+
+.ff-btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(247, 147, 30, 0.4);
+}
+
+/* Product Cards */
+.ff-product-card {
+    background: #ffffff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: 1px solid #f0f0f0;
+}
+
+.ff-product-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+}
+
+.ff-product-image {
+    position: relative;
+    overflow: hidden;
+    height: 200px;
+    background-color: #fafafa;
+}
+
+.ff-product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.ff-product-card:hover .ff-product-image img {
+    transform: scale(1.1);
+}
+
+.ff-product-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: var(--ff-accent);
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-family: var(--ff-font-secondary);
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.product-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.45);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ff-product-card:hover .product-overlay {
+    opacity: 1;
+}
+
+.ff-product-content {
+    padding: 18px;
+}
+
+.ff-product-title {
+    font-family: var(--ff-font-secondary);
+    font-weight: 700;
+    font-size: 1.15rem;
+    color: var(--ff-dark);
+    margin-bottom: 8px;
+}
+
+.ff-product-title a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.ff-product-title a:hover {
+    color: var(--ff-primary);
+}
+
+.ff-product-description {
+    color: #6c757d;
+    font-size: 0.92rem;
+    margin-bottom: 12px;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.ff-product-price {
+    font-family: var(--ff-font-display);
+    font-size: 1.4rem;
+    color: var(--ff-primary);
+    font-weight: 400;
+    margin-bottom: 0;
+}
+
+.product-rating {
+    font-size: 0.9rem;
+}
+
+/* Hero Section */
+.ff-hero {
+    background: linear-gradient(135deg, var(--ff-primary) 0%, var(--ff-secondary) 40%, var(--ff-accent) 100%);
+    min-height: 60vh;
+    /* use viewport-based height for responsiveness */
+    padding: 60px 0;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.ff-hero::before {
+    /* subtle soft overlay instead of noisy SVG grain which created distracting circular artifacts */
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 10% 10%, rgba(255, 255, 255, 0.06), transparent 12%),
+        radial-gradient(circle at 90% 80%, rgba(0, 0, 0, 0.04), transparent 15%);
+    pointer-events: none;
+}
+
+.ff-hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+.ff-hero-title {
+    font-family: var(--ff-font-display);
+    /* responsive heading size */
+    font-size: clamp(2rem, 4vw + 1rem, 4rem);
+    color: white;
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.25);
+    margin-bottom: 18px;
+    letter-spacing: 2px;
+}
+
+.ff-hero-subtitle {
+    font-family: var(--ff-font-primary);
+    font-size: 1.3rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 30px;
+    font-weight: 300;
+}
+
+/* Category Section */
+.ff-category-card {
+    background: white;
+    border-radius: 15px;
+    padding: 30px 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    border: 2px solid transparent;
+}
+
+.ff-category-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--ff-primary);
+    box-shadow: 0 10px 30px rgba(255, 107, 53, 0.2);
+}
+
+.ff-category-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px;
+    background: linear-gradient(135deg, var(--ff-primary), var(--ff-secondary));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: white;
+}
+
+.ff-category-title {
+    font-family: var(--ff-font-secondary);
+    font-weight: 600;
+    font-size: 1.2rem;
+    color: var(--ff-dark);
+    margin-bottom: 10px;
+}
+
+/* Footer */
+.ff-footer {
+    background: linear-gradient(135deg, var(--ff-dark) 0%, #1a252f 100%);
+    color: rgba(255, 255, 255, 0.8);
+    padding: 60px 0 30px;
+}
+
+.ff-footer-title {
+    font-family: var(--ff-font-display);
+    font-size: 2rem;
+    color: var(--ff-secondary);
+    margin-bottom: 20px;
+    letter-spacing: 2px;
+}
+
+.ff-footer-link {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.ff-footer-link:hover {
+    color: var(--ff-secondary);
+}
+
+/* Animations */
+@keyframes ff-bounce {
+
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+        transform: translateY(0);
+    }
+
+    40% {
+        transform: translateY(-10px);
+    }
+
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+.ff-animate-bounce {
+    /* Disabled infinite animation for better performance */
+    /* animation: ff-bounce 2s infinite; */
+}
+
+@keyframes ff-pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.ff-animate-pulse {
+    /* Disabled infinite animation for better performance */
+    /* animation: ff-pulse 2s infinite; */
+}
+
+@keyframes ff-shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    10%,
+    30%,
+    50%,
+    70%,
+    90% {
+        transform: translateX(-5px);
+    }
+
+    20%,
+    40%,
+    60%,
+    80% {
+        transform: translateX(5px);
+    }
+}
+
+.ff-animate-shake {
+    animation: ff-shake 0.5s ease-in-out;
+}
+
+@keyframes ff-fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.ff-animate-fadeInUp {
+    animation: ff-fadeInUp 0.6s ease-out;
+}
+
+@keyframes ff-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.ff-animate-spin {
+    /* Disabled infinite animation for better performance */
+    /* animation: ff-spin 1s linear infinite; */
+}
+
+/* Hover Effects */
+.ff-hover-lift {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.ff-hover-lift:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(255, 107, 53, 0.3);
+}
+
+.ff-hover-glow {
+    transition: box-shadow 0.3s ease;
+}
+
+.ff-hover-glow:hover {
+    box-shadow: 0 0 20px rgba(255, 107, 53, 0.5);
+}
+
+.ff-hover-scale {
+    transition: transform 0.3s ease;
+}
+
+.ff-hover-scale:hover {
+    transform: scale(1.05);
+}
+
+/* Loading States */
+.ff-loading {
+    position: relative;
+    overflow: hidden;
+}
+
+.ff-loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+    /* Disabled infinite animation for better performance */
+    /* animation: ff-loading-shimmer 1.5s infinite; */
+}
+
+@keyframes ff-loading-shimmer {
+    0% {
+        left: -100%;
+    }
+
+    100% {
+        left: 100%;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .ff-hero-title {
+        font-size: 2.2rem;
+    }
+
+    .ff-navbar-brand {
+        font-size: 2rem;
+    }
+
+    .ff-nav-link {
+        font-size: 1rem;
+    }
+
+    .ff-product-card {
+        margin-bottom: 16px;
+    }
+
+    .ff-product-image {
+        height: 160px;
+    }
+}
+
+/* Floating Animation for Food Icons */
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.food-icon {
+    z-index: 1;
+}
+
+/* Hero Section Improvements */
+.hero-main-graphic {
+    position: relative;
+    display: inline-block;
+    margin: 50px 0;
+}
+
+.phone-mockup {
+    position: relative;
+    display: inline-block;
+}
+
+.food-icons-animation {
+    position: relative;
+    width: 100%;
+    height: 300px;
+}
+
+/* Ensure proper contrast for hero section */
+.ff-hero {
+    background: linear-gradient(135deg, var(--ff-primary) 0%, var(--ff-secondary) 100%);
+    color: white;
+    padding: 100px 0;
+}
+
+.ff-hero-title {
+    font-family: var(--ff-font-display);
+    font-size: 4rem;
+    font-weight: 400;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    margin-bottom: 20px;
+}
+
+.ff-hero-subtitle {
+    font-size: 1.3rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+/* Improve hotline button contrast */
+.btn-outline-light {
+    border-color: rgba(255, 255, 255, 0.8) !important;
+    color: white !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.btn-outline-light:hover {
+    background: rgba(255, 255, 255, 0.2) !important;
+    border-color: white !important;
+}
+
+/* Utility Classes */
+.ff-text-gradient {
+    background: linear-gradient(135deg, var(--ff-primary), var(--ff-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.ff-bg-gradient {
+    background: linear-gradient(135deg, var(--ff-primary), var(--ff-secondary));
+}
+
+.ff-shadow-primary {
+    box-shadow: 0 8px 30px rgba(255, 107, 53, 0.3);
+}
+
+.ff-rounded-xl {
+    border-radius: 20px;
+}
+
+/* Variant Selection Styles */
+.variant-option {
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: white;
+    margin-bottom: 10px;
+}
+
+.variant-option:hover {
+    border-color: var(--ff-primary);
+    box-shadow: 0 5px 15px rgba(255, 107, 53, 0.2);
+    transform: translateY(-2px);
+}
+
+.variant-option.active {
+    border-color: var(--ff-primary);
+    background: linear-gradient(135deg, var(--ff-primary), var(--ff-secondary));
+    color: white;
+}
+
+.variant-option.active .text-muted {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+#product-price-display {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--ff-primary);
+    transition: all 0.3s ease;
+}

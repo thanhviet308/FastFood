@@ -102,9 +102,25 @@ namespace FastFoodShop.Controllers
 
         [HttpPost("variant/add")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddVariant([FromForm] long productId, [FromForm] string variantName, [FromForm] decimal price)
+        public async Task<IActionResult> AddVariant([FromForm] long productId, [FromForm] string? variantName, [FromForm] decimal? price)
         {
-            await _products.AddVariantAsync(productId, variantName, price);
+            try
+            {
+                var name = (variantName ?? string.Empty).Trim();
+                var p = price.GetValueOrDefault(0);
+                if (string.IsNullOrWhiteSpace(name) || p <= 0)
+                {
+                    TempData["VariantError"] = "Tên và giá biến thể phải hợp lệ";
+                    return RedirectToAction(nameof(Update), new { id = productId });
+                }
+
+                await _products.AddVariantAsync(productId, name, p);
+                TempData["VariantSuccess"] = "Đã thêm biến thể";
+            }
+            catch (Exception ex)
+            {
+                TempData["VariantError"] = "Không thể thêm biến thể: " + ex.Message;
+            }
             return RedirectToAction(nameof(Update), new { id = productId });
         }
 
@@ -112,7 +128,15 @@ namespace FastFoodShop.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateVariant([FromForm] long id, [FromForm] long productId, [FromForm] string variantName, [FromForm] decimal price, [FromForm] bool isActive)
         {
-            await _products.UpdateVariantAsync(new ProductVariant { Id = id, ProductId = productId, VariantName = variantName, Price = price, IsActive = isActive });
+            try
+            {
+                await _products.UpdateVariantAsync(new ProductVariant { Id = id, ProductId = productId, VariantName = variantName?.Trim() ?? string.Empty, Price = price, IsActive = isActive });
+                TempData["VariantSuccess"] = "Đã cập nhật biến thể";
+            }
+            catch (Exception ex)
+            {
+                TempData["VariantError"] = "Không thể cập nhật: " + ex.Message;
+            }
             return RedirectToAction(nameof(Update), new { id = productId });
         }
 
@@ -120,7 +144,15 @@ namespace FastFoodShop.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteVariant([FromForm] long id, [FromForm] long productId)
         {
-            await _products.DeleteVariantAsync(id);
+            try
+            {
+                await _products.DeleteVariantAsync(id);
+                TempData["VariantSuccess"] = "Đã xóa biến thể";
+            }
+            catch (Exception ex)
+            {
+                TempData["VariantError"] = "Không thể xóa: " + ex.Message;
+            }
             return RedirectToAction(nameof(Update), new { id = productId });
         }
 
@@ -132,6 +164,13 @@ namespace FastFoodShop.Controllers
             if (pr is null) return RedirectToAction(nameof(Index), new { error = "not_found" });
 
             return View("~/Views/Admin/Product/Delete.cshtml", pr);
+        }
+
+        // Legacy path support: /admin/Product/Delete?id=123
+        [HttpGet("~/admin/Product/Delete")]
+        public IActionResult LegacyDeleteRedirect([FromQuery] long id)
+        {
+            return RedirectToAction(nameof(DeleteConfirm), new { id });
         }
 
 

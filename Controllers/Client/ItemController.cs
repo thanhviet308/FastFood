@@ -164,6 +164,14 @@ namespace FastFoodShop.Controllers
 
             var (items, total) = await _products.FetchBaseAsync(page, pageSize);
 
+            // Load variants for all products
+            var allVariants = new List<FastFoodShop.Domain.Entities.ProductVariant>();
+            foreach (var product in items)
+            {
+                var variants = await _products.GetVariantsAsync(product.Id);
+                allVariants.AddRange(variants);
+            }
+
             // Tính totalPages
             var totalPages = (int)Math.Ceiling(total / (double)pageSize);
 
@@ -181,6 +189,7 @@ namespace FastFoodShop.Controllers
             ViewBag.TotalPages = totalPages;
             ViewBag.QueryString = qs;
             ViewBag.Sort = sort;
+            ViewBag.Variants = allVariants;
 
             return View("~/Views/Client/Product/Show.cshtml", items);
         }

@@ -29,19 +29,19 @@
         <div id="layoutSidenav_content">
             <main>
                 <div class="container-fluid px-4">
-                    <h1 class="mt-4">Manage Orders</h1>
+                    <h1 class="mt-4">Quản lý Đơn hàng</h1>
                     <ol class="breadcrumb mb-4">
                         <li class="breadcrumb-item">
-                            <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+                            <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Bảng điều khiển</a>
                         </li>
-                        <li class="breadcrumb-item active">Order</li>
+                        <li class="breadcrumb-item active">Đơn hàng</li>
                     </ol>
 
                     <div class="mt-5">
                         <div class="row">
                             <div class="col-12 mx-auto">
                                 <div class="d-flex">
-                                    <h3>Table Orders</h3>
+                                    <h3>Bảng đơn hàng</h3>
                                 </div>
 
                                 <hr />
@@ -49,10 +49,10 @@
                                     <thead>
                                         <tr>
                                             <th>ID</th>
-                                            <th>Total Price</th>
-                                            <th>User</th>
-                                            <th>Status</th>
-                                            <th>Action</th>
+                                            <th>Tổng tiền</th>
+                                            <th>Người dùng</th>
+                                            <th>Trạng thái</th>
+                                            <th>Thao tác</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -76,13 +76,13 @@
                                                 <td>@order.Status</td>
                                                 <td>
                                                     <a class="btn btn-success" asp-area="Admin" asp-controller="Order"
-                                                        asp-action="Detail" asp-route-id="@order.Id">View</a>
+                                                        asp-action="Detail" asp-route-id="@order.Id">Xem</a>
 
                                                     <a class="btn btn-warning mx-2" asp-area="Admin" asp-controller="Order"
-                                                        asp-action="Update" asp-route-id="@order.Id">Update</a>
+                                                        asp-action="Update" asp-route-id="@order.Id">Cập nhật</a>
 
                                                     <a class="btn btn-danger" asp-area="Admin" asp-controller="Order"
-                                                        asp-action="Delete" asp-route-id="@order.Id">Delete</a>
+                                                        asp-action="Delete" asp-route-id="@order.Id">Xóa</a>
                                                 </td>
                                             </tr>
                                         }

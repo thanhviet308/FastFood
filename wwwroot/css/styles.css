@@ -86,11 +86,7 @@
     box-sizing: border-box;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-    :root {
-        scroll-behavior: smooth;
-    }
-}
+/* Removed smooth scrolling for better performance */
 
 body {
     margin: 0;

@@ -28,16 +28,31 @@
         }
     });
 
-    // Back to top button
-    $(window).scroll(function () {
+    $(window).on('scroll', function () {
         if ($(this).scrollTop() > 300) {
-            $('.back-to-top').fadeIn('slow');
+            $('.back-to-top').css('display', 'flex');
         } else {
-            $('.back-to-top').fadeOut('slow');
+            $('.back-to-top').css('display', 'none');
         }
     });
-    $('.back-to-top').click(function () {
-        $('html, body').animate({ scrollTop: 0 }, 1500, 'easeInOutExpo');
+    function ffScrollTop() {
+        var start = window.pageYOffset || document.documentElement.scrollTop;
+        if (start <= 10) { window.scrollTo(0, 0); return; }
+        var total = 180;
+        var startTime = performance.now();
+        function ease(t) { return 1 - Math.pow(1 - t, 3); }
+        function step(now) {
+            var progress = Math.min((now - startTime) / total, 1);
+            var eased = ease(progress);
+            var y = Math.round(start * (1 - eased));
+            window.scrollTo(0, y);
+            if (progress < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+    }
+    $(document).on('click', '.back-to-top', function (e) {
+        e.preventDefault();
+        ffScrollTop();
         return false;
     });
 

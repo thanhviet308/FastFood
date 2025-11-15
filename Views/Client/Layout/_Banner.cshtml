@@ -1,57 +1,83 @@
-@* Views/Client/Layout/_Banner.cshtml *@
-<!-- Hero Start -->
-<div class="container-fluid py-5 mb-5 hero-header">
-    <div class="container py-5">
-        <div class="row g-5 align-items-center">
-            <div class="col-md-12 col-lg-7">
-                <h4 class="mb-3 text-secondary">100% Sản Phẩm Chính Hãng</h4>
-                <h1 class="mb-5 display-3 text-primary">Hàng trong nước<br /> Và ngoài nước</h1>
-            </div>
-            <div class="col-md-12 col-lg-5">
-                <div id="carouselId" class="carousel slide position-relative" data-bs-ride="carousel">
-                    <div class="carousel-inner" role="listbox">
-                        <div class="carousel-item active rounded"
-                            style="position: relative; height: 400px; overflow: hidden; border-radius: 10px;">
-                            <img src="~/client/img/banner3.png"
-                                style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;"
-                                alt="First slide" />
-                            <a asp-controller="Cart" asp-action="Index" class="btn px-4 py-2 text-white rounded">
-                                Giỏ trái cây
-                            </a>
-                        </div>
-                        <div class="carousel-item rounded"
-                            style="position: relative; height: 400px; overflow: hidden; border-radius: 10px;">
-                            <img src="~/client/img/banner4.jpg"
-                                style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;"
-                                alt="Second slide" />
-                            <a asp-controller="Product" asp-action="Index" class="btn px-4 py-2 text-white rounded">
-                                Trái Cây Ngon
-                            </a>
-                        </div>
-                        @* 
-                        <div class="carousel-item rounded"
-                             style="position: relative; height: 400px; overflow: hidden; border-radius: 10px;">
-                            <img src="~/client/img/banner-web-2.png"
-                                 style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;"
-                                 alt="Third slide" />
-                            <a class="btn px-4 py-2 text-white rounded"></a>
-                        </div>
-                        *@
-                    </div>
+@{
+    ViewData["Title"] = "FastFood Shop - Banner";
+}
 
-                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselId"
-                        data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#carouselId"
-                        data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
-                    </button>
+<!-- Minimal Hero Banner -->
+<section class="minimal-banner">
+    <div class="container">
+        <div class="row align-items-center py-5">
+            <div class="col-lg-6 text-center text-lg-start">
+                <h1 class="display-4 fw-bold mb-4">
+                    🍔 FastFood Shop
+                </h1>
+                <p class="lead mb-4">
+                    Ngon từng miếng - Nóng từng phút!<br>
+                    Khám phá thực đơn đa dạng với hàng trăm món ăn nhanh hấp dẫn
+                </p>
+                <div class="d-flex gap-3 justify-content-center justify-content-lg-start">
+                    <a href="/products" class="minimal-btn minimal-btn-primary">
+                        <i class="fas fa-utensils me-2"></i>
+                        Đặt Món Ngay
+                    </a>
+                    <a href="tel:19001234" class="minimal-btn minimal-btn-outline">
+                        <i class="fas fa-phone me-2"></i>
+                        1900 1234
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center mt-4 mt-lg-0">
+                <div class="d-inline-block minimal-bg-surface minimal-rounded p-4">
+                    <i class="fas fa-mobile-alt" style="font-size: 8rem; color: var(--primary-color);"></i>
+                    <div class="mt-3">
+                        <h5 class="fw-bold">Đặt món ngay</h5>
+                        <p class="text-muted mb-0">Giao nhanh 30 phút</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-<!-- Hero End -->
+</section>
+
+<!-- Quick Categories - Minimal -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Danh Mục Món Ăn</h2>
+            <p class="text-muted">Khám phá các loại món ăn yêu thích của bạn</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="text-center p-4 minimal-bg-surface minimal-rounded">
+                    <i class="fas fa-hamburger fa-3x text-primary mb-3"></i>
+                    <h5 class="fw-bold">Burger</h5>
+                    <p class="text-muted small mb-3">Các loại burger thơm ngon, bổ dưỡng</p>
+                    <a href="/products?category=burger" class="minimal-btn minimal-btn-outline">Xem thực đơn</a>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="text-center p-4 minimal-bg-surface minimal-rounded">
+                    <i class="fas fa-pizza-slice fa-3x text-primary mb-3"></i>
+                    <h5 class="fw-bold">Pizza</h5>
+                    <p class="text-muted small mb-3">Pizza nóng hổi, phô mai kéo sợi</p>
+                    <a href="/products?category=pizza" class="minimal-btn minimal-btn-outline">Xem thực đơn</a>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="text-center p-4 minimal-bg-surface minimal-rounded">
+                    <i class="fas fa-drumstick-bite fa-3x text-primary mb-3"></i>
+                    <h5 class="fw-bold">Gà Rán</h5>
+                    <p class="text-muted small mb-3">Gà giòn rụm, thơm lừng</p>
+                    <a href="/products?category=chicken" class="minimal-btn minimal-btn-outline">Xem thực đơn</a>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="text-center p-4 minimal-bg-surface minimal-rounded">
+                    <i class="fas fa-coffee fa-3x text-primary mb-3"></i>
+                    <h5 class="fw-bold">Đồ Uống</h5>
+                    <p class="text-muted small mb-3">Nước ngọt, cà phê, trà sữa</p>
+                    <a href="/products?category=drinks" class="minimal-btn minimal-btn-outline">Xem thực đơn</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

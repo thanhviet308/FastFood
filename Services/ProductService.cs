@@ -240,7 +240,22 @@ namespace FastFoodShop.Services
 
         public async Task<ProductVariant> AddVariantAsync(long productId, string variantName, decimal price)
         {
-            var v = new ProductVariant { ProductId = productId, VariantName = variantName, Price = price, IsActive = true };
+            var name = (variantName ?? string.Empty).Trim();
+            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("variantName required");
+            if (price <= 0) throw new ArgumentException("price must be > 0");
+
+            var exist = await _db.ProductVariants.FirstOrDefaultAsync(v => v.ProductId == productId && v.VariantName == name);
+            if (exist != null)
+            {
+                // nếu đã tồn tại, cập nhật giá và bật active
+                exist.Price = price;
+                exist.IsActive = true;
+                _db.ProductVariants.Update(exist);
+                await _db.SaveChangesAsync();
+                return exist;
+            }
+
+            var v = new ProductVariant { ProductId = productId, VariantName = name, Price = price, IsActive = true };
             _db.ProductVariants.Add(v);
             await _db.SaveChangesAsync();
             return v;

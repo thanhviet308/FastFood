@@ -26,9 +26,12 @@
             <label asp-for="Name" class="form-label"></label>
             <input asp-for="Name" class="form-control" />
         </div>
-        <div class="col-md-6">
-            <label asp-for="IsActive" class="form-label"></label>
-            <input asp-for="IsActive" class="form-check-input" />
+        <div class="col-auto">
+            <label asp-for="IsActive" class="form-label">Trạng thái</label>
+            <select asp-for="IsActive" class="form-select w-auto" style="min-width: 120px;">
+                <option value="true">True</option>
+                <option value="false">False</option>
+            </select>
         </div>
         <div class="col-12">
             <label asp-for="Description" class="form-label"></label>

@@ -1,6 +1,6 @@
 @model IEnumerable<FastFoodShop.Domain.Entities.Product>
 @{
-    ViewData["Title"] = "Sản phẩm - Cửa Hàng Đồ Ăn Nhanh";
+    ViewData["Title"] = "Thực Đơn - FastFood Shop";
     Layout = null;
 }
 
@@ -9,30 +9,170 @@
 <head>
     <meta charset="utf-8" />
     <title>@ViewData["Title"]</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" />
+    
+    <!-- Bootstrap -->
     <link href="~/client/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="~/client/css/style.css" rel="stylesheet" />
+    <!-- Minimal Theme -->
+    <link href="~/client/css/minimal-theme.css" rel="stylesheet" />
 </head>
 <body>
     @await Html.PartialAsync("~/Views/Client/Layout/_Header.cshtml")
 
-    <div class="container py-5">
-        <div class="row g-4">
-            @foreach (var p in Model ?? Enumerable.Empty<FastFoodShop.Domain.Entities.Product>())
-            {
-                <div class="col-md-3">
-                    <div class="card h-100">
-                        <img src="~/images/product/@p.Image" class="card-img-top" alt="product" />
-                        <div class="card-body">
-                            <h5 class="card-title">@p.Name</h5>
-                            <a href="/product/@p.Id" class="btn btn-primary">Xem chi tiết</a>
+    <!-- Page Header - Minimal -->
+    <section class="py-5 bg-light border-bottom">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h1 class="fw-bold mb-2">
+                        <i class="fas fa-utensils me-3 minimal-text-primary"></i>Thực Đơn
+                    </h1>
+                    <p class="text-muted mb-0">Khám phá hàng trăm món ăn ngon tại FastFood Shop</p>
+                </div>
+                <div class="col-lg-4 text-lg-end">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb justify-content-lg-end mb-0">
+                            <li class="breadcrumb-item"><a href="/" class="text-decoration-none">Trang chủ</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Thực đơn</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section - Minimal -->
+    <section class="py-5">
+        <div class="container">
+            <!-- Filter Section -->
+            <div class="row mb-5">
+                <div class="col-lg-12">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="row align-items-center">
+                                <div class="col-md-6">
+                                    <h5 class="mb-3 mb-md-0">
+                                        <i class="fas fa-filter me-2 minimal-text-primary"></i>
+                                        Lọc theo danh mục
+                                    </h5>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="minimal-filters justify-content-md-end">
+                                        <a href="/products" class="minimal-filter-btn active">Tất cả</a>
+                                        <a href="/products?category=burger" class="minimal-filter-btn">Burger</a>
+                                        <a href="/products?category=pizza" class="minimal-filter-btn">Pizza</a>
+                                        <a href="/products?category=chicken" class="minimal-filter-btn">Gà rán</a>
+                                        <a href="/products?category=drinks" class="minimal-filter-btn">Đồ uống</a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Products Grid -->
+            <div class="row g-4">
+                @foreach (var p in Model ?? Enumerable.Empty<FastFoodShop.Domain.Entities.Product>())
+                {
+                    // Get variants for this product from ViewBag
+                    var allVariants = ViewBag.Variants as List<FastFoodShop.Domain.Entities.ProductVariant> ?? new List<FastFoodShop.Domain.Entities.ProductVariant>();
+                    var variants = allVariants.Where(v => v.ProductId == p.Id).ToList();
+                    
+                    <div class="col-lg-3 col-md-4 col-sm-6">
+                        <div class="minimal-product-card">
+                            <div class="minimal-product-image">
+                                @if (!string.IsNullOrEmpty(p.Image))
+                                {
+                                    <img src="~/images/product/@p.Image" alt="@p.Name" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                                    <div style="display: none;">🍔</div>
+                                }
+                                else
+                                {
+                                    <div>🍔</div>
+                                }
+                            </div>
+                            <div class="minimal-product-body">
+                                <h5 class="minimal-product-title">@p.Name</h5>
+                                <p class="minimal-product-desc">@p.ShortDesc</p>
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div class="minimal-product-price">
+                                        @if (variants.Any())
+                                        {
+                                            <span>@variants.First().Price.ToString("N0")₫</span>
+                                        }
+                                        else
+                                        {
+                                            <span>Liên hệ</span>
+                                        }
+                                    </div>
+                                    <div class="text-warning">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <small class="text-muted ms-1">(4.8)</small>
+                                    </div>
+                                </div>
+                                <div class="minimal-product-actions">
+                                    <a href="/product/@p.Id" class="minimal-btn minimal-btn-outline">Xem</a>
+                                    <button class="btnAddToCartHomepage minimal-btn minimal-btn-primary" 
+                                            data-product-id="@p.Id">
+                                        Thêm
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Empty State -->
+            @if (Model == null || !Model.Any())
+            {
+                <div class="col-12">
+                    <div class="minimal-empty">
+                        <div class="minimal-empty-icon">🍽️</div>
+                        <h3>Chưa có sản phẩm nào</h3>
+                        <p>Hiện tại chưa có món ăn nào trong danh mục này.</p>
+                        <a href="/" class="minimal-btn minimal-btn-primary">
+                            <i class="fas fa-home me-2"></i>Về trang chủ
+                        </a>
                     </div>
                 </div>
             }
         </div>
-    </div>
+    </section>
 
     @await Html.PartialAsync("~/Views/Client/Layout/_Footer.cshtml")
-    <script src="~/client/js/main.js"></script>
+    
+    <!-- Scripts -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Simple cart functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const cartButtons = document.querySelectorAll('.btnAddToCartHomepage');
+            cartButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const productId = this.getAttribute('data-product-id');
+                    // Add to cart logic here
+                    this.innerHTML = '<i class="fas fa-check me-1"></i>Đã thêm';
+                    this.classList.remove('minimal-btn-primary');
+                    this.classList.add('minimal-btn-outline');
+                    setTimeout(() => {
+                        this.innerHTML = 'Thêm';
+                        this.classList.remove('minimal-btn-outline');
+                        this.classList.add('minimal-btn-primary');
+                    }, 2000);
+                });
+            });
+        });
+    </script>
 </body>
 </html>

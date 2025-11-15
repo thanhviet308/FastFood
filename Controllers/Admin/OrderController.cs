@@ -30,7 +30,7 @@ namespace FastFoodShop.Controllers
             ViewBag.PageSize = s;
             ViewBag.TotalPages = (int)Math.Ceiling(result.Total / (double)s);
 
-            return View("Order/Show", result.Items); // Views/Admin/Order/Show.cshtml
+            return View("~/Views/Admin/Order/Show.cshtml", result.Items);
         }
 
         // GET /admin/orders/{id}
@@ -42,7 +42,7 @@ namespace FastFoodShop.Controllers
 
             // order đã Include OrderDetails + Product trong service
             ViewBag.Id = id;
-            return View("Order/Detail", order); // Views/Admin/Order/Detail.cshtml
+            return View("~/Views/Admin/Order/Detail.cshtml", order);
         }
 
         // GET /admin/orders/delete/{id}
@@ -53,7 +53,7 @@ namespace FastFoodShop.Controllers
             if (order is null) return RedirectToAction(nameof(Index));
 
             ViewBag.Id = id;
-            return View("Order/Delete", new Order { Id = id }); // form confirm
+            return View("~/Views/Admin/Order/Delete.cshtml", new Order { Id = id });
         }
 
         // POST /admin/orders/delete
@@ -72,7 +72,7 @@ namespace FastFoodShop.Controllers
             var order = await _orders.GetByIdAsync(id);
             if (order is null) return RedirectToAction(nameof(Index));
 
-            return View("Order/Update", order);
+            return View("~/Views/Admin/Order/Update.cshtml", order);
         }
 
         // POST /admin/orders/update

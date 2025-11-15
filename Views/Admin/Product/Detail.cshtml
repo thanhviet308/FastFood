@@ -27,22 +27,22 @@
         <div id="layoutSidenav_content">
             <main>
                 <div class="container-fluid px-4">
-                    <h1 class="mt-4">Products</h1>
+                    <h1 class="mt-4">Sản phẩm</h1>
                     <ol class="breadcrumb mb-4">
                         <li class="breadcrumb-item">
-                            <a asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+                            <a asp-controller="Dashboard" asp-action="Index">Bảng điều khiển</a>
                         </li>
                         <li class="breadcrumb-item">
-                            <a asp-controller="Product" asp-action="Index">Product</a>
+                            <a asp-controller="Product" asp-action="Index">Sản phẩm</a>
                         </li>
-                        <li class="breadcrumb-item active">View detail</li>
+                        <li class="breadcrumb-item active">Xem chi tiết</li>
                     </ol>
 
                     <div class="container mt-5">
                         <div class="row">
                             <div class="col-12 mx-auto">
                                 <div class="d-flex justify-content-between">
-                                    <h3>Product detail with id = @Model.Id</h3>
+                                    <h3>Chi tiết sản phẩm (ID = @Model.Id)</h3>
                                 </div>
 
                                 <hr />
@@ -52,26 +52,26 @@
                                         asp-append-version="true" alt="product image" />
 
                                     <div class="card-header">
-                                        Product information
+                                        Thông tin sản phẩm
                                     </div>
                                     <ul class="list-group list-group-flush">
-                                        <li class="list-group-item">ID: @Model.Id</li>
-                                        <li class="list-group-item">Name: @Model.Name</li>
+                                        <li class="list-group-item">Mã: @Model.Id</li>
+                                        <li class="list-group-item">Tên: @Model.Name</li>
                                         
                                         <li class="list-group-item">Category: @(Model.Category?.Name ?? "-")</li>
-                                        <li class="list-group-item">Active: @(Model.IsActive ? "Yes" : "No")</li>
-                                        <li class="list-group-item">Short Description: @Model.ShortDesc</li>
-                                        <li class="list-group-item">Detail Description: @Model.DetailDesc</li>
+                                        <li class="list-group-item">Trạng thái: @(Model.IsActive ? "Đang bán" : "Ẩn")</li>
+                                        <li class="list-group-item">Mô tả ngắn: @Model.ShortDesc</li>
+                                        <li class="list-group-item">Mô tả chi tiết: @Model.DetailDesc</li>
                                     </ul>
                                 </div>
                                 <div class="mt-4">
-                                    <h5>Variants</h5>
+                                    <h5>Biến thể</h5>
                                     <table class="table">
                                         <thead>
                                             <tr>
-                                                <th>Name</th>
-                                                <th>Price</th>
-                                                <th>Active</th>
+                                                <th>Tên</th>
+                                                <th>Giá</th>
+                                                <th>Trạng thái</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -80,14 +80,14 @@
                                                 <tr>
                                                     <td>@v.VariantName</td>
                                                     <td>@string.Format("{0:N0} đ", v.Price)</td>
-                                                    <td>@(v.IsActive ? "Yes" : "No")</td>
+                                                    <td>@(v.IsActive ? "Đang bán" : "Ẩn")</td>
                                                 </tr>
                                             }
                                         </tbody>
                                     </table>
                                 </div>
 
-                                <a asp-controller="Product" asp-action="Index" class="btn btn-success mt-3">Back</a>
+                                <a asp-controller="Product" asp-action="Index" class="btn btn-success mt-3">Quay lại</a>
                             </div>
                         </div>
                     </div>

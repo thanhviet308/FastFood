@@ -1,65 +1,89 @@
-@* Footer *@
-<div class="container-fluid bg-dark text-white-50 footer pt-5 mt-5">
-    <div class="container py-5">
-        <div class="pb-4 mb-4" style="border-bottom: 1px solid rgba(226, 175, 24, 0.5);">
-            <div class="row g-4">
-                <div class="col-lg-3">
-                    <a href="https://nhatraicay.vn" target="_blank" rel="noopener">
-                        <h1 class="text-primary mb-0">FastFood Shop</h1>
-                        <p class="text-secondary mb-0">Cửa Hàng Đồ Ăn Nhanh</p>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <div class="row g-5">
-            <div class="col-lg-3 col-md-6">
-                <div class="footer-item">
-                    <h4 class="text-light mb-3">Chất lượng là ưu tiên hàng đầu</h4>
-                </div>
-            </div>
-
-            <div class="col-lg-3 col-md-6">
-                <div class="d-flex flex-column text-start footer-item">
-                    <h4 class="text-light mb-3">Shop Info</h4>
-                    <a class="btn-link" href="#">About Us</a>
-                </div>
-            </div>
-
-            <div class="col-lg-3 col-md-6">
-                <div class="d-flex flex-column text-start footer-item">
-                    <h4 class="text-light mb-3">Account</h4>
-                    <a class="btn-link" href="#">My Account</a>
-                </div>
-            </div>
-
-            <div class="col-lg-3 col-md-6">
-                <div class="footer-item">
-                    <h4 class="text-light mb-3">Contact</h4>
-                    <p>Cửa Hàng Đồ Ăn Nhanh</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-@* Copyright *@
-<div class="container-fluid copyright bg-dark py-4">
+<!-- Minimal Footer -->
+<div class="minimal-footer">
     <div class="container">
-        <div class="row">
-            <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                <span class="text-light">
-                    <a href="https://nhatraicay.vn" target="_blank" rel="noopener">
-                        <i class="fas fa-copyright text-light me-2"></i>
-                        Cửa Hàng Đồ Ăn Nhanh
-                    </a>, All right reserved.
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <h5 class="fw-bold mb-3">
+                    <i class="fas fa-hamburger me-2 minimal-text-primary"></i>
+                    FastFood Shop
+                </h5>
+                <p class="text-muted mb-3">
+                    FastFood Shop cam kết mang đến những món ăn nhanh chất lượng, 
+                    an toàn vệ sinh với giá cả hợp lý và dịch vụ giao hàng nhanh chóng.
+                </p>
+                <div class="text-warning mb-3">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <span class="text-muted ms-2">4.8/5 (2,345 đánh giá)</span>
+                </div>
+            </div>
+
+            <div class="col-lg-2">
+                <h6 class="fw-bold mb-3">Liên Kết</h6>
+                <div class="d-flex flex-column gap-2">
+                    <a href="/" class="text-decoration-none text-muted">Trang chủ</a>
+                    <a href="/products" class="text-decoration-none text-muted">Thực đơn</a>
+                    <a href="/cart" class="text-decoration-none text-muted">Giỏ hàng</a>
+                    <a href="/checkout" class="text-decoration-none text-muted">Thanh toán</a>
+                </div>
+            </div>
+
+            <div class="col-lg-2">
+                <h6 class="fw-bold mb-3">Tài Khoản</h6>
+                <div class="d-flex flex-column gap-2">
+                    <a href="/account/manage" class="text-decoration-none text-muted">Quản lý tài khoản</a>
+                    <a href="/orders/history" class="text-decoration-none text-muted">Lịch sử đơn hàng</a>
+                    <a href="/help" class="text-decoration-none text-muted">Trợ giúp</a>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <h6 class="fw-bold mb-3">Liên Hệ</h6>
+                <div class="text-muted mb-3">
+                    <p class="mb-2">
+                        <i class="fas fa-map-marker-alt me-2 minimal-text-primary"></i>
+                        123 Đường Ẩm Thực, P.Bến Nghé, Q.1, TP.HCM
+                    </p>
+                    <p class="mb-2">
+                        <i class="fas fa-phone me-2 minimal-text-primary"></i>
+                        Hotline: 1900 1234
+                    </p>
+                    <p class="mb-2">
+                        <i class="fas fa-envelope me-2 minimal-text-primary"></i>
+                        Email: info@fastfoodshop.vn
+                    </p>
+                    <p class="mb-0">
+                        <i class="fas fa-clock me-2 minimal-text-primary"></i>
+                        Mở cửa: 7:00 - 23:00
+                    </p>
+                </div>
+                <div class="input-group mb-3">
+                    <input type="email" class="form-control" placeholder="Email của bạn">
+                    <button class="btn btn-primary" type="button">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <hr class="my-4">
+
+        <div class="row align-items-center">
+            <div class="col-md-6 text-center text-md-start">
+                <span class="text-muted">
+                    <i class="fas fa-copyright me-2"></i>
+                    2024 FastFood Shop. All rights reserved.
                 </span>
             </div>
-            <div class="col-md-6 my-auto text-center text-md-end text-white">
-                Designed By <a class="border-bottom" href="https://htmlcodex.com" target="_blank" rel="noopener">HTML
-                    Codex</a>
-                Distributed By <a class="border-bottom" href="https://themewagon.com" target="_blank"
-                    rel="noopener">ThemeWagon</a>
+            <div class="col-md-6 text-center text-md-end">
+                <span class="text-muted me-3">Thanh toán:</span>
+                <i class="fab fa-cc-visa me-2"></i>
+                <i class="fab fa-cc-mastercard me-2"></i>
+                <i class="fab fa-cc-paypal me-2"></i>
+                <i class="fab fa-cc-jcb"></i>
             </div>
         </div>
     </div>

@@ -40,21 +40,21 @@
         <div id="layoutSidenav_content">
             <main>
                 <div class="container-fluid px-4">
-                    <h1 class="mt-4">Products</h1>
+                    <h1 class="mt-4">Sản phẩm</h1>
                     <ol class="breadcrumb mb-4">
                         <li class="breadcrumb-item">
-                            <a asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+                            <a asp-controller="Dashboard" asp-action="Index">Bảng điều khiển</a>
                         </li>
                         <li class="breadcrumb-item">
-                            <a asp-controller="Product" asp-action="Index">Product</a>
+                            <a asp-controller="Product" asp-action="Index">Sản phẩm</a>
                         </li>
-                        <li class="breadcrumb-item active">Create</li>
+                        <li class="breadcrumb-item active">Tạo</li>
                     </ol>
 
                     <div class="mt-5">
                         <div class="row">
                             <div class="col-md-6 col-12 mx-auto">
-                                <h3>Create a product</h3>
+                                <h3>Tạo sản phẩm</h3>
                                 <hr />
 
                                 <!-- Summary lỗi -->
@@ -91,7 +91,7 @@
                                     
 
                                     <div class="mb-3 col-12 col-md-6">
-                                        <label class="form-label">Category</label>
+                                        <label class="form-label">Danh mục</label>
                                         <select class="form-select" name="CategoryId">
                                             <option value="">-- chọn category --</option>
                                             @foreach (var c in (IEnumerable<FastFoodShop.Domain.Entities.Category>)ViewBag.Categories ?? Enumerable.Empty<FastFoodShop.Domain.Entities.Category>())
@@ -101,13 +101,16 @@
                                         </select>
                                     </div>
 
-                                    <div class="mb-3 col-12 col-md-6">
-                                        <label class="form-label">Kích hoạt</label>
-                                        <input type="checkbox" class="form-check-input" name="IsActive" checked="checked" />
+                                    <div class="mb-3 col-auto">
+                                        <label asp-for="IsActive" class="form-label">Trạng thái</label>
+                                        <select asp-for="IsActive" class="form-select w-auto" style="min-width: 120px;">
+                                            <option value="true">True</option>
+                                            <option value="false">False</option>
+                                        </select>
                                     </div>
 
                                     <div class="mb-3 col-12 col-md-6">
-                                        <label for="avatarFile" class="form-label">Image:</label>
+                                        <label for="avatarFile" class="form-label">Ảnh</label>
                                         <input asp-for="Image" class="form-control @(invalid(nameof(Model.Image)))"
                                             type="file" id="avatarFile" accept=".png, .jpg, .jpeg" />
                                         <span asp-validation-for="Image" class="invalid-feedback"></span>
@@ -119,7 +122,7 @@
                                     </div>
 
                                     <div class="col-12 mb-5">
-                                        <button type="submit" class="btn btn-primary">Create</button>
+                                        <button type="submit" class="btn btn-primary">Tạo</button>
                                     </div>
                                 </form>
 

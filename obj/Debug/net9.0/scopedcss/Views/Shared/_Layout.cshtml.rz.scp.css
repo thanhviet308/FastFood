@@ -17,7 +17,8 @@ a[b-cbp4zz0vxs] {
   border-color: #1861ac;
 }
 
-.nav-pills .nav-link.active[b-cbp4zz0vxs], .nav-pills .show > .nav-link[b-cbp4zz0vxs] {
+.nav-pills .nav-link.active[b-cbp4zz0vxs],
+.nav-pills .show>.nav-link[b-cbp4zz0vxs] {
   color: #fff;
   background-color: #1b6ec2;
   border-color: #1861ac;
@@ -26,6 +27,7 @@ a[b-cbp4zz0vxs] {
 .border-top[b-cbp4zz0vxs] {
   border-top: 1px solid #e5e5e5;
 }
+
 .border-bottom[b-cbp4zz0vxs] {
   border-bottom: 1px solid #e5e5e5;
 }
@@ -40,9 +42,10 @@ button.accept-policy[b-cbp4zz0vxs] {
 }
 
 .footer[b-cbp4zz0vxs] {
-  position: absolute;
-  bottom: 0;
+  /* make footer flow naturally so it doesn't overlap content on varying page heights */
+  position: relative;
   width: 100%;
-  white-space: nowrap;
-  line-height: 60px;
+  white-space: normal;
+  line-height: 1.4;
+  padding-top: 30px;
 }
