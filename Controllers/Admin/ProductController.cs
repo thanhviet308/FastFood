@@ -2,6 +2,7 @@ using FastFoodShop.Domain.Interfaces;
 using FastFoodShop.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+ 
 
 namespace FastFoodShop.Controllers
 {
@@ -55,11 +56,11 @@ namespace FastFoodShop.Controllers
             }
 
             await _products.CreateAsync(newProduct);
-            return RedirectToAction(nameof(Index));
+            return Redirect("/admin/products");
         }
 
         // GET /admin/products/update/{id}
-        [HttpGet("update")]
+        [HttpGet("update/{id:long}")]
         public async Task<IActionResult> Update(long id)
         {
             var pr = await _products.GetByIdAsync(id);
@@ -70,16 +71,56 @@ namespace FastFoodShop.Controllers
         }
 
         // POST /admin/products/update
+        // Accept both /admin/products/update and /admin/products/update/{id} because the form
+        // may sometimes post back to the current URL which contains the id segment (e.g. /update/2).
         [HttpPost("update")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Update([FromForm] Product form,
-                                               IFormFile nhatraicayFile)
+                                                   IFormFile nhatraicayFile)
         {
-            if (!ModelState.IsValid)
-                return View("~/Views/Admin/Product/Update.cshtml", form);
-
             var current = await _products.GetByIdAsync(form.Id);
             if (current is null) return RedirectToAction(nameof(Index), new { error = "not_found" });
+
+            // Remove validation for nhatraicayFile since it's optional
+            ModelState.Remove("nhatraicayFile");
+
+            // Debug: Log dữ liệu form
+            Console.WriteLine($"=== UPDATE PRODUCT DEBUG ===");
+            Console.WriteLine($"Update Product ID: {form.Id}");
+            Console.WriteLine($"Form Name: {form.Name}");
+            Console.WriteLine($"Form ShortDesc: {form.ShortDesc}");
+            Console.WriteLine($"Form DetailDesc: {form.DetailDesc}");
+            Console.WriteLine($"Form CategoryId: {form.CategoryId}");
+            Console.WriteLine($"Form IsActive: {form.IsActive}");
+            Console.WriteLine($"Form IsFeatured: {form.IsFeatured}");
+            Console.WriteLine($"Form Image (from hidden field): {form.Image}");
+            Console.WriteLine($"Current Image (from DB): {current.Image}");
+            Console.WriteLine($"Has Image File: {nhatraicayFile != null && nhatraicayFile.Length > 0}");
+            Console.WriteLine($"ModelState.IsValid: {ModelState.IsValid}");
+            
+            // Log all model state errors
+            if (!ModelState.IsValid)
+            {
+                foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    Console.WriteLine($"ModelState Error: {error.ErrorMessage}");
+                }
+            }
+
+            if (!ModelState.IsValid)
+            {
+                // Giữ ảnh hiện tại, đổ dữ liệu vừa nhập để hiển thị lại
+                current.Name = form.Name;
+                current.ShortDesc = form.ShortDesc;
+                current.DetailDesc = form.DetailDesc;
+                current.CategoryId = form.CategoryId;
+                current.IsActive = form.IsActive;
+                current.IsFeatured = form.IsFeatured;
+
+                ViewBag.Categories = await _products.GetAllCategoriesAsync();
+                ViewBag.Variants = await _products.GetVariantsAsync(form.Id);
+                return View("~/Views/Admin/Product/Update.cshtml", current);
+            }
 
             // cập nhật field
             current.Name = form.Name;
@@ -87,18 +128,45 @@ namespace FastFoodShop.Controllers
             current.DetailDesc = form.DetailDesc;
             current.CategoryId = form.CategoryId;
             current.IsActive = form.IsActive;
+            current.IsFeatured = form.IsFeatured;
+            current.UpdatedAt = DateTime.UtcNow;
 
-            if (nhatraicayFile is { Length: > 0 })
+            // Handle image upload logic
+            if (nhatraicayFile != null && nhatraicayFile.Length > 0)
             {
+                // User selected new image - upload and save
                 var fileName = await _upload.SaveFileAsync(nhatraicayFile, "product");
                 current.Image = fileName;
+                Console.WriteLine($"New image uploaded: {fileName}");
+            }
+            else
+            {
+                // No new image selected - preserve existing image
+                // Use the hidden field value from the form, fallback to current database value
+                current.Image = form.Image ?? current.Image;
+                Console.WriteLine($"Preserving existing image: {current.Image}");
             }
 
-            // cần IProductService.UpdateAsync để lưu thay đổi
-            await _products.UpdateAsync(current);
-
-            return RedirectToAction(nameof(Index));
+            Console.WriteLine($"Before UpdateAsync - Current Image: {current.Image}");
+            var affected = await _products.UpdateAsync(current);
+            Console.WriteLine($"After UpdateAsync - Affected rows: {affected}");
+            Console.WriteLine($"After UpdateAsync - Current Image: {current.Image}");
+            
+            if (affected > 0)
+            {
+                Console.WriteLine($"Update successful, redirecting to product list");
+                TempData["ProductSuccess"] = "Đã cập nhật sản phẩm";
+                return Redirect("/admin/products");
+            }
+            
+            Console.WriteLine($"Update failed - no rows affected");
+            ModelState.AddModelError(string.Empty, "Không có thay đổi nào được lưu");
+            ViewBag.Categories = await _products.GetAllCategoriesAsync();
+            ViewBag.Variants = await _products.GetVariantsAsync(form.Id);
+            return View("~/Views/Admin/Product/Update.cshtml", current);
         }
+
+
 
         [HttpPost("variant/add")]
         [ValidateAntiForgeryToken]

@@ -16,6 +16,7 @@ namespace FastFoodShop.Domain.Interfaces
 
         Task<(IReadOnlyList<Product> Items, int Total)> FetchAsync(int page, int size);
         Task<(IReadOnlyList<Product> Items, int Total)> FetchBaseAsync(int page, int size);
+        Task<(IReadOnlyList<Product> Items, int Total)> FetchFeaturedAsync(int page, int size);
 
         Task<(IReadOnlyList<Product> Items, int Total)> FetchWithSpecAsync(
             int page, int size, ProductCriteriaDto criteria);
@@ -24,7 +25,7 @@ namespace FastFoodShop.Domain.Interfaces
 
         Task DeleteAsync(long id);
 
-        Task HandleAddProductToCartAsync(string email, long productId, ISession session, int quantity, long? variantId = null);
+        Task<int> HandleAddProductToCartAsync(string email, long productId, ISession session, int quantity, long? variantId = null);
         Task<int> GetDistinctCountByEmailAsync(string email);
 
         Task<Cart?> GetCartByUserAsync(User user);
@@ -37,7 +38,7 @@ namespace FastFoodShop.Domain.Interfaces
             User user, ISession session,
             string receiverName, string receiverAddress, string receiverPhone);
 
-        Task UpdateAsync(Product product);
+        Task<int> UpdateAsync(Product product);
 
         Task<IReadOnlyList<Category>> GetAllCategoriesAsync();
         Task<Category?> GetCategoryByIdAsync(long id);

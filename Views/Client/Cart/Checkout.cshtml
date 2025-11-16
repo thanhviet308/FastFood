@@ -1,42 +1,51 @@
 @model IEnumerable<FastFoodShop.Domain.Entities.CartDetail>
 @{
-    ViewData["Title"] = "Thanh toán - Cửa Hàng Đồ Ăn Nhanh";
-    Layout = null; // nếu bạn có _Layout.cshtml thì thay bằng tên layout
+    ViewData["Title"] = "Thanh toán - FastFood Shop";
+    Layout = null;
     var totalPrice = (decimal)(ViewBag.TotalPrice ?? 0M);
+}
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@{
+    var af = Xsrf.GetAndStoreTokens(Context);
+}
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+@{
+    var isAuth = User?.Identity?.IsAuthenticated == true;
+    var sumCart = HttpContextAccessor.HttpContext?.Session.GetInt32("sum") ?? 0;
 }
 
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
     <meta charset="utf-8" />
     <title>@ViewData["Title"]</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <meta content="" name="keywords" />
-    <meta content="" name="description" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap"
-        rel="stylesheet" />
-
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap" rel="stylesheet" />
+    
     <!-- Icon Font Stylesheet -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet" />
-
+    
     <!-- Libraries Stylesheet -->
     <link href="~/client/lib/lightbox/css/lightbox.min.css" rel="stylesheet" />
     <link href="~/client/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
-
+    
     <!-- Customized Bootstrap Stylesheet -->
     <link href="~/client/css/bootstrap.min.css" rel="stylesheet" />
-
-    <!-- Template Stylesheet -->
     <link href="~/client/css/style.css" rel="stylesheet" />
+    <!-- FastFood Theme Stylesheet -->
+    <link href="~/client/css/fastfood-theme.css" rel="stylesheet" />
+    
+    <!-- jQuery Toast -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.css" rel="stylesheet" />
+    
+    <meta name="X-CSRF-TOKEN" content="@af.RequestToken" />
 </head>
-
 <body>
     <!-- Spinner Start -->
     <div id="spinner"
@@ -45,155 +54,220 @@
     </div>
     <!-- Spinner End -->
 
-    @* Header *@
     @await Html.PartialAsync("~/Views/Client/Layout/_Header.cshtml")
 
-    <!-- Cart Page Start -->
-    <div class="container-fluid py-5">
+    <!-- FastFood Checkout Header Start -->
+    <div class="container-fluid py-5" style="background: linear-gradient(135deg, var(--ff-primary) 0%, var(--ff-secondary) 100%);">
+        <div class="container py-5 text-center text-white">
+            <h1 class="display-4 fw-bold mb-3">
+                <i class="fas fa-credit-card me-3"></i>Thanh toán
+            </h1>
+            <p class="lead mb-0">Hoàn tất đơn hàng của bạn một cách nhanh chóng và an toàn</p>
+            <nav aria-label="breadcrumb" class="d-flex justify-content-center mt-3">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="/" class="text-white text-decoration-none">Trang chủ</a></li>
+                    <li class="breadcrumb-item"><a href="/cart" class="text-white text-decoration-none">Giỏ hàng</a></li>
+                    <li class="breadcrumb-item active text-white-50" aria-current="page">Thanh toán</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <!-- FastFood Checkout Header End -->
+
+    <!-- FastFood Checkout Content Start -->
+    <div class="container-fluid py-5" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
         <div class="container py-5">
-            <div class="mb-3">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Thông tin thanh toán</li>
-                    </ol>
-                </nav>
-            </div>
-
-            <div class="table-responsive">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th scope="col">Sản phẩm</th>
-                            <th scope="col">Tên</th>
-                            <th scope="col">Giá cả</th>
-                            <th scope="col">Số lượng</th>
-                            <th scope="col">Thành tiền</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (Model == null || !Model.Any())
-                        {
-                            <tr>
-                                <td colspan="6">Không có sản phẩm trong giỏ hàng</td>
-                            </tr>
-                        }
-                        else
-                        {
-                            foreach (var cartDetail in Model)
-                            {
-                                <tr>
-                                    <th scope="row">
-                                        <div class="d-flex align-items-center">
-                                            <img src="~/images/product/@cartDetail.Product.Image"
-                                                class="img-fluid me-5 rounded-circle"
-                                                style="width:80px;height:80px;object-fit:cover" alt="">
-                                        </div>
-                                    </th>
-                                    <td>
-                                        <p class="mb-0 mt-4">
-                                            <a asp-controller="Item" asp-action="GetProductPage"
-                                                asp-route-id="@cartDetail.Product.Id" target="_blank">
-                                                @cartDetail.Product.Name
-                                            </a>
-                                        </p>
-                                    </td>
-                                    <td>
-                                        <p class="mb-0 mt-4">
-                                            @string.Format("{0:N0} đ", cartDetail.Price)
-                                        </p>
-                                    </td>
-                                    <td>
-                                        <div class="input-group quantity mt-4" style="width:100px;">
-                                            <input type="text" class="form-control form-control-sm text-center border-0"
-                                                value="@cartDetail.Quantity" readonly />
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <p class="mb-0 mt-4" data-cart-detail-id="@cartDetail.Id">
-                                            @string.Format("{0:N0} đ", cartDetail.Price * cartDetail.Quantity)
-                                        </p>
-                                    </td>
-                                </tr>
-                            }
-                        }
-                    </tbody>
-                </table>
-            </div>
-
-            @if (Model != null && Model.Any())
-            {
-                <form method="post" asp-action="HandlePlaceOrder" asp-controller="Item">
-                    @Html.AntiForgeryToken()
-
-                    <div class="mt-5 row g-4 justify-content-start">
-                        <div class="col-12 col-md-6">
-                            <div class="p-4">
-                                <h5>Thông Tin Người Nhận</h5>
+            <form id="checkoutForm" method="post" action="/place-order">
+                @Html.AntiForgeryToken()
+                
+                <div class="row">
+                    <!-- Customer Information -->
+                    <div class="col-lg-8">
+                        <div class="ff-checkout-section mb-4">
+                            <div class="ff-checkout-header">
+                                <h4 class="mb-0">
+                                    <i class="fas fa-user me-2"></i>Thông tin người nhận
+                                </h4>
+                            </div>
+                            <div class="ff-checkout-body">
                                 <div class="row">
-                                    <div class="col-12 form-group mb-3">
-                                        <label for="receiverName">Tên người nhận</label>
-                                        <input class="form-control" id="receiverName" name="receiverName" required />
+                                    <div class="col-md-6 mb-3">
+                                        <label for="receiverName" class="ff-form-label">Họ và tên <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control ff-form-input" id="receiverName" name="receiverName" 
+                                               placeholder="Nhập họ và tên" required maxlength="100" 
+                                               pattern="^[\\p{L}\\s]+$" title="Vui lòng nhập họ tên hợp lệ (chỉ chứa chữ cái và khoảng trắng)" />
+                                        <div class="invalid-feedback">Vui lòng nhập họ tên hợp lệ</div>
                                     </div>
-                                    <div class="col-12 form-group mb-3">
-                                        <label for="receiverAddress">Địa chỉ người nhận</label>
-                                        <input class="form-control" id="receiverAddress" name="receiverAddress" required />
+                                    <div class="col-md-6 mb-3">
+                                        <label for="receiverPhone" class="ff-form-label">Số điện thoại <span class="text-danger">*</span></label>
+                                        <input type="tel" class="form-control ff-form-input" id="receiverPhone" name="receiverPhone" 
+                                               placeholder="Nhập số điện thoại" required maxlength="11" 
+                                               pattern="^[0-9]{10,11}$" title="Vui lòng nhập số điện thoại hợp lệ (10-11 số)" />
+                                        <div class="invalid-feedback">Vui lòng nhập số điện thoại hợp lệ</div>
                                     </div>
-                                    <div class="col-12 form-group mb-3">
-                                        <label for="receiverPhone">Số điện thoại</label>
-                                        <input class="form-control" id="receiverPhone" name="receiverPhone" required />
+                                </div>
+                                <div class="mb-3">
+                                    <label for="receiverAddress" class="ff-form-label">Địa chỉ nhận hàng <span class="text-danger">*</span></label>
+                                    <textarea class="form-control ff-form-input" id="receiverAddress" name="receiverAddress" 
+                                              placeholder="Nhập địa chỉ chi tiết" required maxlength="500" rows="3"></textarea>
+                                    <div class="invalid-feedback">Vui lòng nhập địa chỉ nhận hàng</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Payment Method -->
+                        <div class="ff-checkout-section mb-4">
+                            <div class="ff-checkout-header">
+                                <h4 class="mb-0">
+                                    <i class="fas fa-credit-card me-2"></i>Phương thức thanh toán
+                                </h4>
+                            </div>
+                            <div class="ff-checkout-body">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <div class="ff-payment-option">
+                                            <input type="radio" id="cod" name="paymentMethod" value="COD" class="ff-payment-radio" checked>
+                                            <label for="cod" class="ff-payment-label">
+                                                <div class="ff-payment-icon">
+                                                    <i class="fas fa-money-bill-wave"></i>
+                                                </div>
+                                                <div class="ff-payment-content">
+                                                    <h6>Thanh toán khi nhận hàng</h6>
+                                                    <p>COD - Cash on Delivery</p>
+                                                </div>
+                                            </label>
+                                        </div>
                                     </div>
-                                    <div class="mt-4">
-                                        <i class="fas fa-arrow-left"></i>
-                                        <a asp-controller="Item" asp-action="GetCartPage">Quay lại giỏ hàng</a>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="ff-payment-option">
+                                            <input type="radio" id="vnpay" name="paymentMethod" value="VNPAY" class="ff-payment-radio">
+                                            <label for="vnpay" class="ff-payment-label">
+                                                <div class="ff-payment-icon">
+                                                    <i class="fas fa-university"></i>
+                                                </div>
+                                                <div class="ff-payment-content">
+                                                    <h6>Thanh toán VNPAY</h6>
+                                                    <p>Chuyển khoản ngân hàng</p>
+                                                </div>
+                                            </label>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="col-12 col-md-6">
-                            <div class="bg-light rounded">
-                                <div class="p-4">
-                                    <h1 class="display-6 mb-4">Thông Tin <span class="fw-normal">Thanh Toán</span></h1>
-
-                                    <div class="d-flex justify-content-between">
-                                        <h5 class="mb-0 me-4">Phí vận chuyển</h5>
-                                        <div>
-                                            <p class="mb-0">0 đ</p>
-                                        </div>
-                                    </div>
-                                    <div class="mt-3 d-flex justify-content-between">
-                                        <h5 class="mb-0 me-4">Hình thức</h5>
-                                        <div>
-                                            <p class="mb-0">Thanh toán khi nhận hàng (COD)</p>
-                                        </div>
-                                    </div>
+                        <!-- Order Notes -->
+                        <div class="ff-checkout-section mb-4">
+                            <div class="ff-checkout-header">
+                                <h4 class="mb-0">
+                                    <i class="fas fa-sticky-note me-2"></i>Ghi chú đơn hàng
+                                </h4>
+                            </div>
+                            <div class="ff-checkout-body">
+                                <div class="mb-3">
+                                    <label for="orderNotes" class="ff-form-label">Ghi chú (tùy chọn)</label>
+                                    <textarea class="form-control ff-form-input" id="orderNotes" name="orderNotes" 
+                                              placeholder="Ghi chú cho người bán..." maxlength="500" rows="3"></textarea>
                                 </div>
-
-                                <div class="py-4 mb-4 border-top border-bottom d-flex justify-content-between">
-                                    <h5 class="mb-0 ps-4 me-4">Tổng số tiền</h5>
-                                    <p class="mb-0 pe-4" data-cart-total-price="@totalPrice">
-                                        @string.Format("{0:N0} đ", totalPrice)
-                                    </p>
-                                </div>
-
-                                <button type="submit"
-                                    class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4">
-                                    Xác nhận thanh toán
-                                </button>
                             </div>
                         </div>
                     </div>
-                </form>
-            }
+
+                    <!-- Order Summary -->
+                    <div class="col-lg-4">
+                        <div class="ff-checkout-summary">
+                            <div class="ff-summary-header">
+                                <h4 class="mb-0">
+                                    <i class="fas fa-receipt me-2"></i>Đơn hàng của bạn
+                                </h4>
+                            </div>
+                            
+                            <div class="ff-summary-body">
+                                @foreach (var item in Model)
+                                {
+                                    <div class="ff-checkout-item">
+                                        <div class="ff-checkout-item-info">
+                                            <h6 class="ff-checkout-item-title">@item.Product?.Name</h6>
+                                            @if (item.Variant != null)
+                                            {
+                                                <p class="ff-checkout-item-variant">
+                                                    <i class="fas fa-tag me-1"></i>@item.Variant.VariantName
+                                                </p>
+                                            }
+                                            <p class="ff-checkout-item-quantity">Số lượng: @item.Quantity</p>
+                                        </div>
+                                        <div class="ff-checkout-item-price">
+                                            @((item.Price * item.Quantity).ToString("N0"))đ
+                                        </div>
+                                    </div>
+                                }
+                                
+                                <div class="ff-summary-divider"></div>
+                                
+                                <div class="ff-summary-item">
+                                    <span>Tạm tính:</span>
+                                    <span>@totalPrice.ToString("N0")đ</span>
+                                </div>
+                                <div class="ff-summary-item">
+                                    <span>Phí vận chuyển:</span>
+                                    <span class="text-success">Miễn phí</span>
+                                </div>
+                                <div class="ff-summary-item">
+                                    <span>Giảm giá:</span>
+                                    <span id="discountAmount">0đ</span>
+                                </div>
+                                
+                                <div class="ff-summary-divider"></div>
+                                
+                                <div class="ff-summary-total">
+                                    <span>Tổng cộng:</span>
+                                    <span class="ff-total-price" id="finalTotal">@totalPrice.ToString("N0")đ</span>
+                                </div>
+                            </div>
+                            
+                            <div class="ff-summary-footer">
+                                <button type="submit" class="ff-btn-primary w-100 mb-3" id="placeOrderBtn">
+                                    <i class="fas fa-check me-2"></i>ĐẶT HÀNG NGAY
+                                </button>
+                                <p class="ff-checkout-note text-center mb-0">
+                                    <i class="fas fa-shield-alt me-1"></i>Thông tin của bạn được bảo mật
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <!-- Security Badges -->
+                        <div class="ff-security-badges mt-4">
+                            <div class="text-center mb-3">
+                                <small class="text-muted">Thanh toán an toàn với</small>
+                            </div>
+                            <div class="d-flex justify-content-center gap-3">
+                                <div class="ff-security-badge">
+                                    <i class="fas fa-lock"></i>
+                                    <span>Bảo mật SSL</span>
+                                </div>
+                                <div class="ff-security-badge">
+                                    <i class="fas fa-shield-alt"></i>
+                                    <span>Bảo vệ dữ liệu</span>
+                                </div>
+                                <div class="ff-security-badge">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Xác thực</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
-    <!-- Cart Page End -->
+    <!-- FastFood Checkout Content End -->
 
-    @* Footer *@
     @await Html.PartialAsync("~/Views/Client/Layout/_Footer.cshtml")
 
-    
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top" style="display:none">
+        <i class="fa fa-arrow-up"></i>
+    </a>
 
     <!-- JavaScript Libraries -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
@@ -205,6 +279,132 @@
 
     <!-- Template Javascript -->
     <script src="~/client/js/main.js"></script>
-</body>
+    
+    <!-- jQuery Toast -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.js"></script>
 
+    <script>
+        // Spinner
+        var spinner = function () {
+            setTimeout(function () {
+                if ($('#spinner').length > 0) {
+                    $('#spinner').removeClass('show');
+                }
+            }, 1);
+        };
+        spinner();
+        
+        // Back to top button
+        $(window).scroll(function () {
+            if ($(this).scrollTop() > 300) {
+                $('.back-to-top').fadeIn('slow');
+            } else {
+                $('.back-to-top').fadeOut('slow');
+            }
+        });
+        $('.back-to-top').click(function () {
+            $('html, body').animate({scrollTop: 0}, 1500, 'easeInOutExpo');
+            return false;
+        });
+
+        // Form validation
+        $('#checkoutForm').submit(function(e) {
+            e.preventDefault();
+            
+            if (validateForm()) {
+                // Show loading
+                const $btn = $('#placeOrderBtn');
+                const originalText = $btn.html();
+                $btn.html('<i class="fas fa-spinner fa-spin me-2"></i>ĐANG XỬ LÝ...').prop('disabled', true);
+                
+                // Submit form
+                this.submit();
+            }
+        });
+
+        function validateForm() {
+            let isValid = true;
+            
+            // Validate required fields
+            const requiredFields = ['receiverName', 'receiverPhone', 'receiverAddress'];
+            
+            requiredFields.forEach(field => {
+                const $field = $(`[name="${field}"]`);
+                const value = $field.val().trim();
+                
+                if (!value) {
+                    $field.addClass('is-invalid');
+                    isValid = false;
+                } else {
+                    $field.removeClass('is-invalid');
+                }
+            });
+            
+            // Validate phone format
+            const phone = $('[name="receiverPhone"]').val().trim();
+            const phoneRegex = /^[0-9]{10,11}$/;
+            if (phone && !phoneRegex.test(phone)) {
+                $('[name="receiverPhone"]').addClass('is-invalid');
+                isValid = false;
+            }
+            
+            // Validate name format
+            const name = $('[name="receiverName"]').val().trim();
+            const nameRegex = /^[\p{L}\s]+$/u;
+            if (name && !nameRegex.test(name)) {
+                $('[name="receiverName"]').addClass('is-invalid');
+                isValid = false;
+            }
+            
+            if (!isValid) {
+                $.toast({
+                    heading: 'Lỗi',
+                    text: 'Vui lòng kiểm tra lại thông tin',
+                    showHideTransition: 'slide',
+                    icon: 'error',
+                    position: 'top-right'
+                });
+            }
+            
+            return isValid;
+        }
+
+        // Payment method selection
+        $('.ff-payment-radio').change(function() {
+            $('.ff-payment-label').removeClass('active');
+            $(this).closest('.ff-payment-option').find('.ff-payment-label').addClass('active');
+        });
+
+        // Real-time validation
+        $('input[required], textarea[required]').on('blur', function() {
+            const $this = $(this);
+            const value = $this.val().trim();
+            
+            if (value) {
+                $this.removeClass('is-invalid');
+                
+                // Phone validation
+                if ($this.attr('name') === 'receiverPhone') {
+                    const phoneRegex = /^[0-9]{10,11}$/;
+                    if (!phoneRegex.test(value)) {
+                        $this.addClass('is-invalid');
+                    }
+                }
+                
+                // Name validation
+                if ($this.attr('name') === 'receiverName') {
+                    const nameRegex = /^[\p{L}\s]+$/u;
+                    if (!nameRegex.test(value)) {
+                        $this.addClass('is-invalid');
+                    }
+                }
+            }
+        });
+
+        // Remove validation error on input
+        $('input, textarea').on('input', function() {
+            $(this).removeClass('is-invalid');
+        });
+    </script>
+</body>
 </html>

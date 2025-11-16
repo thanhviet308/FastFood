@@ -15,7 +15,7 @@ namespace FastFoodShop.Domain.Entities
         public long Quantity { get; set; }
 
         [Required]
-        [Range(typeof(decimal), "0.00", "9999999999999999")]
+        [Range(0.00, 9999999999999999.99)]
         [Column("unit_price", TypeName = "decimal(18,2)")]
         public decimal Price { get; set; }
 

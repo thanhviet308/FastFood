@@ -8,7 +8,7 @@
 
     if (isAuth)
     {
-        var email = User.FindFirst(ClaimTypes.Email)?.Value ?? User?.Identity?.Name;
+        var email = User.FindFirst(ClaimTypes.Email)?.Value ?? User?.Identity?.Name ?? string.Empty;
         if (!string.IsNullOrWhiteSpace(email))
         {
             cartDistinct = await ProductService.GetDistinctCountByEmailAsync(email);
@@ -45,11 +45,9 @@
     <!-- Navbar - Minimal Style -->
     <div class="container">
         <nav class="navbar navbar-expand-xl navbar-light">
-            <a href="/" class="navbar-brand">
-                <h1 class="mb-0 minimal-text-primary">
-                    <i class="fas fa-hamburger me-2"></i>
-                    FastFood Shop
-                </h1>
+            <a href="/" class="navbar-brand d-flex align-items-center">
+                <span class="ff-logo-emoji" aria-label="burger">🍔</span>
+                <span class="ff-brand-text ff-text-gradient ms-2">FastFood</span>
             </a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
@@ -90,12 +88,7 @@
                         <!-- Cart -->
                         <a href="/cart" class="btn btn-outline-primary btn-sm position-relative" title="Giỏ hàng">
                             <i class="fas fa-shopping-cart"></i>
-                            @if (cartDistinct > 0)
-                            {
-                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                    @cartDistinct
-                                </span>
-                            }
+                            <span id="sumCart" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="@(cartDistinct > 0 ? "display:inline-block" : "display:none")">@cartDistinct</span>
                         </a>
 
                         <!-- User dropdown -->

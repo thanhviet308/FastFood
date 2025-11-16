@@ -18,6 +18,7 @@ namespace FastFoodShop.Domain.Interfaces
 
         // Role
         Task<Role?> GetRoleByNameAsync(string name);
+        Task<Role?> GetRoleByIdAsync(int id);
 
         // Mapping DTO -> User (dùng DTO thật của bạn)
         User RegisterDtoToUser(RegisterDTO dto);

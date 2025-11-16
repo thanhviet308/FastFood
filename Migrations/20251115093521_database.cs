@@ -55,6 +55,7 @@ namespace FastFoodShop.Migrations
                     ShortDesc = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
                     CategoryId = table.Column<long>(type: "bigint", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    IsFeatured = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },

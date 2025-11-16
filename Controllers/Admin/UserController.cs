@@ -108,11 +108,13 @@ namespace FastFoodShop.Controllers
             current.FullName = form.FullName;
             current.Address = form.Address;
             current.Phone = form.Phone;
-            // nếu muốn cho đổi role:
-            if (!string.IsNullOrWhiteSpace(form.Role?.Name))
+            
+            // Update role based on RoleId from the form
+            if (form.RoleId != current.RoleId)
             {
-                var role = await _users.GetRoleByNameAsync(form.Role.Name);
-                if (role != null) current.Role = role;
+                current.RoleId = form.RoleId;
+                // Clear the Role navigation property to prevent EF from trying to insert the role
+                current.Role = null;
             }
 
             await _users.SaveAsync(current);

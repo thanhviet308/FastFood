@@ -1,0 +1,87 @@
+/*******************************
+ * FastFood Product Detail Styles
+ *******************************/
+
+.product-detail-card {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    border: none;
+}
+
+.product-gallery {
+    position: relative;
+    overflow: hidden;
+    height: 500px;
+}
+
+.product-gallery img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.product-gallery:hover img {
+    transform: scale(1.05);
+}
+
+.product-info {
+    padding: 40px;
+}
+
+.product-price-large {
+    font-family: var(--ff-font-display);
+    font-size: 3rem;
+    color: var(--ff-primary);
+    font-weight: 400;
+    margin-bottom: 20px;
+}
+
+.variant-option {
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.variant-option:hover {
+    border-color: var(--ff-primary);
+    background: rgba(255, 107, 53, 0.05);
+}
+
+.variant-option.active {
+    border-color: var(--ff-primary);
+    background: rgba(255, 107, 53, 0.1);
+}
+
+.quantity-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.quantity-control input {
+    width: 80px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.quantity-control button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid var(--ff-primary);
+    background: white;
+    color: var(--ff-primary);
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.quantity-control button:hover {
+    background: var(--ff-primary);
+    color: white;
+}

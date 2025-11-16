@@ -171,8 +171,8 @@
         $(`input[name="radio-sort"][value="${params.get('sort')}"]`).prop('checked', true);
     }
 
-    // Add to cart (Ajax)
-    $(document).on('click', '.btnAddToCartHomepage, .btnAddToCartDetail', function (event) {
+    // Add to cart (Ajax) - Only for detail page, homepage uses variant selection modal
+    $(document).on('click', '.btnAddToCartDetail', function (event) {
         event.preventDefault();
 
         if (typeof isLogin === 'function' && !isLogin()) {
@@ -183,9 +183,7 @@
         const $btn = $(this).prop('disabled', true);
 
         const productId = $btn.data('product-id');
-        const quantity = $btn.hasClass('btnAddToCartDetail')
-            ? Math.max(1, parseInt($("#cartDetails0\\.quantity").val() || "1", 10))
-            : 1;
+        const quantity = Math.max(1, parseInt($("#cartDetails0\\.quantity").val() || "1", 10));
 
         if (!productId) {
             showErrorToast('Không xác định được sản phẩm.');
@@ -204,7 +202,11 @@
             headers: csrf ? { 'RequestVerificationToken': csrf } : {},
             success: function (distinctCount) {
                 if (Number.isFinite(distinctCount)) {
-                    $('#sumCart').text(distinctCount);
+                    var $b = $('#sumCart');
+                    if ($b.length) {
+                        $b.text(distinctCount);
+                        $b.css('display', distinctCount > 0 ? 'inline-block' : 'none');
+                    }
                 }
                 showSuccessToast('Thêm sản phẩm vào giỏ hàng thành công');
             },
@@ -222,13 +224,21 @@
         });
     });
     $(function () {
+        function showCartBadge(n) {
+            var $b = $('#sumCart');
+            if (!$b.length) return;
+            if (Number.isFinite(n) && n > 0) {
+                $b.text(n).css('display', 'inline-block');
+            } else {
+                $b.text('0').css('display', 'none');
+            }
+        }
         $.get('/api/cart/count')
             .done(function (data) {
-                var n = Number(data);
-                $('#sumCart').text(Number.isFinite(n) ? n : '0');
+                showCartBadge(Number(data));
             })
             .fail(function () {
-                $('#sumCart').text('0');
+                showCartBadge(0);
             });
     });
 

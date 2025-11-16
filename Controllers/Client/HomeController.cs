@@ -37,8 +37,8 @@ namespace FastFoodShop.Controllers
         [HttpGet("/")]
         public async Task<IActionResult> Index()
         {
-            var (products, total) = await _productService.FetchAsync(0, 10);
-            return View("~/Views/Client/Homepage/Show.cshtml", products);
+            var (featured, total) = await _productService.FetchFeaturedAsync(1, 12);
+            return View("~/Views/Client/Homepage/Show.cshtml", featured);
         }
 
         // GET /register

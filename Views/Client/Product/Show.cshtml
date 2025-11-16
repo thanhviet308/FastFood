@@ -1,72 +1,124 @@
 @model IEnumerable<FastFoodShop.Domain.Entities.Product>
 @{
     ViewData["Title"] = "Thực Đơn - FastFood Shop";
+
     Layout = null;
+}
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@{
+    var af = Xsrf.GetAndStoreTokens(Context);
+}
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+@{
+    var isAuth = User?.Identity?.IsAuthenticated == true;
+
+    var sumCart = HttpContextAccessor.HttpContext?.Session.GetInt32("sum") ?? 0;
 }
 
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="utf-8" />
     <title>@ViewData["Title"]</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
-    <!-- Font Awesome -->
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap"
+        rel="stylesheet" />
+
+    <!-- Icon Font Stylesheet -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" />
-    
-    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet" />
+
+    <!-- Libraries Stylesheet -->
+    <link href="~/client/lib/lightbox/css/lightbox.min.css" rel="stylesheet" />
+    <link href="~/client/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
+
+    <!-- Customized Bootstrap Stylesheet -->
     <link href="~/client/css/bootstrap.min.css" rel="stylesheet" />
-    <!-- Minimal Theme -->
-    <link href="~/client/css/minimal-theme.css" rel="stylesheet" />
+    <link href="~/client/css/style.css" rel="stylesheet" />
+    <!-- FastFood Theme Stylesheet -->
+    <link href="~/client/css/fastfood-theme.css" rel="stylesheet" />
+
+    <!-- jQuery Toast -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.css"
+        rel="stylesheet" />
+
+    <meta name="X-CSRF-TOKEN" content="@af.RequestToken" />
 </head>
+
 <body>
+    <!-- Spinner Start -->
+    <div id="spinner"
+        class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-grow text-primary" role="status"></div>
+    </div>
+    <!-- Spinner End -->
+
     @await Html.PartialAsync("~/Views/Client/Layout/_Header.cshtml")
 
-    <!-- Page Header - Minimal -->
-    <section class="py-5 bg-light border-bottom">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-8">
-                    <h1 class="fw-bold mb-2">
-                        <i class="fas fa-utensils me-3 minimal-text-primary"></i>Thực Đơn
-                    </h1>
-                    <p class="text-muted mb-0">Khám phá hàng trăm món ăn ngon tại FastFood Shop</p>
-                </div>
-                <div class="col-lg-4 text-lg-end">
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb justify-content-lg-end mb-0">
-                            <li class="breadcrumb-item"><a href="/" class="text-decoration-none">Trang chủ</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Thực đơn</li>
-                        </ol>
-                    </nav>
-                </div>
-            </div>
+    <!-- FastFood Menu Header Start -->
+    <div class="container-fluid py-5"
+        style="background: linear-gradient(135deg, var(--ff-primary) 0%, var(--ff-secondary) 100%);">
+        <div class="container py-5 text-center text-white">
+            <h1 class="display-4 fw-bold mb-3">
+                <i class="fas fa-utensils me-3"></i>Thực Đơn
+            </h1>
+            <p class="lead mb-0">Khám phá hàng trăm món ăn ngon tại FastFood Shop</p>
+            <nav aria-label="breadcrumb" class="d-flex justify-content-center mt-3">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="/" class="text-white text-decoration-none">Trang chủ</a></li>
+                    <li class="breadcrumb-item active text-white-50" aria-current="page">Thực đơn</li>
+                </ol>
+            </nav>
         </div>
-    </section>
+    </div>
+    <!-- FastFood Menu Header End -->
 
-    <!-- Products Section - Minimal -->
-    <section class="py-5">
-        <div class="container">
+    <!-- FastFood Menu Content Start -->
+    <div class="container-fluid py-5" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
+        <div class="container py-5">
             <!-- Filter Section -->
             <div class="row mb-5">
                 <div class="col-lg-12">
-                    <div class="card border-0 shadow-sm">
-                        <div class="card-body p-4">
-                            <div class="row align-items-center">
-                                <div class="col-md-6">
-                                    <h5 class="mb-3 mb-md-0">
-                                        <i class="fas fa-filter me-2 minimal-text-primary"></i>
-                                        Lọc theo danh mục
-                                    </h5>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="minimal-filters justify-content-md-end">
-                                        <a href="/products" class="minimal-filter-btn active">Tất cả</a>
-                                        <a href="/products?category=burger" class="minimal-filter-btn">Burger</a>
-                                        <a href="/products?category=pizza" class="minimal-filter-btn">Pizza</a>
-                                        <a href="/products?category=chicken" class="minimal-filter-btn">Gà rán</a>
-                                        <a href="/products?category=drinks" class="minimal-filter-btn">Đồ uống</a>
-                                    </div>
+                    <div class="ff-filter-section">
+                        <div class="d-flex flex-wrap justify-content-center gap-3 mb-4">
+                            <button class="ff-btn-filter active" data-filter="all">Tất cả</button>
+                            <button class="ff-btn-filter" data-filter="featured">Nổi bật</button>
+                            <button class="ff-btn-filter" data-filter="new">Mới</button>
+                            <button class="ff-btn-filter" data-filter="sale">Khuyến mãi</button>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-lg-3">
+                                <select class="form-select ff-form-select" id="sortSelect">
+                                    <option value="">Sắp xếp theo</option>
+                                    <option value="name-asc">Tên A-Z</option>
+                                    <option value="name-desc">Tên Z-A</option>
+                                    <option value="price-asc">Giá thấp - cao</option>
+                                    <option value="price-desc">Giá cao - thấp</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 col-lg-3">
+                                <select class="form-select ff-form-select" id="categorySelect">
+                                    <option value="">Danh mục</option>
+                                    <option value="burger">Burger</option>
+                                    <option value="pizza">Pizza</option>
+                                    <option value="drink">Đồ uống</option>
+                                    <option value="snack">Đồ ăn vặt</option>
+                                </select>
+                            </div>
+                            <div class="col-md-12 col-lg-6">
+                                <div class="input-group">
+                                    <input type="text" class="form-control ff-form-input"
+                                        placeholder="Tìm kiếm món ăn..." id="searchInput">
+                                    <button class="ff-btn-primary" type="button" id="searchBtn">
+                                        <i class="fas fa-search"></i>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -75,54 +127,54 @@
             </div>
 
             <!-- Products Grid -->
-            <div class="row g-4">
-                @foreach (var p in Model ?? Enumerable.Empty<FastFoodShop.Domain.Entities.Product>())
+            <div class="row g-4" id="productsContainer">
+                @foreach (var product in Model)
+
                 {
-                    // Get variants for this product from ViewBag
-                    var allVariants = ViewBag.Variants as List<FastFoodShop.Domain.Entities.ProductVariant> ?? new List<FastFoodShop.Domain.Entities.ProductVariant>();
-                    var variants = allVariants.Where(v => v.ProductId == p.Id).ToList();
-                    
-                    <div class="col-lg-3 col-md-4 col-sm-6">
-                        <div class="minimal-product-card">
-                            <div class="minimal-product-image">
-                                @if (!string.IsNullOrEmpty(p.Image))
+                    <div class="col-md-6 col-lg-4 col-xl-3 product-item" data-category="@product.Category?.Name?.ToLower()"
+                        data-featured="@product.IsFeatured.ToString().ToLower()">
+                        <div class="ff-product-card h-100">
+                            <div class="ff-product-image">
+                                @if (!string.IsNullOrEmpty(product.Image))
+
                                 {
-                                    <img src="~/images/product/@p.Image" alt="@p.Name" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
-                                    <div style="display: none;">🍔</div>
+                                    <img src="~/images/product/@product.Image" alt="@product.Name" class="img-fluid"
+                                        onerror="this.src='https://placehold.co/300x200?text=%F0%9F%8D%94&background=f8f9fa&text=888888'" />
                                 }
+
                                 else
+
                                 {
-                                    <div>🍔</div>
+                                    <img src="https://placehold.co/300x200?text=%F0%9F%8D%94&background=f8f9fa&text=888888"
+                                        alt="@product.Name" class="img-fluid" />
                                 }
-                            </div>
-                            <div class="minimal-product-body">
-                                <h5 class="minimal-product-title">@p.Name</h5>
-                                <p class="minimal-product-desc">@p.ShortDesc</p>
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <div class="minimal-product-price">
-                                        @if (variants.Any())
-                                        {
-                                            <span>@variants.First().Price.ToString("N0")₫</span>
-                                        }
-                                        else
-                                        {
-                                            <span>Liên hệ</span>
-                                        }
-                                    </div>
-                                    <div class="text-warning">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <small class="text-muted ms-1">(4.8)</small>
-                                    </div>
+                                @if (product.IsFeatured)
+
+                                {
+                                    <div class="ff-product-badge">Nổi bật</div>
+                                }
+                                <div class="ff-product-overlay">
+                                    <button class="ff-btn-quick-view" data-product-id="@product.Id">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
                                 </div>
-                                <div class="minimal-product-actions">
-                                    <a href="/product/@p.Id" class="minimal-btn minimal-btn-outline">Xem</a>
-                                    <button class="btnAddToCartHomepage minimal-btn minimal-btn-primary" 
-                                            data-product-id="@p.Id">
-                                        Thêm
+                            </div>
+                            <div class="ff-product-content">
+                                <div class="ff-product-category">@product.Category?.Name</div>
+                                <h4 class="ff-product-title">
+                                    <a asp-controller="Item" asp-action="GetProductPage" asp-route-id="@product.Id"
+                                        class="text-decoration-none">
+                                        @product.Name
+                                    </a>
+                                </h4>
+                                <p class="ff-product-description">@product.ShortDesc</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="ff-product-price">
+                                        <span class="text-muted">Xem chi tiết</span>
+                                    </div>
+                                    <button data-product-id="@product.Id" class="btnAddToCartHomepage ff-btn-primary btn-sm"
+                                        aria-label="Thêm vào giỏ hàng">
+                                        <i class="fas fa-cart-plus"></i>
                                     </button>
                                 </div>
                             </div>
@@ -131,48 +183,294 @@
                 }
             </div>
 
-            <!-- Empty State -->
-            @if (Model == null || !Model.Any())
+            <!-- Pagination -->
+            @if (ViewBag.TotalPages > 1)
             {
                 <div class="col-12">
-                    <div class="minimal-empty">
-                        <div class="minimal-empty-icon">🍽️</div>
-                        <h3>Chưa có sản phẩm nào</h3>
-                        <p>Hiện tại chưa có món ăn nào trong danh mục này.</p>
-                        <a href="/" class="minimal-btn minimal-btn-primary">
-                            <i class="fas fa-home me-2"></i>Về trang chủ
-                        </a>
+                    <div class="ff-pagination-wrapper mt-5">
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination justify-content-center">
+                                @if (ViewBag.CurrentPage > 1)
+
+                                {
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page=@(ViewBag.CurrentPage - 1)@ViewBag.QueryString"
+                                            aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+                                }
+
+                                @for (int i = 1; i <= ViewBag.TotalPages; i++)
+
+                                {
+                                    <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                                        <a class="page-link" href="?page=@i@ViewBag.QueryString">@i</a>
+                                    </li>
+                                }
+
+                                @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+
+                                {
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page=@(ViewBag.CurrentPage + 1)@ViewBag.QueryString"
+                                            aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </nav>
                     </div>
                 </div>
             }
         </div>
-    </section>
+    </div>
+    <!-- FastFood Menu Content End -->
 
     @await Html.PartialAsync("~/Views/Client/Layout/_Footer.cshtml")
-    
-    <!-- Scripts -->
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top" style="display:none">
+        <i class="fa fa-arrow-up"></i>
+    </a>
+
+    <!-- Variant Selection Modal -->
+    <div class="modal fade" id="variantModal" tabindex="-1" aria-labelledby="variantModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content ff-modal-content">
+                <div class="modal-header ff-modal-header">
+                    <h5 class="modal-title" id="variantModalLabel">Chọn loại sản phẩm</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body ff-modal-body">
+                    <div id="variantModalContent">
+                        <!-- Content will be loaded here -->
+                    </div>
+                </div>
+                <div class="modal-footer ff-modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="button" class="ff-btn-primary" id="confirmAddToCart">Thêm vào giỏ hàng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Libraries -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    
+    <script src="~/client/lib/easing/easing.min.js"></script>
+    <script src="~/client/lib/waypoints/waypoints.min.js"></script>
+    <script src="~/client/lib/lightbox/js/lightbox.min.js"></script>
+    <script src="~/client/lib/owlcarousel/owl.carousel.min.js"></script>
+
+    <!-- Template Javascript -->
+    <script src="~/client/js/main.js"></script>
+
+    <!-- jQuery Toast -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.js"></script>
+
     <script>
-        // Simple cart functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const cartButtons = document.querySelectorAll('.btnAddToCartHomepage');
-            cartButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const productId = this.getAttribute('data-product-id');
-                    // Add to cart logic here
-                    this.innerHTML = '<i class="fas fa-check me-1"></i>Đã thêm';
-                    this.classList.remove('minimal-btn-primary');
-                    this.classList.add('minimal-btn-outline');
-                    setTimeout(() => {
-                        this.innerHTML = 'Thêm';
-                        this.classList.remove('minimal-btn-outline');
-                        this.classList.add('minimal-btn-primary');
-                    }, 2000);
-                });
-            });
+        // Spinner
+        var spinner = function () {
+            setTimeout(function () {
+                if ($('#spinner').length > 0) {
+                    $('#spinner').removeClass('show');
+                }
+            }, 1);
+        };
+        spinner();
+
+        // Back to top button
+        $(window).scroll(function () {
+            if ($(this).scrollTop() > 300) {
+                $('.back-to-top').fadeIn('slow');
+            } else {
+                $('.back-to-top').fadeOut('slow');
+            }
         });
+        $('.back-to-top').click(function () {
+            $('html, body').animate({ scrollTop: 0 }, 1500, 'easeInOutExpo');
+            return false;
+        });
+
+        // Cart functionality
+        let isProcessingCart = false;
+        let currentProductId = null;
+        let currentVariantId = null;
+
+        function showVariantModal(productId) {
+            if (isProcessingCart) return;
+
+            isProcessingCart = true;
+            currentProductId = productId;
+
+            $.ajax({
+                url: `/api/products/${productId}/variants`,
+                method: 'GET',
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("X-CSRF-TOKEN", $('meta[name="X-CSRF-TOKEN"]').attr('content'));
+                },
+                success: function (response) {
+                    if (response.variants && response.variants.length > 0) {
+                        let content = `
+                            <div class="text-center mb-3">
+                                <h6 class="mb-3">${response.productName}</h6>
+                                <p class="text-muted">Vui lòng chọn loại sản phẩm:</p>
+                            </div>
+                            <div class="variant-options">
+                        `;
+
+                        response.variants.forEach(function (variant) {
+                            content += `
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="variantId" id="variant_${variant.id}" value="${variant.id}" data-price="${variant.price}">
+                                    <label class="form-check-label" for="variant_${variant.id}">
+                                        ${variant.variantName} - ${variant.price.toLocaleString('vi-VN')}đ
+                                    </label>
+                                </div>
+                            `;
+                        });
+
+                        content += '</div>';
+                        $('#variantModalContent').html(content);
+                        $('#variantModal').modal('show');
+                    } else {
+                        // No variants, add directly
+                        addToCart(productId, null);
+                    }
+                },
+                error: function () {
+                    $.toast({
+                        heading: 'Lỗi',
+                        text: 'Không thể tải thông tin sản phẩm',
+                        showHideTransition: 'slide',
+                        icon: 'error',
+                        position: 'top-right'
+                    });
+                },
+                complete: function () {
+                    isProcessingCart = false;
+                }
+            });
+        }
+
+        function addToCart(productId, variantId) {
+            if (isProcessingCart) return;
+
+            isProcessingCart = true;
+
+            $.ajax({
+                url: '/add-product-from-view-detail',
+                method: 'POST',
+                data: {
+                    id: productId,
+                    quantity: 1,
+                    variantId: variantId
+                },
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("X-CSRF-TOKEN", $('meta[name="X-CSRF-TOKEN"]').attr('content'));
+                },
+                success: function (response) {
+                    if (response.success) {
+                        $.toast({
+                            heading: 'Thành công',
+                            text: response.message,
+                            showHideTransition: 'slide',
+                            icon: 'success',
+                            position: 'top-right'
+                        });
+
+                        // Update cart count
+                        updateCartCount();
+                    } else {
+                        $.toast({
+                            heading: 'Lỗi',
+                            text: response.message,
+                            showHideTransition: 'slide',
+                            icon: 'error',
+                            position: 'top-right'
+                        });
+                    }
+                },
+                error: function () {
+                    $.toast({
+                        heading: 'Lỗi',
+                        text: 'Có lỗi xảy ra khi thêm vào giỏ hàng',
+                        showHideTransition: 'slide',
+                        icon: 'error',
+                        position: 'top-right'
+                    });
+                },
+                complete: function () {
+                    isProcessingCart = false;
+                }
+            });
+        }
+
+        function updateCartCount() {
+            $.ajax({
+                url: '/cart/count',
+                method: 'GET',
+                success: function (response) {
+                    $('#cart-count').text(response.count);
+                }
+            });
+        }
+
+        // Event handlers
+        $(document).on('click', '.btnAddToCartHomepage', function (e) {
+            e.preventDefault();
+            const productId = $(this).data('product-id');
+            showVariantModal(productId);
+        });
+
+        $(document).on('click', '#confirmAddToCart', function () {
+            const selectedVariant = $('input[name="variantId"]:checked');
+            const variantId = selectedVariant.length > 0 ? selectedVariant.val() : null;
+
+            if (variantId) {
+                $('#variantModal').modal('hide');
+                addToCart(currentProductId, variantId);
+            } else {
+                $.toast({
+                    heading: 'Thông báo',
+                    text: 'Vui lòng chọn loại sản phẩm',
+                    showHideTransition: 'slide',
+                    icon: 'warning',
+                    position: 'top-right'
+                });
+            }
+        });
+
+        // Filter functionality
+        $('.ff-btn-filter').click(function () {
+            $('.ff-btn-filter').removeClass('active');
+            $(this).addClass('active');
+
+            const filter = $(this).data('filter');
+            filterProducts(filter);
+        });
+
+        function filterProducts(filter) {
+            $('.product-item').each(function () {
+                const $item = $(this);
+                let show = false;
+
+                if (filter === 'all') {
+                    show = true;
+                } else if (filter === 'featured') {
+                    show = $item.data('featured') === 'true';
+                }
+
+                if (show) {
+                    $item.fadeIn();
+                } else {
+                    $item.fadeOut();
+                }
+            });
+        }
     </script>
 </body>
+
 </html>

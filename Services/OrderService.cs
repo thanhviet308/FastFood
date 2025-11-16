@@ -26,7 +26,7 @@ namespace FastFoodShop.Services
         public async Task<Order?> GetByIdAsync(long id)
         {
             return await _context.Orders
-                .Include(o => o.OrderDetails)
+                .Include(o => o.OrderDetails!)
                 .ThenInclude(od => od.Product)
                 .FirstOrDefaultAsync(o => o.Id == id);
         }
@@ -39,7 +39,7 @@ namespace FastFoodShop.Services
 
             if (order != null)
             {
-                _context.OrderDetails.RemoveRange(order.OrderDetails);
+                _context.OrderDetails.RemoveRange(order.OrderDetails!);
                 _context.Orders.Remove(order);
                 await _context.SaveChangesAsync();
             }

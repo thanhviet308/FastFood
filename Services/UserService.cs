@@ -59,9 +59,12 @@ namespace FastFoodShop.Services
 
         public async Task<User?> GetByIdAsync(long id)
         {
-            return await _db.Users
+            Console.WriteLine($"GetByIdAsync called for ID: {id}");
+            var user = await _db.Users
                 .Include(u => u.Role)   // load Role kèm user
                 .FirstOrDefaultAsync(u => u.Id == id);
+            Console.WriteLine($"GetByIdAsync result: ID={user?.Id}, Email={user?.Email}, FullName={user?.FullName}");
+            return user;
         }
 
         public async Task DeleteAsync(long id)
@@ -75,6 +78,9 @@ namespace FastFoodShop.Services
         // --- Role ---
         public Task<Role?> GetRoleByNameAsync(string name)
             => _db.Roles.AsNoTracking().FirstOrDefaultAsync(r => r.Name == name);
+        
+        public Task<Role?> GetRoleByIdAsync(int id)
+            => _db.Roles.AsNoTracking().FirstOrDefaultAsync(r => r.Id == id);
 
         // --- Mapping DTO -> User (khớp interface) ---
         public User RegisterDtoToUser(RegisterDTO dto)
@@ -92,11 +98,16 @@ namespace FastFoodShop.Services
         public Task<bool> EmailExistsAsync(string email)
             => _db.Users.AnyAsync(u => u.Email == email);
 
-        public Task<User?> GetByEmailAsync(string email)
-    => _db.Users
-        .Include(u => u.Role)      // ✅ load luôn Role để login dùng
-        .AsNoTracking()
-        .FirstOrDefaultAsync(u => u.Email == email);
+        public async Task<User?> GetByEmailAsync(string email)
+        {
+            Console.WriteLine($"GetByEmailAsync searching for email: {email}");
+            var result = await _db.Users
+                .Include(u => u.Role)      // ✅ load luôn Role để login dùng
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.Email == email);
+            Console.WriteLine($"GetByEmailAsync result: {result != null}");
+            return result;
+        }
 
         // Alias phục vụ ProductService (tên y hệt)
         public Task<User?> GetUserByEmailAsync(string email) => GetByEmailAsync(email);

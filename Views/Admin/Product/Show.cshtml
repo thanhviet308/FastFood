@@ -29,6 +29,14 @@
         <div id="layoutSidenav_content">
             <main>
                 <div class="container-fluid px-4">
+                    @if (TempData["ProductSuccess"] != null)
+                    {
+                        <div class="alert alert-success mt-3">@TempData["ProductSuccess"]</div>
+                    }
+                    @if (TempData["ProductError"] != null)
+                    {
+                        <div class="alert alert-danger mt-3">@TempData["ProductError"]</div>
+                    }
                     <h1 class="mt-4">Quản lý Sản phẩm</h1>
                     <ol class="breadcrumb mb-4">
                         <li class="breadcrumb-item">

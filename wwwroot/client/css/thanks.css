@@ -1,0 +1,154 @@
+/*******************************
+ * FastFood Thanks Page Styles
+ *******************************/
+
+.thanks-container {
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.thanks-card {
+    background: white;
+    border-radius: 25px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    border: none;
+    overflow: hidden;
+    max-width: 600px;
+    width: 100%;
+}
+
+.thanks-header {
+    background: linear-gradient(135deg, var(--ff-primary) 0%, var(--ff-secondary) 100%);
+    color: white;
+    padding: 40px 30px;
+    text-align: center;
+    position: relative;
+}
+
+.thanks-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    animation: bounce 1s ease-in-out;
+}
+
+@keyframes bounce {
+
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+        transform: translateY(0);
+    }
+
+    40% {
+        transform: translateY(-10px);
+    }
+
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+.thanks-body {
+    padding: 40px 30px;
+    text-align: center;
+}
+
+.thanks-title {
+    color: var(--ff-primary);
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.thanks-message {
+    color: #6c757d;
+    font-size: 1.1rem;
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+.thanks-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn-thanks-primary {
+    background: linear-gradient(135deg, var(--ff-primary) 0%, var(--ff-secondary) 100%);
+    border: none;
+    color: white;
+    padding: 12px 30px;
+    border-radius: 25px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-thanks-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(255, 107, 53, 0.3);
+    color: white;
+}
+
+.btn-thanks-outline {
+    background: transparent;
+    border: 2px solid var(--ff-primary);
+    color: var(--ff-primary);
+    padding: 12px 30px;
+    border-radius: 25px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-thanks-outline:hover {
+    background: var(--ff-primary);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.order-details {
+    background: #f8f9fa;
+    border-radius: 15px;
+    padding: 20px;
+    margin: 20px 0;
+    text-align: left;
+}
+
+.order-details h6 {
+    color: var(--ff-primary);
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.order-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    font-size: 0.9rem;
+}
+
+.order-info-item {
+    display: flex;
+    justify-content: space-between;
+}
+
+.order-info-label {
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.order-info-value {
+    color: #212529;
+    font-weight: 600;
+}

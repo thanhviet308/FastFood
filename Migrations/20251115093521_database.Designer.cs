@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FastFoodShop.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251114131240_database")]
+    [Migration("20251115093521_database")]
     partial class database
     {
         /// <inheritdoc />
@@ -216,6 +216,9 @@ namespace FastFoodShop.Migrations
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsFeatured")
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")

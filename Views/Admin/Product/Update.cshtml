@@ -65,15 +65,18 @@
                                 <h3>Cập nhật sản phẩm</h3>
                                 <hr />
 
-                                <form asp-controller="Product" asp-action="Update" method="post"
+                                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                                <form action="/admin/products/update" method="post"
                                     enctype="multipart/form-data" class="row">
                                     @Html.AntiForgeryToken()
                                     <input asp-for="Id" type="hidden" />
+                                    <input asp-for="Image" type="hidden" />
 
                                     <div class="mb-3 col-12 col-md-6">
                                         <label asp-for="Name" class="form-label"></label>
                                         <input asp-for="Name" class="form-control" />
-                                        <span asp-validation-for="Name" class="invalid-feedback"></span>
+                                        <span asp-validation-for="Name" class="text-danger"></span>
                                     </div>
 
                                     
@@ -81,13 +84,13 @@
                                     <div class="mb-3 col-12">
                                         <label asp-for="DetailDesc" class="form-label"></label>
                                         <textarea asp-for="DetailDesc" class="form-control"></textarea>
-                                        <span asp-validation-for="DetailDesc" class="invalid-feedback"></span>
+                                        <span asp-validation-for="DetailDesc" class="text-danger"></span>
                                     </div>
 
                                     <div class="mb-3 col-12 col-md-6">
                                         <label asp-for="ShortDesc" class="form-label"></label>
                                         <input asp-for="ShortDesc" class="form-control" />
-                                        <span asp-validation-for="ShortDesc" class="invalid-feedback"></span>
+                                        <span asp-validation-for="ShortDesc" class="text-danger"></span>
                                     </div>
 
                                     
@@ -103,7 +106,7 @@
                                             <option value="">-- chọn category --</option>
                                             @foreach (var c in (IEnumerable<FastFoodShop.Domain.Entities.Category>)ViewBag.Categories ?? Enumerable.Empty<FastFoodShop.Domain.Entities.Category>())
                                             {
-                                                <option value="@c.Id" selected="@(Model.CategoryId == c.Id)">@c.Name</option>
+                                                <option value="@c.Id" selected="@(Model.CategoryId == c.Id ? "selected" : null)">@c.Name</option>
                                             }
                                         </select>
                                     </div>
@@ -114,6 +117,23 @@
                                             <option value="true">True</option>
                                             <option value="false">False</option>
                                         </select>
+                                    </div>
+
+                                    <div class="mb-3 col-auto">
+                                        <label asp-for="IsFeatured" class="form-label">Nổi bật</label>
+                                        <select asp-for="IsFeatured" class="form-select w-auto" style="min-width: 120px;">
+                                            @if (Model.IsFeatured)
+                                            {
+                                                <option value="true" selected>Có</option>
+                                                <option value="false">Không</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="true">Có</option>
+                                                <option value="false" selected>Không</option>
+                                            }
+                                        </select>
+                                        
                                     </div>
 
                                     <div class="mb-3 col-12 col-md-6">
@@ -134,93 +154,119 @@
                             </div>
                         </div>
 
-                        <div class="row mt-4">
-                            <div class="col-12 mx-auto">
-                                <div class="card">
-                                    <div class="card-header d-flex align-items-center justify-content-between">
-                                        <span>Biến thể</span>
-                                        <form method="post" asp-controller="Product" asp-action="AddVariant" class="d-flex align-items-center gap-2">
+                        <!-- Product Variants Management -->
+                        <div class="row mt-5">
+                            <div class="col-md-8 col-12 mx-auto">
+                                <h3>Quản lý biến thể</h3>
+                                <hr />
+
+                                @if (TempData["VariantError"] != null)
+                                {
+                                    <div class="alert alert-danger">@TempData["VariantError"]</div>
+                                }
+                                @if (TempData["VariantSuccess"] != null)
+                                {
+                                    <div class="alert alert-success">@TempData["VariantSuccess"]</div>
+                                }
+
+                                <!-- Add New Variant Form -->
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">Thêm biến thể mới</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <form action="/admin/products/variant/add" method="post" class="row">
                                             @Html.AntiForgeryToken()
                                             <input type="hidden" name="productId" value="@Model.Id" />
-                                            <input name="variantName" class="form-control form-control-sm" placeholder="Tên" style="max-width: 220px;" required />
-                                            <input name="price" class="form-control form-control-sm" type="number" placeholder="Giá" style="max-width: 160px;" min="0" step="1" required />
-                                            <button class="btn btn-success btn-sm" type="submit">Thêm</button>
+                                            
+                                            <div class="col-md-4">
+                                                <label class="form-label">Tên biến thể</label>
+                                                <input type="text" name="variantName" class="form-control" placeholder="VD: Size M, Large, Small..." required />
+                                            </div>
+                                            
+                                            <div class="col-md-4">
+                                                <label class="form-label">Giá</label>
+                                                <input type="number" name="price" class="form-control" step="0.01" min="0" placeholder="0" required />
+                                            </div>
+                                            
+                                            <div class="col-md-4 d-flex align-items-end">
+                                                <button type="submit" class="btn btn-primary">Thêm biến thể</button>
+                                            </div>
                                         </form>
                                     </div>
-                                    <div class="card-body p-0">
-                                        <table class="table table-sm table-hover mb-0">
-                                            <thead class="table-light">
-                                                <tr>
-                                                    <th style="width:38%">Tên</th>
-                                                    <th style="width:22%">Giá</th>
-                                                    <th style="width:20%">Trạng thái</th>
-                                                    <th style="width:20%">Thao tác</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach (var v in (IEnumerable<FastFoodShop.Domain.Entities.ProductVariant>)ViewBag.Variants ?? Enumerable.Empty<FastFoodShop.Domain.Entities.ProductVariant>())
-                                                {
-                                                    <tr>
-                                                        <td>
-                                                            <form method="post" asp-controller="Product" asp-action="UpdateVariant" class="d-flex align-items-center gap-2">
-                                                                @Html.AntiForgeryToken()
-                                                                <input type="hidden" name="id" value="@v.Id" />
-                                                                <input type="hidden" name="productId" value="@Model.Id" />
-                                                                <input class="form-control form-control-sm" name="variantName" value="@v.VariantName" />
-                                                            </form>
-                                                        </td>
-                                                        <td>
-                                                            <form method="post" asp-controller="Product" asp-action="UpdateVariant" class="d-flex align-items-center">
-                                                                @Html.AntiForgeryToken()
-                                                                <input type="hidden" name="id" value="@v.Id" />
-                                                                <input type="hidden" name="productId" value="@Model.Id" />
-                                                                <input class="form-control form-control-sm" id="price-input-@v.Id" name="price" type="text" value="@v.Price.ToString("N0", new System.Globalization.CultureInfo("en-US"))" />
-                                                            </form>
-                                                        </td>
-                                                        <td>
-                                                            <form method="post" asp-controller="Product" asp-action="UpdateVariant" class="d-flex align-items-center">
-                                                                @Html.AntiForgeryToken()
-                                                                <input type="hidden" name="id" value="@v.Id" />
-                                                                <input type="hidden" name="productId" value="@Model.Id" />
-                                                                <select name="isActive" class="form-select form-select-sm w-auto">
-                                                                    @if (v.IsActive)
+                                </div>
+
+                                <!-- Existing Variants List -->
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">Danh sách biến thể</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        @if (ViewBag.Variants != null && ((IEnumerable<FastFoodShop.Domain.Entities.ProductVariant>)ViewBag.Variants).Any())
+                                        {
+                                            <div class="table-responsive">
+                                                <table class="table table-striped">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Tên biến thể</th>
+                                                            <th>Giá</th>
+                                                            <th>Trạng thái</th>
+                                                            <th>Thao tác</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach (var variant in (IEnumerable<FastFoodShop.Domain.Entities.ProductVariant>)ViewBag.Variants)
+                                                        {
+                                                            <tr>
+                                                                <td>@variant.VariantName</td>
+                                                                <td>@string.Format("{0:N0} đ", variant.Price)</td>
+                                                                <td>
+                                                                    @if (variant.IsActive)
                                                                     {
-                                                                        <option value="true" selected>Đang bán</option>
-                                                                        <option value="false">Ẩn</option>
+                                                                        <span class="badge bg-success">Hoạt động</span>
                                                                     }
                                                                     else
                                                                     {
-                                                                        <option value="true">Đang bán</option>
-                                                                        <option value="false" selected>Ẩn</option>
+                                                                        <span class="badge bg-danger">Ngừng bán</span>
                                                                     }
-                                                                </select>
-                                                            </form>
-                                                        </td>
-                                                        <td class="text-nowrap">
-                                                            <form method="post" asp-controller="Product" asp-action="UpdateVariant" class="d-inline">
-                                                                @Html.AntiForgeryToken()
-                                                                <input type="hidden" name="id" value="@v.Id" />
-                                                                <input type="hidden" name="productId" value="@Model.Id" />
-                                                                <input type="hidden" name="variantName" value="@v.VariantName" />
-                                                                <input type="hidden" id="price-hidden-@v.Id" name="price" value="@v.Price" />
-                                                                <input type="hidden" name="isActive" value="@(v.IsActive ? "true" : "false")" />
-                                                                <button class="btn btn-primary btn-sm" type="submit" onclick="document.getElementById('price-hidden-@v.Id').value = (document.getElementById('price-input-@v.Id').value || '').replace(/,/g,'');">Lưu</button>
-                                                            </form>
-                                                            <form method="post" asp-controller="Product" asp-action="DeleteVariant" class="d-inline ms-1">
-                                                                @Html.AntiForgeryToken()
-                                                                <input type="hidden" name="id" value="@v.Id" />
-                                                                <input type="hidden" name="productId" value="@Model.Id" />
-                                                                <button class="btn btn-danger btn-sm" type="submit">Xóa</button>
-                                                            </form>
-                                                        </td>
-                                                    </tr>
-                                                }
-                                            </tbody>
-                                        </table>
+                                                                </td>
+                                                                <td>
+                                                                    <form action="/admin/products/variant/update" method="post" class="d-inline">
+                                                                        @Html.AntiForgeryToken()
+                                                                        <input type="hidden" name="id" value="@variant.Id" />
+                                                                        <input type="hidden" name="productId" value="@Model.Id" />
+                                                                        <input type="hidden" name="variantName" value="@variant.VariantName" />
+                                                                        <input type="hidden" name="price" value="@variant.Price" />
+                                                                        <input type="hidden" name="isActive" value="@(!variant.IsActive)" />
+                                                                        <button type="submit" class="btn btn-sm @(variant.IsActive ? "btn-warning" : "btn-success")">
+                                                                            @(variant.IsActive ? "Ngừng bán" : "Kích hoạt")
+                                                                        </button>
+                                                                    </form>
+                                                                    
+                                                                    <form action="/admin/products/variant/delete" method="post" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa biến thể này?');">
+                                                                        @Html.AntiForgeryToken()
+                                                                        <input type="hidden" name="id" value="@variant.Id" />
+                                                                        <input type="hidden" name="productId" value="@Model.Id" />
+                                                                        <button type="submit" class="btn btn-sm btn-danger">Xóa</button>
+                                                                    </form>
+                                                                </td>
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="alert alert-info">
+                                                <i class="fas fa-info-circle"></i> Chưa có biến thể nào cho sản phẩm này.
+                                            </div>
+                                        }
                                     </div>
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </main>
@@ -232,14 +278,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         crossorigin="anonymous"></script>
     <script src="~/js/scripts.js"></script>
+    @await Html.PartialAsync("~/Views/Shared/_ValidationScriptsPartial.cshtml")
 </body>
 
 </html>
-                                    @if (TempData["VariantError"] != null)
-                                    {
-                                        <div class="alert alert-danger m-3">@TempData["VariantError"]</div>
-                                    }
-                                    @if (TempData["VariantSuccess"] != null)
-                                    {
-                                        <div class="alert alert-success m-3">@TempData["VariantSuccess"]</div>
-                                    }

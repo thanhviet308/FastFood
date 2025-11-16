@@ -25,92 +25,8 @@
     <link href="~/client/css/style.css" rel="stylesheet" />
     <!-- FastFood Theme -->
     <link href="~/client/css/fastfood-theme.css" rel="stylesheet" />
-    
-    <style>
-        .product-detail-card {
-            background: white;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-            border: none;
-        }
-        
-        .product-gallery {
-            position: relative;
-            overflow: hidden;
-            height: 500px;
-        }
-        
-        .product-gallery img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease;
-        }
-        
-        .product-gallery:hover img {
-            transform: scale(1.05);
-        }
-        
-        .product-info {
-            padding: 40px;
-        }
-        
-        .product-price-large {
-            font-family: var(--ff-font-display);
-            font-size: 3rem;
-            color: var(--ff-primary);
-            font-weight: 400;
-            margin-bottom: 20px;
-        }
-        
-        .variant-option {
-            border: 2px solid #e9ecef;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .variant-option:hover {
-            border-color: var(--ff-primary);
-            background: rgba(255, 107, 53, 0.05);
-        }
-        
-        .variant-option.active {
-            border-color: var(--ff-primary);
-            background: rgba(255, 107, 53, 0.1);
-        }
-        
-        .quantity-control {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .quantity-control input {
-            width: 80px;
-            text-align: center;
-            font-weight: bold;
-        }
-        
-        .quantity-control button {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: 2px solid var(--ff-primary);
-            background: white;
-            color: var(--ff-primary);
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-        
-        .quantity-control button:hover {
-            background: var(--ff-primary);
-            color: white;
-        }
-    </style>
+    <!-- Product Detail Styles -->
+    <link href="~/client/css/product-detail.css" rel="stylesheet" />
 </head>
 <body>
     @await Html.PartialAsync("~/Views/Client/Layout/_Header.cshtml")
@@ -226,9 +142,8 @@
                             </div>
                             
                             <div class="d-grid gap-2">
-                                <button type="submit" class="ff-btn-primary btn-lg">
-                                    <i class="fas fa-cart-plus me-2"></i>
-                                    Thêm vào giỏ hàng
+                                <button type="submit" class="ff-btn-primary btn-lg" aria-label="Thêm vào giỏ hàng">
+                                    <i class="fas fa-cart-plus"></i>
                                 </button>
                                 <button type="button" class="btn btn-outline-primary btn-lg rounded-pill">
                                     <i class="fas fa-heart me-2"></i>
@@ -302,58 +217,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/client/js/main.js"></script>
-    
-    <script>
-        // Variant selection
-        document.querySelectorAll('.variant-option').forEach(option => {
-            option.addEventListener('click', function() {
-                // Remove active class from all options
-                document.querySelectorAll('.variant-option').forEach(opt => opt.classList.remove('active'));
-                // Add active class to clicked option
-                this.classList.add('active');
-                // Update radio button
-                this.querySelector('input[type="radio"]').checked = true;
-                // Update selected variant ID
-                document.getElementById('selectedVariantId').value = this.dataset.variantId;
-                // Update price display
-                const price = parseInt(this.dataset.price);
-                document.querySelector('.product-price-large').textContent = price.toLocaleString('vi-VN') + '₫';
-            });
-        });
-        
-        // Quantity control
-        const quantityInput = document.getElementById('quantity');
-        const btnMinus = document.querySelector('.btn-minus');
-        const btnPlus = document.querySelector('.btn-plus');
-        
-        btnMinus.addEventListener('click', function() {
-            let currentValue = parseInt(quantityInput.value);
-            if (currentValue > 1) {
-                quantityInput.value = currentValue - 1;
-            }
-        });
-        
-        btnPlus.addEventListener('click', function() {
-            let currentValue = parseInt(quantityInput.value);
-            if (currentValue < 99) {
-                quantityInput.value = currentValue + 1;
-            }
-        });
-        
-        // Form submission
-        document.querySelector('form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            // Add to cart animation
-            const button = this.querySelector('button[type="submit"]');
-            const originalText = button.innerHTML;
-            button.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang thêm...';
-            button.disabled = true;
-            
-            // Simulate adding to cart
-            setTimeout(() => {
-                this.submit();
-            }, 1000);
-        });
-    </script>
+    <script src="~/client/js/product-detail.js"></script>
 </body>
 </html>

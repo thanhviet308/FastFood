@@ -1,8 +1,8 @@
 /* Minimal FastFood Theme - Clean and Modern */
 :root {
-    --primary-color: #FF6B35;
-    --secondary-color: #F7931E;
-    --accent-color: #E71D36;
+    --primary-color: #EF5350;
+    --secondary-color: #FF8A65;
+    --accent-color: #D32F2F;
     --text-dark: #2C3E50;
     --text-light: #7F8C8D;
     --background: #FFFFFF;
@@ -17,6 +17,8 @@
     --radius-sm: 4px;
     --radius-md: 8px;
     --radius-lg: 12px;
+    --bs-primary: #EF5350;
+    --bs-secondary: #FF8A65;
 }
 
 * {
@@ -29,6 +31,10 @@ body {
     color: var(--text-dark);
     background: var(--background);
 }
+
+.text-primary { color: var(--primary-color) !important; }
+.btn-primary { background-color: var(--primary-color) !important; border-color: var(--primary-color) !important; }
+.border-primary { border-color: var(--primary-color) !important; }
 
 /* Header Styles */
 .minimal-header {

@@ -1,10 +1,19 @@
 @model IEnumerable<FastFoodShop.Domain.Entities.CartDetail>
 @{
-    ViewData["Title"] = "Giỏ hàng - Cửa Hàng Đồ Ăn Nhanh";
-    Layout = null; // nếu bạn có _Layout.cshtml thì thay bằng layout của bạn
+    ViewData["Title"] = "Giỏ hàng - FastFood Shop";
+    Layout = null;
     var totalPrice = (decimal)(ViewBag.TotalPrice ?? 0M);
-    // Nếu controller cũng truyền Cart (để bind confirm-checkout) thì:
     var cart = ViewBag.Cart as FastFoodShop.Domain.Entities.Cart;
+}
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@{
+    var af = Xsrf.GetAndStoreTokens(Context);
+}
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+@{
+    var isAuth = User?.Identity?.IsAuthenticated == true;
+    var sumCart = HttpContextAccessor.HttpContext?.Session.GetInt32("sum") ?? 0;
 }
 
 <!DOCTYPE html>
@@ -12,207 +21,198 @@
 <head>
     <meta charset="utf-8" />
     <title>@ViewData["Title"]</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <meta content="" name="keywords" />
-    <meta content="" name="description" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap" rel="stylesheet" />
-
+    
     <!-- Icon Font Stylesheet -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet" />
-
+    
     <!-- Libraries Stylesheet -->
     <link href="~/client/lib/lightbox/css/lightbox.min.css" rel="stylesheet" />
     <link href="~/client/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
-
+    
     <!-- Customized Bootstrap Stylesheet -->
     <link href="~/client/css/bootstrap.min.css" rel="stylesheet" />
-
-    <!-- Template Stylesheet -->
     <link href="~/client/css/style.css" rel="stylesheet" />
+    <!-- FastFood Theme Stylesheet -->
+    <link href="~/client/css/fastfood-theme.css" rel="stylesheet" />
+    
+    <!-- jQuery Toast -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.css" rel="stylesheet" />
+    
+    <meta name="X-CSRF-TOKEN" content="@af.RequestToken" />
 </head>
 <body>
     <!-- Spinner Start -->
-    <div id="spinner" class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50 d-flex align-items-center justify-content-center">
+    <div id="spinner"
+        class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50 d-flex align-items-center justify-content-center">
         <div class="spinner-grow text-primary" role="status"></div>
     </div>
     <!-- Spinner End -->
 
-    @* Header *@
     @await Html.PartialAsync("~/Views/Client/Layout/_Header.cshtml")
-<div class="d-none d-lg-block" style="height:126px"></div>
-<div class="d-lg-none" style="height:72px"></div>
-    <!-- Cart Page Start -->
-    <div class="container-fluid py-5">
-        <div class="container py-5">
-            <div class="mb-3">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="/">Home</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Chi Tiết Giỏ Hàng</li>
-                    </ol>
-                </nav>
-            </div>
 
-            <div class="table-responsive">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th scope="col">Sản phẩm</th>
-                            <th scope="col">Tên</th>
-                            <th scope="col">Giá cả</th>
-                            <th scope="col">Số lượng</th>
-                            <th scope="col">Thành tiền</th>
-                            <th scope="col">Xử lý</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (Model == null || !Model.Any())
-                        {
-                            <tr>
-                                <td colspan="6">Không có sản phẩm trong giỏ hàng</td>
-                            </tr>
-                        }
-                        else
-                        {
-                            var idx = 0;
-                            foreach (var cartDetail in Model)
-                            {
-                                <tr>
-                                    <th scope="row">
-                                        <div class="d-flex align-items-center">
-                                            <img src="~/images/product/@cartDetail.Product.Image"
-                                                 class="img-fluid me-5 rounded-circle"
-                                                 style="width:80px;height:80px;object-fit:cover" alt="">
-                                        </div>
-                                    </th>
-                                    <td>
-                                        <p class="mb-0 mt-4">
-                                            <a asp-controller="Item" asp-action="GetProductPage" asp-route-id="@cartDetail.Product.Id" target="_blank">
-                                                @cartDetail.Product.Name
-                                            </a>
-                                        </p>
-                                    </td>
-                                    <td>
-                                        <p class="mb-0 mt-4">@string.Format("{0:N0} đ", cartDetail.Price)</p>
-                                    </td>
-                                    <td>
-                                        <div class="input-group quantity mt-4" style="width:100px;">
-                                            <div class="input-group-btn">
-                                                <button type="button" class="btn btn-sm btn-minus rounded-circle bg-light border">
-                                                    <i class="fa fa-minus"></i>
-                                                </button>
-                                            </div>
-                                            <input type="text"
-                                                   class="form-control form-control-sm text-center border-0"
-                                                   value="@cartDetail.Quantity"
-                                                   data-cart-detail-id="@cartDetail.Id"
-                                                   data-cart-detail-price="@cartDetail.Price"
-                                                   data-cart-detail-index="@idx"
-                                                   readonly />
-                                            <div class="input-group-btn">
-                                                <button type="button" class="btn btn-sm btn-plus rounded-circle bg-light border">
-                                                    <i class="fa fa-plus"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <p class="mb-0 mt-4" data-cart-detail-id="@cartDetail.Id">
-                                            @string.Format("{0:N0} đ", cartDetail.Price * cartDetail.Quantity)
-                                        </p>
-                                    </td>
-                                    <td>
-                                        <form method="post" asp-action="DeleteCartDetail" asp-controller="Item" asp-route-id="@cartDetail.Id">
-                                            @Html.AntiForgeryToken()
-                                            <button class="btn btn-md rounded-circle bg-light border mt-4" title="Xoá khỏi giỏ">
-                                                <i class="fa fa-times text-danger"></i>
-                                            </button>
-                                        </form>
-                                    </td>
-                                </tr>
-                                idx++;
-                            }
-                        }
-                    </tbody>
-                </table>
-            </div>
+    <!-- FastFood Cart Header Start -->
+    <div class="ff-cart-header-section">
+        <div class="container text-center">
+            <h1 class="display-4 fw-bold mb-3">
+                <i class="fas fa-shopping-cart me-3"></i>Giỏ hàng của bạn
+            </h1>
+            <p class="lead mb-0">Kiểm tra và quản lý các món ăn bạn đã chọn</p>
+            <nav aria-label="breadcrumb" class="d-flex justify-content-center mt-3">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="/" class="text-white text-decoration-none">Trang chủ</a></li>
+                    <li class="breadcrumb-item active text-white-50" aria-current="page">Giỏ hàng</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <!-- FastFood Cart Header End -->
 
-            @if (Model != null && Model.Any())
+    <!-- FastFood Cart Content Start -->
+    <div class="ff-cart-page">
+        <div class="container">
+            @if (Model == null || !Model.Any())
             {
-                <div class="mt-5 row g-4 justify-content-start">
-                    <div class="col-12 col-md-8">
-                        <div class="bg-light rounded">
-                            <div class="p-4">
-                                <h1 class="display-6 mb-4">Thông Tin <span class="fw-normal">Đơn Hàng</span></h1>
-
-                                <div class="d-flex justify-content-between mb-4">
-                                    <h5 class="mb-0 me-4">Tạm tính:</h5>
-                                    <p class="mb-0" data-cart-total-price="@totalPrice">
-                                        @string.Format("{0:N0} đ", totalPrice)
-                                    </p>
-                                </div>
-
-                                <div class="d-flex justify-content-between">
-                                    <h5 class="mb-0 me-4">Phí vận chuyển</h5>
-                                    <div><p class="mb-0">0 đ</p></div>
-                                </div>
+                <!-- Empty Cart -->
+                <div class="row justify-content-center">
+                    <div class="col-lg-8 text-center">
+                        <div class="ff-empty-cart">
+                            <div class="ff-empty-cart-icon">
+                                <i class="fas fa-shopping-cart"></i>
                             </div>
-
-                            <div class="py-4 mb-4 border-top border-bottom d-flex justify-content-between">
-                                <h5 class="mb-0 ps-4 me-4">Tổng số tiền</h5>
-                                <p class="mb-0 pe-4" data-cart-total-price="@totalPrice">
-                                    @string.Format("{0:N0} đ", totalPrice)
-                                </p>
-                            </div>
-
-                            @* Form xác nhận (update lại quantity trước khi qua checkout) *@
-                            <form method="post" asp-action="ConfirmCheckout" asp-controller="Item">
-                                @Html.AntiForgeryToken()
-
-                                <div style="display:none;">
-                                    @if (cart?.CartDetails != null)
+                            <h3 class="ff-empty-cart-title">Giỏ hàng trống</h3>
+                            <p class="ff-empty-cart-text">Bạn chưa chọn món ăn nào. Hãy khám phá thực đơn của chúng tôi!</p>
+                            <a href="/products" class="ff-btn-primary">
+                                <i class="fas fa-utensils me-2"></i>Khám phá thực đơn
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <!-- Cart Items -->
+                <div class="ff-cart-container">
+                    <div class="ff-cart-items">
+                        <div class="ff-cart-header">
+                            <h4 class="mb-0">
+                                <i class="fas fa-list me-2"></i>Danh sách món ăn
+                            </h4>
+                            <span class="ff-cart-count">@Model.Count() món</span>
+                        </div>
+                        
+                        @foreach (var item in Model)
+                        {
+                            <div class="ff-cart-item" data-cart-detail-id="@item.Id">
+                                <div class="ff-cart-item-image">
+                                    @if (!string.IsNullOrEmpty(item.Product?.Image))
                                     {
-                                        var i = 0;
-                                        foreach (var cd in cart.CartDetails)
-                                        {
-                                            <div class="mb-3">
-                                                <div class="form-group">
-                                                    <label>Id:</label>
-                                                    <input class="form-control" type="text"
-                                                           name="Cart.CartDetails[@i].Id" value="@cd.Id" />
-                                                </div>
-                                                <div class="form-group">
-                                                    <label>Quantity:</label>
-                                                    <input class="form-control" type="text"
-                                                           name="Cart.CartDetails[@i].Quantity" value="@cd.Quantity" />
-                                                </div>
-                                            </div>
-                                            i++;
-                                        }
+                                        <img src="~/images/product/@item.Product.Image" alt="@item.Product.Name" />
+                                    }
+                                    else
+                                    {
+                                        <img src="https://placehold.co/100x100?text=%F0%9F%8D%94&background=f8f9fa&text=888888" alt="@item.Product?.Name" />
                                     }
                                 </div>
-
-                                <button class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4">
-                                    Xác nhận thanh toán
-                                </button>
-                            </form>
+                                <div class="ff-cart-item-info">
+                                    <h5 class="ff-cart-item-title">@item.Product?.Name</h5>
+                                    @if (item.Variant != null)
+                                    {
+                                        <p class="ff-cart-item-variant">
+                                            <i class="fas fa-tag me-1"></i>@item.Variant.VariantName
+                                        </p>
+                                    }
+                                    <p class="ff-cart-item-price">@item.Price.ToString("N0")đ</p>
+                                </div>
+                                <div class="ff-cart-item-quantity">
+                                    <div class="ff-quantity-control">
+                                        <button class="ff-quantity-btn minus" data-cart-detail-id="@item.Id" data-action="decrease">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                        <input type="number" class="ff-quantity-input" value="@item.Quantity" 
+                                               data-cart-detail-id="@item.Id" min="1" max="99" />
+                                        <button class="ff-quantity-btn plus" data-cart-detail-id="@item.Id" data-action="increase">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="ff-cart-item-total">
+                                    <span class="ff-item-total-price">@((item.Price * item.Quantity).ToString("N0"))đ</span>
+                                    <form asp-action="DeleteCartDetail" asp-route-id="@item.Id" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="ff-cart-item-remove" title="Xóa sản phẩm">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    
+                    <div class="ff-cart-sidebar">
+                        <div class="ff-cart-summary">
+                            <div class="ff-summary-header">
+                                <h4 class="mb-0">
+                                    <i class="fas fa-receipt me-2"></i>Tóm tắt đơn hàng
+                                </h4>
+                            </div>
+                            
+                            <div class="ff-summary-body">
+                                <div class="ff-summary-item">
+                                    <span>Tạm tính (@Model.Count() món):</span>
+                                    <span>@totalPrice.ToString("N0")đ</span>
+                                </div>
+                                <div class="ff-summary-item">
+                                    <span>Phí vận chuyển:</span>
+                                    <span class="text-success">Miễn phí</span>
+                                </div>
+                                <div class="ff-summary-divider"></div>
+                                <div class="ff-summary-total">
+                                    <span>Tổng cộng:</span>
+                                    <span class="ff-total-price">@totalPrice.ToString("N0")đ</span>
+                                </div>
+                            </div>
+                            
+                            <div class="ff-summary-footer">
+                                <a href="/checkout" class="ff-btn-primary w-100 mb-3">
+                                    <i class="fas fa-credit-card me-2"></i>TIẾN HÀNH THANH TOÁN
+                                </a>
+                                <a href="/products" class="ff-btn-secondary w-100">
+                                    <i class="fas fa-plus me-2"></i>Thêm món ăn
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="ff-cart-promo">
+                            <div class="ff-promo-header">
+                                <i class="fas fa-gift me-2"></i>Mã giảm giá
+                            </div>
+                            <div class="ff-promo-body">
+                                <div class="input-group">
+                                    <input type="text" class="form-control ff-promo-input" placeholder="Nhập mã giảm giá...">
+                                    <button class="ff-btn-promo" type="button">Áp dụng</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             }
         </div>
     </div>
-    <!-- Cart Page End -->
+    <!-- FastFood Cart Content End -->
 
-    @* Footer *@
     @await Html.PartialAsync("~/Views/Client/Layout/_Footer.cshtml")
 
-    
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top" style="display:none">
+        <i class="fa fa-arrow-up"></i>
+    </a>
 
     <!-- JavaScript Libraries -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
@@ -224,5 +224,153 @@
 
     <!-- Template Javascript -->
     <script src="~/client/js/main.js"></script>
+
+    <script>
+        // Spinner
+        var spinner = function () {
+            setTimeout(function () {
+                if ($('#spinner').length > 0) {
+                    $('#spinner').removeClass('show');
+                }
+            }, 1);
+        };
+        spinner();
+        
+        // Back to top button
+        $(window).scroll(function () {
+            if ($(this).scrollTop() > 300) {
+                $('.back-to-top').fadeIn('slow');
+            } else {
+                $('.back-to-top').fadeOut('slow');
+            }
+        });
+        $('.back-to-top').click(function () {
+            $('html, body').animate({scrollTop: 0}, 1500, 'easeInOutExpo');
+            return false;
+        });
+
+        // Quantity control
+        $('.ff-quantity-btn').click(function() {
+            const $btn = $(this);
+            const cartDetailId = $btn.data('cart-detail-id');
+            const action = $btn.data('action');
+            const $input = $(`.ff-quantity-input[data-cart-detail-id="${cartDetailId}"]`);
+            let currentValue = parseInt($input.val());
+            
+            if (action === 'increase' && currentValue < 99) {
+                $input.val(currentValue + 1);
+            } else if (action === 'decrease' && currentValue > 1) {
+                $input.val(currentValue - 1);
+            }
+            
+            // Update quantity via AJAX
+            updateQuantity(cartDetailId, parseInt($input.val()));
+        });
+
+        $('.ff-quantity-input').change(function() {
+            const $input = $(this);
+            const cartDetailId = $input.data('cart-detail-id');
+            const value = parseInt($input.val());
+            
+            if (value < 1) {
+                $input.val(1);
+            } else if (value > 99) {
+                $input.val(99);
+            }
+            
+            updateQuantity(cartDetailId, parseInt($input.val()));
+        });
+
+        function updateQuantity(cartDetailId, quantity) {
+            $.ajax({
+                url: `/api/cart/update-quantity/${cartDetailId}`,
+                method: 'POST',
+                data: { quantity: quantity },
+                beforeSend: function(xhr) {
+                    xhr.setRequestHeader("X-CSRF-TOKEN", $('meta[name="X-CSRF-TOKEN"]').attr('content'));
+                },
+                success: function(response) {
+                    if (response.success) {
+                        // Update item total
+                        const $item = $(`.ff-cart-item[data-cart-detail-id="${cartDetailId}"]`);
+                        const price = parseFloat($item.find('.ff-cart-item-price').text().replace(/[^0-9.-]+/g, ""));
+                        const newTotal = (price * quantity).toLocaleString('vi-VN');
+                        $item.find('.ff-item-total-price').text(newTotal + 'đ');
+                        
+                        // Update cart summary
+                        $('.ff-total-price').text(response.newTotal.toLocaleString('vi-VN') + 'đ');
+                        
+                        // Update cart count in header
+                        updateCartCount();
+                    }
+                },
+                error: function() {
+                    alert('Có lỗi xảy ra khi cập nhật số lượng');
+                }
+            });
+        }
+
+        function updateCartCount() {
+            $.ajax({
+                url: '/cart/count',
+                method: 'GET',
+                success: function(response) {
+                    $('#cart-count').text(response.count);
+                }
+            });
+        }
+
+        // Promo code functionality
+        $('.ff-btn-promo').click(function() {
+            const promoCode = $('.ff-promo-input').val().trim();
+            if (promoCode) {
+                applyPromoCode(promoCode);
+            }
+        });
+
+        function applyPromoCode(code) {
+            $.ajax({
+                url: '/api/cart/apply-promo',
+                method: 'POST',
+                data: { promoCode: code },
+                beforeSend: function(xhr) {
+                    xhr.setRequestHeader("X-CSRF-TOKEN", $('meta[name="X-CSRF-TOKEN"]').attr('content'));
+                },
+                success: function(response) {
+                    if (response.success) {
+                        $.toast({
+                            heading: 'Thành công',
+                            text: response.message,
+                            showHideTransition: 'slide',
+                            icon: 'success',
+                            position: 'top-right'
+                        });
+                        
+                        // Update total price
+                        if (response.newTotal) {
+                            $('.ff-total-price').text(response.newTotal.toLocaleString('vi-VN') + 'đ');
+                        }
+                    } else {
+                        $.toast({
+                            heading: 'Thông báo',
+                            text: response.message,
+                            showHideTransition: 'slide',
+                            icon: 'warning',
+                            position: 'top-right'
+                        });
+                    }
+                },
+                error: function() {
+                    $.toast({
+                        heading: 'Lỗi',
+                        text: 'Không thể áp dụng mã giảm giá',
+                        showHideTransition: 'slide',
+                        icon: 'error',
+                        position: 'top-right'
+                    });
+                }
+            });
+        }
+    </script>
 </body>
 </html>

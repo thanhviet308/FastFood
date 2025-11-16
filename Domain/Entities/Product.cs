@@ -30,6 +30,8 @@ namespace FastFoodShop.Domain.Entities
 
         public bool IsActive { get; set; } = true;
 
+        public bool IsFeatured { get; set; } = false;
+
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     
