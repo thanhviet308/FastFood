@@ -413,7 +413,11 @@
                 url: '/cart/count',
                 method: 'GET',
                 success: function (response) {
-                    $('#cart-count').text(response.count);
+                    var $b = $('#sumCart');
+                    if (!$b.length) return;
+                    var n = Number(response?.count ?? 0);
+                    $b.text(n);
+                    $b.css('display', n > 0 ? 'inline-block' : 'none');
                 }
             });
         }

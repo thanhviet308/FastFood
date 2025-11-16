@@ -17,189 +17,189 @@ build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = FastFoodShop
 build_property.RootNamespace = FastFoodShop
-build_property.ProjectDir = d:\ASP.NET\FastFoodShop\FastFoodShop\
+build_property.ProjectDir = D:\ASP.NET\FastFoodShop\FastFoodShop\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 9.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = d:\ASP.NET\FastFoodShop\FastFoodShop
+build_property.MSBuildProjectDirectory = D:\ASP.NET\FastFoodShop\FastFoodShop
 build_property._RazorSourceGeneratorDebug = 
 build_property.EffectiveAnalysisLevelStyle = 9.0
 build_property.EnableCodeStyleSeverity = 
 
-[d:/ASP.NET/FastFoodShop/FastFoodShop/Views/Admin/Category/Create.cshtml]
+[D:/ASP.NET/FastFoodShop/FastFoodShop/Views/Admin/Category/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQ2F0ZWdvcnlcQ3JlYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/ASP.NET/FastFoodShop/FastFoodShop/Views/Admin/Category/Delete.cshtml]
+[D:/ASP.NET/FastFoodShop/FastFoodShop/Views/Admin/Category/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQ2F0ZWdvcnlcRGVsZXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/ASP.NET/FastFoodShop/FastFoodShop/Views/Admin/Category/Show.cshtml]
+[D:/ASP.NET/FastFoodShop/FastFoodShop/Views/Admin/Category/Show.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQ2F0ZWdvcnlcU2hvdy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/ASP.NET/FastFoodShop/FastFoodShop/Views/Admin/Category/Update.cshtml]
+[D:/ASP.NET/FastFoodShop/FastFoodShop/Views/Admin/Category/Update.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQ2F0ZWdvcnlcVXBkYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/ASP.NET/FastFoodShop/FastFoodShop/Views/Admin/Dashboard/Show.cshtml]
+[D:/ASP.NET/FastFoodShop/FastFoodShop/Views/Admin/Dashboard/Show.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cRGFzaGJvYXJkXFNob3cuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/ASP.NET/FastFoodShop/FastFoodShop/Views/Admin/Layout/_Footer.cshtml]
+[D:/ASP.NET/FastFoodShop/FastFoodShop/Views/Admin/Layout/_Footer.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cTGF5b3V0XF9Gb290ZXIuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/ASP.NET/FastFoodShop/FastFoodShop/Views/Admin/Layout/_Header.cshtml]
+[D:/ASP.NET/FastFoodShop/FastFoodShop/Views/Admin/Layout/_Header.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cTGF5b3V0XF9IZWFkZXIuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/ASP.NET/FastFoodShop/FastFoodShop/Views/Admin/Layout/_Sidebar.cshtml]
+[D:/ASP.NET/FastFoodShop/FastFoodShop/Views/Admin/Layout/_Sidebar.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cTGF5b3V0XF9TaWRlYmFyLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/ASP.NET/FastFoodShop/FastFoodShop/Views/Admin/Order/Delete.cshtml]
+[D:/ASP.NET/FastFoodShop/FastFoodShop/Views/Admin/Order/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cT3JkZXJcRGVsZXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/ASP.NET/FastFoodShop/FastFoodShop/Views/Admin/Order/Detail.cshtml]
+[D:/ASP.NET/FastFoodShop/FastFoodShop/Views/Admin/Order/Detail.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cT3JkZXJcRGV0YWlsLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/ASP.NET/FastFoodShop/FastFoodShop/Views/Admin/Order/Show.cshtml]
+[D:/ASP.NET/FastFoodShop/FastFoodShop/Views/Admin/Order/Show.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cT3JkZXJcU2hvdy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/ASP.NET/FastFoodShop/FastFoodShop/Views/Admin/Order/Update.cshtml]
+[D:/ASP.NET/FastFoodShop/FastFoodShop/Views/Admin/Order/Update.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cT3JkZXJcVXBkYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/ASP.NET/FastFoodShop/FastFoodShop/Views/Admin/Product/Create.cshtml]
+[D:/ASP.NET/FastFoodShop/FastFoodShop/Views/Admin/Product/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cUHJvZHVjdFxDcmVhdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/ASP.NET/FastFoodShop/FastFoodShop/Views/Admin/Product/Delete.cshtml]
+[D:/ASP.NET/FastFoodShop/FastFoodShop/Views/Admin/Product/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cUHJvZHVjdFxEZWxldGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/ASP.NET/FastFoodShop/FastFoodShop/Views/Admin/Product/Detail.cshtml]
+[D:/ASP.NET/FastFoodShop/FastFoodShop/Views/Admin/Product/Detail.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cUHJvZHVjdFxEZXRhaWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/ASP.NET/FastFoodShop/FastFoodShop/Views/Admin/Product/Show.cshtml]
+[D:/ASP.NET/FastFoodShop/FastFoodShop/Views/Admin/Product/Show.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cUHJvZHVjdFxTaG93LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/ASP.NET/FastFoodShop/FastFoodShop/Views/Admin/Product/Update.cshtml]
+[D:/ASP.NET/FastFoodShop/FastFoodShop/Views/Admin/Product/Update.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cUHJvZHVjdFxVcGRhdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/ASP.NET/FastFoodShop/FastFoodShop/Views/Admin/User/Create.cshtml]
+[D:/ASP.NET/FastFoodShop/FastFoodShop/Views/Admin/User/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cVXNlclxDcmVhdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/ASP.NET/FastFoodShop/FastFoodShop/Views/Admin/User/Delete.cshtml]
+[D:/ASP.NET/FastFoodShop/FastFoodShop/Views/Admin/User/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cVXNlclxEZWxldGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/ASP.NET/FastFoodShop/FastFoodShop/Views/Admin/User/Detail.cshtml]
+[D:/ASP.NET/FastFoodShop/FastFoodShop/Views/Admin/User/Detail.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cVXNlclxEZXRhaWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/ASP.NET/FastFoodShop/FastFoodShop/Views/Admin/User/Show.cshtml]
+[D:/ASP.NET/FastFoodShop/FastFoodShop/Views/Admin/User/Show.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cVXNlclxTaG93LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/ASP.NET/FastFoodShop/FastFoodShop/Views/Admin/User/Update.cshtml]
+[D:/ASP.NET/FastFoodShop/FastFoodShop/Views/Admin/User/Update.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cVXNlclxVcGRhdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/ASP.NET/FastFoodShop/FastFoodShop/Views/Client/Auth/Deny.cshtml]
+[D:/ASP.NET/FastFoodShop/FastFoodShop/Views/Client/Auth/Deny.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50XEF1dGhcRGVueS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/ASP.NET/FastFoodShop/FastFoodShop/Views/Client/Auth/Login.cshtml]
+[D:/ASP.NET/FastFoodShop/FastFoodShop/Views/Client/Auth/Login.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50XEF1dGhcTG9naW4uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/ASP.NET/FastFoodShop/FastFoodShop/Views/Client/Auth/Register.cshtml]
+[D:/ASP.NET/FastFoodShop/FastFoodShop/Views/Client/Auth/Register.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50XEF1dGhcUmVnaXN0ZXIuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/ASP.NET/FastFoodShop/FastFoodShop/Views/Client/Cart/Checkout.cshtml]
+[D:/ASP.NET/FastFoodShop/FastFoodShop/Views/Client/Cart/Checkout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50XENhcnRcQ2hlY2tvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/ASP.NET/FastFoodShop/FastFoodShop/Views/Client/Cart/History.cshtml]
+[D:/ASP.NET/FastFoodShop/FastFoodShop/Views/Client/Cart/History.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50XENhcnRcSGlzdG9yeS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/ASP.NET/FastFoodShop/FastFoodShop/Views/Client/Cart/PaymentResult.cshtml]
+[D:/ASP.NET/FastFoodShop/FastFoodShop/Views/Client/Cart/PaymentResult.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50XENhcnRcUGF5bWVudFJlc3VsdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/ASP.NET/FastFoodShop/FastFoodShop/Views/Client/Cart/Show.cshtml]
+[D:/ASP.NET/FastFoodShop/FastFoodShop/Views/Client/Cart/Show.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50XENhcnRcU2hvdy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/ASP.NET/FastFoodShop/FastFoodShop/Views/Client/Cart/Thanks.cshtml]
+[D:/ASP.NET/FastFoodShop/FastFoodShop/Views/Client/Cart/Thanks.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50XENhcnRcVGhhbmtzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/ASP.NET/FastFoodShop/FastFoodShop/Views/Client/Homepage/Show.cshtml]
+[D:/ASP.NET/FastFoodShop/FastFoodShop/Views/Client/Homepage/Show.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50XEhvbWVwYWdlXFNob3cuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/ASP.NET/FastFoodShop/FastFoodShop/Views/Client/Layout/_Banner.cshtml]
+[D:/ASP.NET/FastFoodShop/FastFoodShop/Views/Client/Layout/_Banner.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50XExheW91dFxfQmFubmVyLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/ASP.NET/FastFoodShop/FastFoodShop/Views/Client/Layout/_Feature.cshtml]
+[D:/ASP.NET/FastFoodShop/FastFoodShop/Views/Client/Layout/_Feature.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50XExheW91dFxfRmVhdHVyZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/ASP.NET/FastFoodShop/FastFoodShop/Views/Client/Layout/_Footer.cshtml]
+[D:/ASP.NET/FastFoodShop/FastFoodShop/Views/Client/Layout/_Footer.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50XExheW91dFxfRm9vdGVyLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/ASP.NET/FastFoodShop/FastFoodShop/Views/Client/Layout/_Header.cshtml]
+[D:/ASP.NET/FastFoodShop/FastFoodShop/Views/Client/Layout/_Header.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50XExheW91dFxfSGVhZGVyLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/ASP.NET/FastFoodShop/FastFoodShop/Views/Client/Product/Detail.cshtml]
+[D:/ASP.NET/FastFoodShop/FastFoodShop/Views/Client/Product/Detail.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50XFByb2R1Y3RcRGV0YWlsLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/ASP.NET/FastFoodShop/FastFoodShop/Views/Client/Product/Show.cshtml]
+[D:/ASP.NET/FastFoodShop/FastFoodShop/Views/Client/Product/Show.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50XFByb2R1Y3RcU2hvdy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/ASP.NET/FastFoodShop/FastFoodShop/Views/Home/Index.cshtml]
+[D:/ASP.NET/FastFoodShop/FastFoodShop/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/ASP.NET/FastFoodShop/FastFoodShop/Views/Home/Privacy.cshtml]
+[D:/ASP.NET/FastFoodShop/FastFoodShop/Views/Home/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/ASP.NET/FastFoodShop/FastFoodShop/Views/Shared/Error.cshtml]
+[D:/ASP.NET/FastFoodShop/FastFoodShop/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/ASP.NET/FastFoodShop/FastFoodShop/Views/Shared/_ValidationScriptsPartial.cshtml]
+[D:/ASP.NET/FastFoodShop/FastFoodShop/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/ASP.NET/FastFoodShop/FastFoodShop/Views/_ViewImports.cshtml]
+[D:/ASP.NET/FastFoodShop/FastFoodShop/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/ASP.NET/FastFoodShop/FastFoodShop/Views/_ViewStart.cshtml]
+[D:/ASP.NET/FastFoodShop/FastFoodShop/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/ASP.NET/FastFoodShop/FastFoodShop/Views/Shared/_Layout.cshtml]
+[D:/ASP.NET/FastFoodShop/FastFoodShop/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-cbp4zz0vxs

@@ -233,9 +233,10 @@
                 $b.text('0').css('display', 'none');
             }
         }
-        $.get('/api/cart/count')
+        $.get('/cart/count')
             .done(function (data) {
-                showCartBadge(Number(data));
+                var n = Number(data && typeof data === 'object' ? data.count : data);
+                showCartBadge(Number.isFinite(n) ? n : 0);
             })
             .fail(function () {
                 showCartBadge(0);

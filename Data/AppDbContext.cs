@@ -1,4 +1,3 @@
-// File: Data/AppDbContext.cs
 using FastFoodShop.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,33 +21,30 @@ namespace FastFoodShop.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // decimal(18,2) cho tiền
+            // Configure decimal precision for money fields
             modelBuilder.Entity<Order>().Property(o => o.TotalPrice).HasColumnType("decimal(18,2)");
             modelBuilder.Entity<OrderDetail>().Property(od => od.Price).HasColumnType("decimal(18,2)");
             modelBuilder.Entity<CartDetail>().Property(cd => cd.Price).HasColumnType("decimal(18,2)");
             
+            // Seed default roles
             modelBuilder.Entity<Role>().HasData(
-                        new Role { Id = 1, Name = "ADMIN", Description = "Administrator role" },
-                        new Role { Id = 2, Name = "USER", Description = "Normal user role" }
+                new Role { Id = 1, Name = "ADMIN", Description = "Administrator role" },
+                new Role { Id = 2, Name = "USER", Description = "Normal user role" }
             );
 
-
-            // 1 Role -> N Users
+            // Configure relationships
             modelBuilder.Entity<User>()
                 .HasOne(u => u.Role)
                 .WithMany(r => r.Users)
                 .HasForeignKey(u => u.RoleId)
-                .OnDelete(DeleteBehavior.Restrict); // hoặc DeleteBehavior.NoAction
+                .OnDelete(DeleteBehavior.Restrict);
 
-
-            // 1 User <-> 1 Cart
             modelBuilder.Entity<Cart>()
                 .HasOne(c => c.User)
                 .WithOne(u => u.Cart)
                 .HasForeignKey<Cart>(c => c.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // 1 Order -> N OrderDetails
             modelBuilder.Entity<OrderDetail>()
                 .HasOne(od => od.Order)
                 .WithMany(o => o.OrderDetails!)
@@ -65,7 +61,7 @@ namespace FastFoodShop.Data
                 .HasForeignKey(p => p.CategoryId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Product với OrderDetail/CartDetail
+            // Product relationships with OrderDetail/CartDetail
             modelBuilder.Entity<OrderDetail>()
                 .HasOne(od => od.Product)
                 .WithMany()
@@ -90,7 +86,6 @@ namespace FastFoodShop.Data
                 .HasForeignKey(cd => cd.VariantId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // 1 Cart -> N CartDetails
             modelBuilder.Entity<CartDetail>()
                 .HasOne(cd => cd.Cart)
                 .WithMany(c => c.CartDetails!)

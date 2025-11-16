@@ -16,7 +16,7 @@ namespace FastFoodShop.Services
             var total = await query.CountAsync();
             var items = await query
                 .OrderByDescending(o => o.Id)
-                .Skip(page * size)
+                .Skip(Math.Max(0, (page - 1) * size))
                 .Take(size)
                 .ToListAsync();
 

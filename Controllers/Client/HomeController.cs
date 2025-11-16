@@ -1,7 +1,5 @@
-// File: Controllers/Client/HomePageController.cs
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Http;
 using FastFoodShop.Domain.Entities;
 using FastFoodShop.Domain.Interfaces;
 using FastFoodShop.DTOs;
@@ -162,7 +160,7 @@ namespace FastFoodShop.Controllers
 
             var orders = await _orderService.FetchOrderByUserAsync(user);
 
-            return View("~/Views/Client/Cart/Order-History.cshtml", orders);
+            return View("~/Views/Client/Cart/History.cshtml", orders);
         }
 
         [HttpPost("/logout")]

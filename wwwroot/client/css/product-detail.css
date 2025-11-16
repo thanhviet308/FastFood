@@ -2,6 +2,11 @@
  * FastFood Product Detail Styles
  *******************************/
 
+/* Product Detail Section */
+.product-detail-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
 .product-detail-card {
     background: white;
     border-radius: 20px;
@@ -84,4 +89,90 @@
 .quantity-control button:hover {
     background: var(--ff-primary);
     color: white;
+}
+
+/* Product Features */
+.product-features {
+    border-top: 1px solid #dee2e6;
+    padding-top: 1.5rem;
+}
+
+.product-feature-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.product-feature-item i {
+    color: var(--ff-primary);
+    margin-right: 0.5rem;
+}
+
+.product-feature-item small {
+    color: #6c757d;
+}
+
+/* Product Description */
+.product-description-card {
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border-radius: 12px;
+}
+
+.product-description-card .card-body {
+    padding: 2rem;
+}
+
+.product-description {
+    line-height: 1.8;
+    color: #495057;
+}
+
+/* Breadcrumb */
+.breadcrumb-item a {
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.breadcrumb-item a:hover {
+    color: #ffc107 !important;
+}
+
+/* Responsive Design */
+@media (max-width: 991px) {
+    .product-gallery {
+        height: 400px;
+    }
+    
+    .product-info {
+        padding: 30px 20px;
+    }
+    
+    .product-price-large {
+        font-size: 2.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .product-gallery {
+        height: 300px;
+    }
+    
+    .product-price-large {
+        font-size: 2rem;
+    }
+    
+    .product-info {
+        padding: 20px 15px;
+    }
+}
+
+@media (max-width: 576px) {
+    .product-gallery {
+        height: 250px;
+    }
+    
+    .product-price-large {
+        font-size: 1.8rem;
+    }
 }

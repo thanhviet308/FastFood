@@ -197,7 +197,11 @@ namespace FastFoodShop.Controllers
                 return Json(new { count = 0 });
             }
 
-            var count = await _products.GetDistinctCountByEmailAsync(User.Identity?.Name ?? "");
+            var cart = await _products.GetCartByUserAsync(new User { Id = userId });
+            var count = cart?.CartDetails?
+                .Select(d => d.ProductId)
+                .Distinct()
+                .Count() ?? 0;
             return Json(new { count });
         }
 
@@ -205,19 +209,9 @@ namespace FastFoodShop.Controllers
         private bool TryGetUser(out long userId, out string? email)
         {
             userId = 0;
-            email = User.Identity?.Name; // bạn set Name = email trong Login
+            email = User.Identity?.Name;
             var idClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var result = long.TryParse(idClaim, out userId);
-            Console.WriteLine($"TryGetUser - Email from claims: {email}, UserID from claims: {idClaim}, Parsed successfully: {result}, Final UserID: {userId}");
-
-            // Debug: Check all claims
-            Console.WriteLine("All claims:");
-            foreach (var claim in User.Claims)
-            {
-                Console.WriteLine($"  {claim.Type}: {claim.Value}");
-            }
-
-            return result;
+            return long.TryParse(idClaim, out userId);
         }
 
         // [Authorize]
@@ -240,21 +234,9 @@ namespace FastFoodShop.Controllers
         public async Task<IActionResult> GetCartPage()
         {
             if (!TryGetUser(out var userId, out var email)) return Redirect("/login");
-
-            Console.WriteLine($"GetCartPage called for User ID: {userId}, Email: {email}");
-
-            // Debug: Check if user exists by ID vs Email
-            var userById = await _userService.GetByIdAsync(userId);
-            Console.WriteLine($"User found by ID: {userById != null}, Email in DB: {userById?.Email}");
-
-            var userByEmail = await _userService.GetUserByEmailAsync(email ?? "");
-            Console.WriteLine($"User found by Email: {userByEmail != null}, ID in DB: {userByEmail?.Id}");
-
             var user = new User { Id = userId };
             var cart = await _products.GetCartByUserAsync(user);
-            Console.WriteLine($"Cart retrieved: {cart != null}");
             var cartDetails = cart?.CartDetails?.ToList() ?? new List<CartDetail>();
-            Console.WriteLine($"CartDetails count: {cartDetails.Count}");
 
             double totalPrice = 0;
             foreach (var cd in cartDetails) totalPrice += (double)(cd.Price * cd.Quantity);
@@ -269,8 +251,6 @@ namespace FastFoodShop.Controllers
 
             HttpContext.Session.SetInt32("distinct", distinct);
             HttpContext.Session.SetInt32("sum", totalQty);
-
-
             return View("~/Views/Client/Cart/Show.cshtml", cartDetails);
         }
 
@@ -311,18 +291,8 @@ namespace FastFoodShop.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmCheckout([FromForm] Cart cart)
         {
-            Console.WriteLine($"ConfirmCheckout called - Cart ID: {cart?.Id}, UserId: {cart?.UserId}, Sum: {cart?.Sum}");
-
-            // Check ModelState for validation errors
             if (!ModelState.IsValid)
             {
-                Console.WriteLine("ModelState is invalid in ConfirmCheckout");
-                foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
-                {
-                    Console.WriteLine($"ModelState error: {error.ErrorMessage}");
-                }
-
-                // Redirect back to cart page with error
                 return RedirectToAction(nameof(GetCartPage));
             }
 
@@ -330,15 +300,6 @@ namespace FastFoodShop.Controllers
 
             var user = await _userService.GetByIdAsync(userId);
             if (user == null) return Redirect("/login");
-
-            // Log cart details for debugging
-            if (cart?.CartDetails != null)
-            {
-                foreach (var detail in cart.CartDetails)
-                {
-                    Console.WriteLine($"CartDetail - Id: {detail.Id}, CartId: {detail.CartId}, ProductId: {detail.ProductId}, VariantId: {detail.VariantId}, Quantity: {detail.Quantity}, Price: {detail.Price}");
-                }
-            }
 
             var details = cart?.CartDetails?.ToList() ?? new List<CartDetail>();
             await _products.HandleUpdateCartBeforeCheckoutAsync(details);
@@ -355,16 +316,12 @@ namespace FastFoodShop.Controllers
             [FromForm] string receiverPhone,
             [FromForm] string paymentMethod)
         {
-            Console.WriteLine($"HandlePlaceOrder called - receiverName: {receiverName}, receiverAddress: {receiverAddress}, receiverPhone: {receiverPhone}, paymentMethod: {paymentMethod}");
+            
 
             // Check ModelState
             if (!ModelState.IsValid)
             {
-                Console.WriteLine("ModelState is invalid");
-                foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
-                {
-                    Console.WriteLine($"ModelState error: {error.ErrorMessage}");
-                }
+                
                 ViewBag.ErrorMessage = "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại.";
                 return await GetCheckOutPage();
             }
@@ -372,7 +329,7 @@ namespace FastFoodShop.Controllers
             // Validate input
             if (string.IsNullOrWhiteSpace(receiverName) || string.IsNullOrWhiteSpace(receiverAddress) || string.IsNullOrWhiteSpace(receiverPhone))
             {
-                Console.WriteLine("Validation failed: Missing required fields");
+                
                 ViewBag.ErrorMessage = "Vui lòng điền đầy đủ thông tin người nhận.";
                 return await GetCheckOutPage();
             }
@@ -380,7 +337,7 @@ namespace FastFoodShop.Controllers
             // Validate phone number format
             if (!System.Text.RegularExpressions.Regex.IsMatch(receiverPhone, "^[0-9]{10,11}$"))
             {
-                Console.WriteLine("Validation failed: Invalid phone format");
+                
                 ViewBag.ErrorMessage = "Số điện thoại không hợp lệ. Vui lòng nhập 10-11 số.";
                 return await GetCheckOutPage();
             }
@@ -406,21 +363,19 @@ namespace FastFoodShop.Controllers
 
                     var paymentUrl = _vnPayService.CreatePaymentUrl(totalAmount, orderId, orderDescription, returnUrl, ipAddress);
                     
-                    Console.WriteLine($"Redirecting to VNPAY: {paymentUrl}");
+                    
                     return Redirect(paymentUrl);
                 }
                 else
                 {
-                    // COD payment
                     await _products.HandlePlaceOrderAsync(user, HttpContext.Session, receiverName, receiverAddress, receiverPhone);
-                    Console.WriteLine("Order placed successfully with COD");
+                    
                     return RedirectToAction(nameof(Thanks));
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error in HandlePlaceOrder: {ex.Message}");
-                Console.WriteLine($"Stack trace: {ex.StackTrace}");
+                
                 ViewBag.ErrorMessage = "Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại.";
                 return await GetCheckOutPage();
             }
@@ -434,14 +389,9 @@ namespace FastFoodShop.Controllers
         [HttpGet("payment-return")]
         public async Task<IActionResult> PaymentReturn()
         {
-            Console.WriteLine("PaymentReturn called");
-            
             try
             {
                 var response = _vnPayService.ProcessPaymentResponse(HttpContext.Request.Query);
-                
-                Console.WriteLine($"Payment response - Success: {response.Success}, OrderId: {response.OrderId}, Amount: {response.Amount}");
-                
                 if (response.Success)
                 {
                     if (!TryGetUser(out var userId, out _)) return Redirect("/login");
@@ -449,7 +399,6 @@ namespace FastFoodShop.Controllers
                     var user = await _userService.GetByIdAsync(userId);
                     if (user == null) return Redirect("/login");
                     
-                    // Process successful payment and create order
                     await _products.HandlePlaceOrderAsync(user, HttpContext.Session, 
                         $"Payment Order {response.OrderId}", 
                         "VNPAY Payment", 
@@ -468,8 +417,6 @@ namespace FastFoodShop.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error in PaymentReturn: {ex.Message}");
-                Console.WriteLine($"Stack trace: {ex.StackTrace}");
                 ViewBag.PaymentMessage = "Có lỗi xảy ra khi xử lý kết quả thanh toán.";
                 ViewBag.PaymentSuccess = false;
                 return View("~/Views/Client/Cart/PaymentResult.cshtml");
@@ -488,20 +435,20 @@ namespace FastFoodShop.Controllers
             if (!TryGetUser(out var userId, out var email))
                 return Json(new { success = false, message = "Vui lòng đăng nhập để thêm vào giỏ hàng." });
 
-            Console.WriteLine($"HandleAddProductFromViewDetail called - Product ID: {id}, Quantity: {quantity}, Variant ID: {variantId}, User ID: {userId}, Email: {email}");
+            
 
             // Get user by ID instead of email to avoid email mismatch issues
             var user = await _userService.GetByIdAsync(userId);
             if (user == null)
             {
-                Console.WriteLine($"User not found by ID: {userId}");
+                
                 return Json(new { success = false, message = "Không tìm thấy thông tin người dùng." });
             }
 
             try
             {
                 var result = await _products.HandleAddProductToCartAsync(user.Email ?? "", id, HttpContext.Session, quantity, variantId);
-                Console.WriteLine($"HandleAddProductToCartAsync completed with result: {result}");
+                
 
                 if (result > 0)
                 {
@@ -514,7 +461,7 @@ namespace FastFoodShop.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error in HandleAddProductToCartAsync: {ex.Message}");
+                
                 return Json(new { success = false, message = $"Lỗi: {ex.Message}" });
             }
         }

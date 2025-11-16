@@ -1,4 +1,3 @@
-// File: Services/UserService.cs
 using FastFoodShop.Domain.Interfaces;
 using FastFoodShop.Data;
 using FastFoodShop.Domain.Entities;
@@ -59,11 +58,9 @@ namespace FastFoodShop.Services
 
         public async Task<User?> GetByIdAsync(long id)
         {
-            Console.WriteLine($"GetByIdAsync called for ID: {id}");
             var user = await _db.Users
                 .Include(u => u.Role)   // load Role kèm user
                 .FirstOrDefaultAsync(u => u.Id == id);
-            Console.WriteLine($"GetByIdAsync result: ID={user?.Id}, Email={user?.Email}, FullName={user?.FullName}");
             return user;
         }
 
@@ -100,12 +97,10 @@ namespace FastFoodShop.Services
 
         public async Task<User?> GetByEmailAsync(string email)
         {
-            Console.WriteLine($"GetByEmailAsync searching for email: {email}");
             var result = await _db.Users
                 .Include(u => u.Role)      // ✅ load luôn Role để login dùng
                 .AsNoTracking()
                 .FirstOrDefaultAsync(u => u.Email == email);
-            Console.WriteLine($"GetByEmailAsync result: {result != null}");
             return result;
         }
 

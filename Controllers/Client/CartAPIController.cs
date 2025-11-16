@@ -20,8 +20,7 @@ namespace FastFoodShop.Controllers
         }
 
         // POST /api/cart/add
-        [Authorize] // bật lại sau khi test ok
-        //[ValidateAntiForgeryToken] // BẬT lại sau khi confirm token ok
+        [Authorize]
         [HttpPost("add")]
         public async Task<IActionResult> Add([FromBody] CartRequest req)
         {
@@ -44,7 +43,7 @@ namespace FastFoodShop.Controllers
         }
 
         // GET /api/cart/count  → Lấy số mặt hàng khác nhau trực tiếp từ DB (không phụ thuộc session)
-        [Authorize] // hoặc [AllowAnonymous] nếu muốn trả 0 khi chưa đăng nhập
+        [Authorize]
         [HttpGet("count")]
         public async Task<IActionResult> Count()
         {

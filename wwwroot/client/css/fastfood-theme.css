@@ -247,7 +247,7 @@ body {
     position: absolute;
     inset: 0;
     background: radial-gradient(circle at 10% 10%, rgba(255, 255, 255, 0.06), transparent 12%),
-                radial-gradient(circle at 90% 80%, rgba(255, 255, 255, 0.04), transparent 15%);
+        radial-gradient(circle at 90% 80%, rgba(255, 255, 255, 0.04), transparent 15%);
     z-index: 1;
 }
 
@@ -412,12 +412,12 @@ body {
     .ff-filter-section {
         padding: 20px;
     }
-    
+
     .ff-btn-filter {
         padding: 8px 20px;
         font-size: 0.8rem;
     }
-    
+
     .ff-product-card {
         margin-bottom: 20px;
     }
@@ -761,7 +761,7 @@ body {
     font-family: var(--ff-font-display);
     font-size: 3rem;
     margin-bottom: 15px;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .ff-cart-header-section .lead {
@@ -796,17 +796,17 @@ body {
         flex-wrap: unset;
         padding: 15px 20px;
     }
-    
+
     .ff-cart-item-info {
         min-width: unset;
         margin-bottom: unset;
     }
-    
+
     .ff-cart-item-quantity {
         margin-right: unset;
         margin-bottom: unset;
     }
-    
+
     .ff-cart-item-total {
         text-align: unset;
         width: unset;
@@ -822,27 +822,27 @@ body {
         grid-template-columns: 1fr;
         gap: 20px;
     }
-    
+
     .ff-cart-item {
         grid-template-columns: 60px 1fr auto;
         gap: 15px;
         padding: 15px 20px;
     }
-    
+
     .ff-cart-item-image {
         width: 60px;
         height: 60px;
     }
-    
+
     .ff-cart-item-info {
         min-width: 0;
     }
-    
+
     .ff-cart-item-quantity {
         grid-column: 3;
         grid-row: 1;
     }
-    
+
     .ff-cart-item-total {
         grid-column: 1 / -1;
         grid-row: 2;
@@ -853,7 +853,7 @@ body {
         padding-top: 10px;
         border-top: 1px solid #f0f0f0;
     }
-    
+
     .ff-summary-footer {
         padding: 15px 20px;
     }
@@ -865,45 +865,45 @@ body {
         gap: 12px;
         padding: 12px 15px;
     }
-    
+
     .ff-cart-item-image {
         width: 50px;
         height: 50px;
     }
-    
+
     .ff-cart-item-title {
         font-size: 1rem;
     }
-    
+
     .ff-cart-item-price {
         font-size: 0.9rem;
     }
-    
+
     .ff-item-total-price {
         font-size: 1.1rem;
     }
-    
+
     .ff-cart-header,
     .ff-summary-header {
         padding: 15px 20px;
     }
-    
+
     .ff-summary-body {
         padding: 15px 20px;
     }
-    
+
     .ff-summary-footer {
         padding: 15px 20px;
     }
-    
+
     .ff-promo-body {
         padding: 15px;
     }
-    
+
     .ff-cart-header-section h1 {
         font-size: 2rem;
     }
-    
+
     .ff-cart-header-section .lead {
         font-size: 1rem;
     }
@@ -934,15 +934,26 @@ body {
 }
 
 @media (max-width: 576px) {
+
     .ff-btn-primary,
     .ff-btn-secondary {
         font-size: 0.85rem;
         padding: 8px 16px;
     }
 }
-        radial-gradient(circle at 90% 80%, rgba(0, 0, 0, 0.04), transparent 15%);
+
+/* Hero section decorative gradient */
+.ff-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 90% 80%, rgba(0, 0, 0, 0.04), transparent 15%);
     pointer-events: none;
 }
+
 
 .ff-hero-content {
     position: relative;
@@ -1299,7 +1310,9 @@ body {
     border-radius: 20px;
 }
 
-.ff-text-primary { color: var(--ff-primary) !important; }
+.ff-text-primary {
+    color: var(--ff-primary) !important;
+}
 
 .ff-logo-emoji {
     font-size: 2rem;
@@ -1312,19 +1325,61 @@ body {
     color: var(--ff-primary);
 }
 
-.ff-cat-burger { color: #E53935 !important; }
-.ff-cat-pizza { color: #FBC02D !important; }
-.ff-cat-chicken { color: #43A047 !important; }
-.ff-cat-drinks { color: #1E88E5 !important; }
+.ff-cat-burger {
+    color: #E53935 !important;
+}
 
-.ff-outline-burger { border-color: #E53935 !important; color: #E53935 !important; }
-.ff-outline-burger:hover { background: #E53935 !important; color: #ffffff !important; }
-.ff-outline-pizza { border-color: #FBC02D !important; color: #FBC02D !important; }
-.ff-outline-pizza:hover { background: #FBC02D !important; color: #ffffff !important; }
-.ff-outline-chicken { border-color: #43A047 !important; color: #43A047 !important; }
-.ff-outline-chicken:hover { background: #43A047 !important; color: #ffffff !important; }
-.ff-outline-drinks { border-color: #1E88E5 !important; color: #1E88E5 !important; }
-.ff-outline-drinks:hover { background: #1E88E5 !important; color: #ffffff !important; }
+.ff-cat-pizza {
+    color: #FBC02D !important;
+}
+
+.ff-cat-chicken {
+    color: #43A047 !important;
+}
+
+.ff-cat-drinks {
+    color: #1E88E5 !important;
+}
+
+.ff-outline-burger {
+    border-color: #E53935 !important;
+    color: #E53935 !important;
+}
+
+.ff-outline-burger:hover {
+    background: #E53935 !important;
+    color: #ffffff !important;
+}
+
+.ff-outline-pizza {
+    border-color: #FBC02D !important;
+    color: #FBC02D !important;
+}
+
+.ff-outline-pizza:hover {
+    background: #FBC02D !important;
+    color: #ffffff !important;
+}
+
+.ff-outline-chicken {
+    border-color: #43A047 !important;
+    color: #43A047 !important;
+}
+
+.ff-outline-chicken:hover {
+    background: #43A047 !important;
+    color: #ffffff !important;
+}
+
+.ff-outline-drinks {
+    border-color: #1E88E5 !important;
+    color: #1E88E5 !important;
+}
+
+.ff-outline-drinks:hover {
+    background: #1E88E5 !important;
+    color: #ffffff !important;
+}
 
 /* Variant Selection Styles */
 .variant-option {
@@ -1359,7 +1414,19 @@ body {
     color: var(--ff-primary);
     transition: all 0.3s ease;
 }
-.ff-feature-shipping { background: #E53935 !important; }
-.ff-feature-payment { background: #1E88E5 !important; }
-.ff-feature-fresh { background: #43A047 !important; }
-.ff-feature-support { background: #FF7043 !important; }
+
+.ff-feature-shipping {
+    background: #E53935 !important;
+}
+
+.ff-feature-payment {
+    background: #1E88E5 !important;
+}
+
+.ff-feature-fresh {
+    background: #43A047 !important;
+}
+
+.ff-feature-support {
+    background: #FF7043 !important;
+}

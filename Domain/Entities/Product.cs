@@ -29,15 +29,9 @@ namespace FastFoodShop.Domain.Entities
         public Category? Category { get; set; }
 
         public bool IsActive { get; set; } = true;
-
         public bool IsFeatured { get; set; } = false;
 
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
-    
-        public override string ToString()
-        {
-            return $"Product [Id={Id}, Name={Name}, Image={Image}, DetailDesc={DetailDesc}, ShortDesc={ShortDesc}, CategoryId={CategoryId}, IsActive={IsActive}]";
-        }
     }
 }

@@ -1,8 +1,9 @@
 @model FastFoodShop.Domain.Entities.Product
 @{
-    ViewData["Title"] = @Model.Name + " - FastFood Shop";
+    ViewData["Title"] = Model.Name + " - FastFood Shop";
     Layout = null;
-    var variants = (IEnumerable<FastFoodShop.Domain.Entities.ProductVariant>)ViewBag.Variants ?? Enumerable.Empty<FastFoodShop.Domain.Entities.ProductVariant>();
+    var variants = ViewBag.Variants as IEnumerable<FastFoodShop.Domain.Entities.ProductVariant> 
+                  ?? Enumerable.Empty<FastFoodShop.Domain.Entities.ProductVariant>();
 }
 
 <!DOCTYPE html>
@@ -61,7 +62,7 @@
     </section>
 
     <!-- Product Detail Section -->
-    <section class="py-5" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
+    <section class="py-5 product-detail-section">
         <div class="container">
             <div class="row">
                 <div class="col-lg-6 mb-4 mb-lg-0">
@@ -153,32 +154,32 @@
                         </form>
                         
                         <!-- Product Features -->
-                        <div class="border-top pt-4">
+                        <div class="product-features">
                             <h6 class="mb-3 text-muted">
                                 <i class="fas fa-shield-alt me-2"></i>
                                 Cam kết của chúng tôi:
                             </h6>
                             <div class="row g-3">
                                 <div class="col-6">
-                                    <div class="d-flex align-items-center">
+                                    <div class="product-feature-item">
                                         <i class="fas fa-shipping-fast text-primary me-2"></i>
                                         <small class="text-muted">Giao hàng nhanh</small>
                                     </div>
                                 </div>
                                 <div class="col-6">
-                                    <div class="d-flex align-items-center">
+                                    <div class="product-feature-item">
                                         <i class="fas fa-award text-primary me-2"></i>
                                         <small class="text-muted">Chất lượng đảm bảo</small>
                                     </div>
                                 </div>
                                 <div class="col-6">
-                                    <div class="d-flex align-items-center">
+                                    <div class="product-feature-item">
                                         <i class="fas fa-undo text-primary me-2"></i>
                                         <small class="text-muted">Đổi trả dễ dàng</small>
                                     </div>
                                 </div>
                                 <div class="col-6">
-                                    <div class="d-flex align-items-center">
+                                    <div class="product-feature-item">
                                         <i class="fas fa-headset text-primary me-2"></i>
                                         <small class="text-muted">Hỗ trợ 24/7</small>
                                     </div>
@@ -194,7 +195,7 @@
             {
                 <div class="row mt-5">
                     <div class="col-12">
-                        <div class="card border-0 shadow-sm rounded-3">
+                        <div class="card product-description-card">
                             <div class="card-body p-4">
                                 <h4 class="mb-4">
                                     <i class="fas fa-info-circle me-2 text-primary"></i>
