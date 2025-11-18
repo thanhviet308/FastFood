@@ -1,5 +1,5 @@
 @{
-    ViewData["Title"] = "Manage Orders";
+    ViewData["Title"] = "Đơn hàng - FastFood Shop";
     Layout = null; // đang tự include header/sidebar/footer
 }
 
@@ -41,16 +41,16 @@
                         <div class="row">
                             <div class="col-12 mx-auto">
                                 <div class="d-flex">
-                                    <h3>Bảng đơn hàng</h3>
+                                    <h3>Danh sách đơn hàng</h3>
                                 </div>
 
                                 <hr />
                                 <table class="table table-bordered table-hover">
                                     <thead>
                                         <tr>
-                                            <th>ID</th>
+                                            <th>Mã đơn hàng</th>
                                             <th>Tổng tiền</th>
-                                            <th>Người dùng</th>
+                                            <th>Khách hàng</th>
                                             <th>Trạng thái</th>
                                             <th>Thao tác</th>
                                         </tr>
@@ -70,19 +70,58 @@
                                         @foreach (var order in orders)
                                         {
                                             <tr>
-                                                <td>@order.Id</td>
+                                                <td>DH-@order.Id.ToString("D6")</td>
                                                 <td>@order.TotalPrice.ToString("N0") đ</td>
-                                                <td>@(order.User?.FullName ?? "N/A")</td>
-                                                <td>@order.Status</td>
+                                                <td>@(order.User?.FullName ?? "Khách vãng lai")</td>
                                                 <td>
-                                                    <a class="btn btn-success" asp-area="Admin" asp-controller="Order"
-                                                        asp-action="Detail" asp-route-id="@order.Id">Xem</a>
+                                                    @{
+                                                        var statusClass = order.Status switch
+                                                        {
+                                                            "PENDING" => "badge bg-warning text-dark",
+                                                            "CONFIRMED" => "badge bg-info text-white",
+                                                            "SHIPPING" => "badge bg-primary text-white",
+                                                            "DELIVERED" => "badge bg-success text-white",
+                                                            "CANCELLED" => "badge bg-danger text-white",
+                                                            _ => "badge bg-secondary text-white"
+                                                        };
+                                                        var statusText = order.Status switch
+                                                        {
+                                                            "PENDING" => "Chờ xác nhận",
+                                                            "CONFIRMED" => "Đã xác nhận",
+                                                            "SHIPPING" => "Đang giao",
+                                                            "DELIVERED" => "Đã giao",
+                                                            "CANCELLED" => "Đã hủy",
+                                                            _ => order.Status
+                                                        };
+                                                    }
+                                                    <span class="@statusClass">@statusText</span>
+                                                </td>
+                                                <td>
+                                                    <a class="btn btn-success btn-sm" asp-area="Admin" asp-controller="Order"
+                                                        asp-action="Detail" asp-route-id="@order.Id">
+                                                        <i class="fas fa-eye"></i> Chi tiết
+                                                    </a>
 
-                                                    <a class="btn btn-warning mx-2" asp-area="Admin" asp-controller="Order"
-                                                        asp-action="Update" asp-route-id="@order.Id">Cập nhật</a>
+                                                    <a class="btn btn-warning btn-sm mx-1" asp-area="Admin" asp-controller="Order"
+                                                        asp-action="Update" asp-route-id="@order.Id">
+                                                        <i class="fas fa-edit"></i> Sửa
+                                                    </a>
 
-                                                    <a class="btn btn-danger" asp-area="Admin" asp-controller="Order"
-                                                        asp-action="Delete" asp-route-id="@order.Id">Xóa</a>
+                                                    <a class="btn btn-danger btn-sm" asp-area="Admin" asp-controller="Order"
+                                                        asp-action="Delete" asp-route-id="@order.Id">
+                                                        <i class="fas fa-trash"></i> Xóa
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        }
+                                        
+                                        @if (!orders.Any())
+                                        {
+                                            <tr>
+                                                <td colspan="5" class="text-center text-muted py-4">
+                                                    <i class="fas fa-inbox fa-2x mb-2"></i>
+                                                    <div>Chưa có đơn hàng nào</div>
+                                                    <small>Khách hàng chưa thực hiện đặt hàng</small>
                                                 </td>
                                             </tr>
                                         }

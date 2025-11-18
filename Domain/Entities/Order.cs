@@ -28,6 +28,9 @@ namespace FastFoodShop.Domain.Entities
         [StringLength(50)]
         public string? Status { get; set; }
 
+        [StringLength(1000)]
+        public string? Note { get; set; }
+
         // Nhiều Order thuộc về 1 User
         [ForeignKey("UserId")]
         public long? UserId { get; set; }

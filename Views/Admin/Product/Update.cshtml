@@ -1,6 +1,6 @@
 @model FastFoodShop.Domain.Entities.Product
 @{
-    ViewData["Title"] = "Update Product - FastFood Shop";
+    ViewData["Title"] = "Cập nhật Sản phẩm - FastFood Shop";
     Layout = null; // tự include header/sidebar/footer
 }
 
@@ -103,7 +103,7 @@
                                         <label class="form-label">Danh mục</label>
         
                                         <select class="form-select" name="CategoryId">
-                                            <option value="">-- chọn category --</option>
+                                            <option value="">-- chọn danh mục --</option>
                                             @foreach (var c in (IEnumerable<FastFoodShop.Domain.Entities.Category>)ViewBag.Categories ?? Enumerable.Empty<FastFoodShop.Domain.Entities.Category>())
                                             {
                                                 <option value="@c.Id" selected="@(Model.CategoryId == c.Id ? "selected" : null)">@c.Name</option>
@@ -114,8 +114,8 @@
                                     <div class="mb-3 col-auto">
                                         <label asp-for="IsActive" class="form-label">Trạng thái</label>
                                         <select asp-for="IsActive" class="form-select w-auto" style="min-width: 120px;">
-                                            <option value="true">True</option>
-                                            <option value="false">False</option>
+                                            <option value="true">Hoạt động</option>
+                                            <option value="false">Ngừng hoạt động</option>
                                         </select>
                                     </div>
 
@@ -138,8 +138,8 @@
 
                                     <div class="mb-3 col-12 col-md-6">
                                         <label for="avatarFile" class="form-label">Ảnh</label>
-                                        <input class="form-control" type="file" id="avatarFile"
-                                            accept=".png, .jpg, .jpeg" name="nhatraicayFile" />
+                                        <input class="form-control" type="file" id="imageFile"
+                                            accept=".png, .jpg, .jpeg" name="imageFile" />
                                     </div>
 
                                     <div class="col-12 mb-3">

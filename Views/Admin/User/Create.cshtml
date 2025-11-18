@@ -1,6 +1,6 @@
 @model FastFoodShop.Domain.Entities.User
 @{
-    ViewData["Title"] = "Create User - FastFood Shop";
+    ViewData["Title"] = "Tạo Người dùng - FastFood Shop";
     Layout = null;
     Func<string, string> invalid = name =>
     (ViewData.ModelState.TryGetValue(name, out var e) && e.Errors.Count > 0) ? "is-invalid" : "";
@@ -42,21 +42,22 @@
         <div id="layoutSidenav_content">
             <main>
                 <div class="container-fluid px-4">
-                    <h1 class="mt-4">Manage Users</h1>
+                    <h1 class="mt-4">Quản lý Người dùng</h1>
                     <ol class="breadcrumb mb-4">
                         <li class="breadcrumb-item">
-                            <a asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+                            <a asp-controller="Dashboard" asp-action="Index">Bảng điều khiển</a>
                         </li>
                         <li class="breadcrumb-item">
-                            <a asp-controller="User" asp-action="Index">Users</a>
+                            <a asp-controller="User" asp-action="Index">Người dùng</a>
                         </li>
-                        <li class="breadcrumb-item active">Create</li>
+                        <li class="breadcrumb-item active">Tạo mới</li>
                     </ol>
 
                     <div class="mt-5">
                         <div class="row">
+
                             <div class="col-md-6 col-12 mx-auto">
-                                <h3>Create a user</h3>
+                                <h3>Tạo người dùng mới</h3>
                                 <hr />
 
                                 <!-- Summary lỗi -->
@@ -80,7 +81,7 @@
                                     </div>
 
                                     <div class="col-12 col-md-6">
-                                        <label asp-for="Phone" class="form-label">Phone number</label>
+                                        <label asp-for="Phone" class="form-label">Số điện thoại</label>
                                         <input asp-for="Phone" class="form-control @(invalid(nameof(Model.Phone)))" />
                                         <span asp-validation-for="Phone" class="invalid-feedback"></span>
                                     </div>
@@ -100,9 +101,9 @@
                                     </div>
 
                                     <div class="col-12 col-md-6">
-                                        <label asp-for="RoleId" class="form-label">Role</label>
+                                        <label asp-for="RoleId" class="form-label">Vai trò</label>
                                         <select asp-for="RoleId" class="form-select @(invalid(nameof(Model.RoleId)))">
-                                            <option value="">-- chọn quyền --</option>
+                                            <option value="">-- chọn vai trò --</option>
                                             <option value="1">ADMIN</option>
                                             <option value="2">USER</option>
                                         </select>
@@ -110,9 +111,9 @@
                                     </div>
 
                                     <div class="col-12 col-md-6">
-                                        <label for="avatarFile" class="form-label">Avatar</label>
+                                        <label for="avatarFile" class="form-label">Ảnh đại diện</label>
                                         <input class="form-control @(invalid(nameof(Model.Avatar)))" type="file"
-                                            id="avatarFile" accept=".png, .jpg, .jpeg" name="nhatraicayFile" />
+                                            id="avatarFile" accept=".png, .jpg, .jpeg" name="avatarFile" />
                                         <span asp-validation-for="Avatar" class="invalid-feedback"></span>
                                     </div>
 
@@ -123,7 +124,7 @@
                                     </div>
 
                                     <div class="col-12 mb-5">
-                                        <button type="submit" class="btn btn-primary">Create</button>
+                                        <button type="submit" class="btn btn-primary">Tạo mới</button>
                                     </div>
                                 </form>
 

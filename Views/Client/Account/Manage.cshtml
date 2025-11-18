@@ -1,0 +1,182 @@
+@model FastFoodShop.Domain.Entities.User
+@{
+    ViewData["Title"] = "Quản Lý Tài Khoản - FastFood Shop";
+    Layout = "~/Views/Client/Layout/_AccountLayout.cshtml";
+}
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@{
+    var af = Xsrf.GetAndStoreTokens(Context);
+}
+
+@section Head {
+    <meta name="X-CSRF-TOKEN" content="@af.RequestToken" />
+}
+
+<!-- Modern Account Management Start -->
+<div class="container-fluid account-page">
+    <div class="container account-container">
+        <!-- Page Header -->
+        <div class="account-header">
+            <h1><i class="fas fa-user-cog me-3"></i>Quản Lý Tài Khoản</h1>
+            <p>Cập nhật và quản lý thông tin cá nhân của bạn</p>
+        </div>
+
+        <div class="row g-4">
+            <!-- User Profile Card -->
+            <div class="col-lg-4">
+                <div class="modern-card">
+                    <!-- Avatar Section -->
+                    <div class="avatar-section">
+                        <div class="avatar-modern">
+                            @if (!string.IsNullOrEmpty(Model.Avatar))
+                            {
+                                <img src="@Model.Avatar" alt="Avatar" class="avatar-img" />
+                            }
+                            else
+                            {
+                                <i class="fas fa-user"></i>
+                            }
+                        </div>
+                        <div class="user-info">
+                            <h4>@Model.FullName</h4>
+                            <p>@Model.Email</p>
+                        </div>
+                        <div class="avatar-upload-section">
+                            <input type="file" id="avatarInput" accept="image/*" style="display: none;" />
+                            <button type="button" class="btn-avatar-upload" id="uploadAvatarBtn">
+                                <i class="fas fa-camera me-2"></i>Đổi ảnh đại diện
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Statistics -->
+                    <div class="stats-modern">
+                        <div class="stat-modern">
+                            <span class="stat-number-modern" id="totalOrders">0</span>
+                            <span class="stat-label-modern">Đơn hàng</span>
+                        </div>
+                        <div class="stat-modern">
+                            <span class="stat-number-modern" id="totalReviews">0</span>
+                            <span class="stat-label-modern">Đánh giá</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Account Settings -->
+            <div class="col-lg-8">
+                <!-- Personal Information -->
+                <div class="modern-card">
+                    <div class="card-header-modern">
+                        <h5><i class="fas fa-id-card me-2"></i>Thông Tin Cá Nhân</h5>
+                    </div>
+                    <div class="form-section">
+                        <form id="accountForm">
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    <div class="form-group-modern">
+                                        <label class="form-label-modern">Họ và tên</label>
+                                        <input type="text" class="form-control-modern" name="FullName" value="@Model.FullName" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group-modern">
+                                        <label class="form-label-modern">Email</label>
+                                        <input type="email" class="form-control-modern" name="Email" value="@Model.Email" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group-modern">
+                                        <label class="form-label-modern">Số điện thoại</label>
+                                        <input type="tel" class="form-control-modern" name="Phone" value="@Model.Phone" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group-modern">
+                                        <label class="form-label-modern">Địa chỉ</label>
+                                        <textarea class="form-control-modern" name="Address" rows="3" readonly>@Model.Address</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex gap-3 mt-4 d-none" id="formActions">
+                                <button type="submit" class="btn-modern btn-primary-modern">
+                                    <i class="fas fa-save me-2"></i>Lưu Thay Đổi
+                                </button>
+                                <button type="button" class="btn-modern btn-outline-modern" id="cancelBtn">
+                                    <i class="fas fa-times me-2"></i>Hủy
+                                </button>
+                            </div>
+                        </form>
+                        
+                        <div class="text-end mt-3">
+                            <button type="button" class="btn-modern btn-primary-modern" id="editBtn">
+                                <i class="fas fa-edit me-2"></i>Chỉnh Sửa Thông Tin
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Password Change -->
+                <div class="modern-card">
+                    <div class="card-header-modern">
+                        <h5><i class="fas fa-shield-alt me-2"></i>Bảo Mật Tài Khoản</h5>
+                    </div>
+                    <div class="form-section password-section">
+                        <form id="passwordForm">
+                            <div class="row g-4">
+                                <div class="col-md-4">
+                                    <div class="form-group-modern">
+                                        <label class="form-label-modern">Mật khẩu hiện tại</label>
+                                        <input type="password" class="form-control-modern" name="currentPassword" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group-modern">
+                                        <label class="form-label-modern">Mật khẩu mới</label>
+                                        <input type="password" class="form-control-modern" name="newPassword" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group-modern">
+                                        <label class="form-label-modern">Xác nhận mật khẩu</label>
+                                        <input type="password" class="form-control-modern" name="confirmPassword" required>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="text-end mt-4">
+                                <button type="submit" class="btn-modern btn-warning-modern">
+                                    <i class="fas fa-key me-2"></i>Đổi Mật Khẩu
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modern Account Management End -->
+
+@section Scripts {
+    <script src="~/client/js/account.js?v=1.2"></script>
+    <script>
+        // Load user statistics
+        $(document).ready(function() {
+            $.ajax({
+                url: '/account/statistics',
+                method: 'GET',
+                success: function(data) {
+                    $('#totalOrders').text(data.totalOrders);
+                    $('#totalReviews').text(data.totalReviews);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error loading statistics:', error);
+                    $('#totalOrders').text('0');
+                    $('#totalReviews').text('0');
+                }
+            });
+        });
+    </script>
+}

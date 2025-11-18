@@ -36,43 +36,79 @@ body {
 .btn-primary { background-color: var(--primary-color) !important; border-color: var(--primary-color) !important; }
 .border-primary { border-color: var(--primary-color) !important; }
 
-/* Header Styles */
+/* Header Styles - Enhanced for better spacing */
 .minimal-header {
     background: var(--background);
     border-bottom: 1px solid var(--border);
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow-md);
     position: sticky;
     top: 0;
     z-index: 1000;
+    padding: 1rem 0;
+}
+
+.minimal-header .container {
+    max-width: 1200px;
+    padding: 0 24px;
+}
+
+/* Enhanced topbar spacing */
+.minimal-header .container.border-bottom {
+    padding: 12px 24px !important;
+    margin-bottom: 16px;
+    border-bottom: 1px solid rgba(0,0,0,0.1) !important;
+}
+
+.minimal-header .d-flex.gap-3 {
+    gap: 24px !important;
+}
+
+.minimal-header .text-muted {
+    font-weight: 500;
+    font-size: 0.9rem;
 }
 
 .minimal-header .navbar-brand {
-    font-size: 1.5rem;
-    font-weight: 700;
+    font-size: 2rem;
+    font-weight: 800;
     color: var(--primary-color) !important;
     text-decoration: none;
+    padding: 0.5rem 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
 .minimal-header .nav-link {
     color: var(--text-dark) !important;
-    font-weight: 500;
-    padding: 0.75rem 1rem;
-    border-radius: var(--radius-sm);
-    transition: all 0.2s ease;
+    font-weight: 600;
+    padding: 12px 20px;
+    margin: 0 4px;
+    border-radius: var(--radius-md);
+    transition: all 0.3s ease;
+    position: relative;
 }
 
 .minimal-header .nav-link:hover {
-    background: var(--surface);
-    color: var(--primary-color) !important;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white !important;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.minimal-header .nav-link.active {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white !important;
 }
 
 .minimal-header .btn-primary {
-    background: var(--primary-color);
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
     border: none;
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-md);
     font-weight: 600;
-    padding: 0.5rem 1rem;
-    transition: all 0.2s ease;
+    padding: 0.75rem 1.5rem;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-sm);
 }
 
 .minimal-header .btn-primary:hover {
@@ -281,28 +317,118 @@ body {
     margin-bottom: 0.5rem;
 }
 
-/* Footer */
+/* Footer - Enhanced with better spacing and visual hierarchy */
 .minimal-footer {
     background: var(--surface);
     border-top: 1px solid var(--border);
-    padding: 3rem 0 2rem;
-    margin-top: 4rem;
+    padding: 4rem 0 3rem;
+    margin-top: 5rem;
+    position: relative;
+}
+
+.minimal-footer .container {
+    max-width: 1200px;
+    padding: 0 24px;
+}
+
+.minimal-footer .row {
+    margin: 0 -24px;
+}
+
+.minimal-footer .col-md-3,
+.minimal-footer .col-md-6 {
+    padding: 0 24px;
+    margin-bottom: 2rem;
 }
 
 .minimal-footer h5 {
     color: var(--text-dark);
-    font-weight: 600;
-    margin-bottom: 1rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.minimal-footer h5::after {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 2px;
+    background: var(--primary-color);
+    margin-top: 0.5rem;
+}
+
+.minimal-footer .list-unstyled li {
+    margin-bottom: 0.75rem;
+    padding: 0;
 }
 
 .minimal-footer a {
     color: var(--text-light);
     text-decoration: none;
-    transition: color 0.2s ease;
+    transition: all 0.3s ease;
+    display: inline-block;
+    padding: 0.25rem 0;
+    font-weight: 500;
 }
 
 .minimal-footer a:hover {
     color: var(--primary-color);
+    transform: translateX(4px);
+}
+
+.minimal-footer .text-muted {
+    color: var(--text-light) !important;
+    line-height: 1.7;
+    margin-bottom: 1rem;
+}
+
+.minimal-footer .bi {
+    margin-right: 0.75rem;
+    color: var(--primary-color);
+    font-size: 1.1rem;
+    width: 20px;
+    text-align: center;
+}
+
+.minimal-footer .border-top {
+    border-color: var(--border) !important;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    text-align: center;
+}
+
+.minimal-footer .border-top p {
+    margin: 0;
+    color: var(--text-light);
+    font-size: 0.9rem;
+}
+
+/* Enhanced footer spacing for better visual hierarchy */
+.minimal-footer .d-flex {
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.minimal-footer .d-flex:last-child {
+    margin-bottom: 0;
+}
+
+/* Compact footer links to reduce spacing */
+.minimal-footer-link {
+    padding: 0.125rem 0 !important;
+    margin: 0 !important;
+    line-height: 1.4 !important;
+    font-size: 0.9rem !important;
+}
+
+.minimal-footer .flex-column.gap-1 {
+    gap: 0.25rem !important;
+}
+
+.minimal-footer .flex-column.gap-2 {
+    gap: 0.5rem !important;
 }
 
 /* Responsive Design */
@@ -334,6 +460,74 @@ body {
 
     .minimal-product-actions {
         flex-direction: column;
+    }
+
+    /* Header responsive improvements */
+    .minimal-header .navbar-brand {
+        font-size: 1.5rem;
+    }
+
+    .minimal-header .nav-link {
+        padding: 10px 16px;
+        margin: 0 2px;
+        font-size: 0.9rem;
+    }
+
+    .minimal-header .container {
+        padding: 0 16px;
+    }
+
+    .minimal-header .d-flex.gap-3 {
+        gap: 16px !important;
+    }
+
+    /* Footer responsive improvements */
+    .minimal-footer {
+        padding: 3rem 0 2rem;
+        margin-top: 4rem;
+    }
+
+    .minimal-footer .container {
+        padding: 0 16px;
+    }
+
+    .minimal-footer .col-md-3,
+    .minimal-footer .col-md-6 {
+        padding: 0 16px;
+        margin-bottom: 2.5rem;
+        text-align: center;
+    }
+
+    .minimal-footer h5 {
+        font-size: 1rem;
+        margin-bottom: 1.25rem;
+    }
+
+    .minimal-footer h5::after {
+        margin: 0.5rem auto 0;
+    }
+
+    .minimal-footer .list-unstyled li {
+        margin-bottom: 0.25rem;
+    }
+
+    .minimal-footer-link {
+        padding: 0.1rem 0 !important;
+        font-size: 0.85rem !important;
+    }
+
+    .minimal-footer .flex-column.gap-1 {
+        gap: 0.2rem !important;
+    }
+
+    .minimal-footer .border-top {
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+    }
+
+    .minimal-footer .d-flex {
+        justify-content: center;
+        flex-wrap: wrap;
     }
 }
 

@@ -204,7 +204,8 @@ function updateCartCount() {
     })
     .then(response => response.json())
     .then(data => {
-        const cartCountElement = document.getElementById('sumCart');
+        // Try both old and new cart count element IDs for compatibility
+        const cartCountElement = document.getElementById('cart-count') || document.getElementById('sumCart');
         if (cartCountElement) {
             const count = Number(data?.count ?? 0);
             cartCountElement.textContent = count;

@@ -1,6 +1,6 @@
 @model FastFoodShop.Domain.Entities.User
 @{
-    ViewData["Title"] = "Detail User - FastFood Shop";
+    ViewData["Title"] = "Chi tiết Người dùng - FastFood Shop";
     Layout = null; // tự include header/sidebar/footer
 }
 
@@ -27,42 +27,42 @@
         <div id="layoutSidenav_content">
             <main>
                 <div class="container-fluid px-4">
-                    <h1 class="mt-4">Manage Users</h1>
+                    <h1 class="mt-4">Quản lý Người dùng</h1>
                     <ol class="breadcrumb mb-4">
                         <li class="breadcrumb-item">
-                            <a asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+                            <a asp-controller="Dashboard" asp-action="Index">Bảng điều khiển</a>
                         </li>
                         <li class="breadcrumb-item">
-                            <a asp-controller="User" asp-action="Index">Users</a>
+                            <a asp-controller="User" asp-action="Index">Người dùng</a>
                         </li>
-                        <li class="breadcrumb-item active">Detail</li>
+                        <li class="breadcrumb-item active">Chi tiết</li>
                     </ol>
 
                     <div class="container mt-5">
                         <div class="row">
                             <div class="col-12 mx-auto">
                                 <div class="d-flex justify-content-between">
-                                    <h3>User detail with id = @Model.Id</h3>
+                                    <h3>Chi tiết người dùng ID = @Model.Id</h3>
                                 </div>
 
                                 <hr />
 
                                 <div class="card" style="width: 60%">
                                     <div class="card-header">
-                                        User information
+                                        Thông tin người dùng
                                     </div>
                                     <ul class="list-group list-group-flush">
                                         <li class="list-group-item">ID: @Model.Id</li>
                                         <li class="list-group-item">Email: @Model.Email</li>
-                                        <li class="list-group-item">Full Name: @Model.FullName</li>
-                                        <li class="list-group-item">Phone: @Model.Phone</li>
-                                        <li class="list-group-item">Address: @Model.Address</li>
-                                        <li class="list-group-item">Role: @Model.Role?.Name</li>
+                                        <li class="list-group-item">Họ tên: @Model.FullName</li>
+                                        <li class="list-group-item">Số điện thoại: @Model.Phone</li>
+                                        <li class="list-group-item">Địa chỉ: @Model.Address</li>
+                                        <li class="list-group-item">Vai trò: @Model.Role?.Name</li>
 
                                     </ul>
                                 </div>
 
-                                <a asp-controller="User" asp-action="Index" class="btn btn-success mt-3">Back</a>
+                                <a asp-controller="User" asp-action="Index" class="btn btn-success mt-3">Quay lại</a>
                             </div>
                         </div>
                     </div>

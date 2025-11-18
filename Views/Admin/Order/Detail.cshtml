@@ -1,6 +1,6 @@
 @model IEnumerable<FastFoodShop.Domain.Entities.OrderDetail>
 @{
-    ViewData["Title"] = "Detail Order - FastFood Shop";
+    ViewData["Title"] = "Chi tiết Đơn hàng - FastFood Shop";
     Layout = null; // đang tự include header/sidebar/footer
     var orderId = ViewBag.Id as int? ?? 0;
 }
@@ -29,22 +29,22 @@
         <div id="layoutSidenav_content">
             <main>
                 <div class="container-fluid px-4">
-                    <h1 class="mt-4">Orders</h1>
+                    <h1 class="mt-4">Đơn hàng</h1>
                     <ol class="breadcrumb mb-4">
                         <li class="breadcrumb-item">
-                            <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+                            <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Bảng điều khiển</a>
                         </li>
                         <li class="breadcrumb-item">
-                            <a asp-area="Admin" asp-controller="Order" asp-action="Index">Order</a>
+                            <a asp-area="Admin" asp-controller="Order" asp-action="Index">Đơn hàng</a>
                         </li>
-                        <li class="breadcrumb-item active">View detail</li>
+                        <li class="breadcrumb-item active">Xem chi tiết</li>
                     </ol>
 
                     <div class="mt-5">
                         <div class="row">
                             <div class="col-12 mx-auto">
                                 <div class="d-flex justify-content-between">
-                                    <h3>Order detail with id = @orderId</h3>
+                                    <h3>Chi tiết đơn hàng DH-@orderId.ToString("D6")</h3>
                                 </div>
 
                                 <hr />

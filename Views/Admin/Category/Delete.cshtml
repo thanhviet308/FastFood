@@ -1,6 +1,6 @@
 @model FastFoodShop.Domain.Entities.Category
 @{
-    ViewData["Title"] = "Delete Category - FastFood Shop";
+    ViewData["Title"] = "Xóa Danh mục - FastFood Shop";
     Layout = null;
 }
 <!DOCTYPE html>
@@ -18,13 +18,13 @@
 <div id="layoutSidenav_content">
 <main>
 <div class="container-fluid px-4">
-    <h1 class="mt-4">Delete Category</h1>
+    <h1 class="mt-4">Xóa Danh mục</h1>
     <form method="post" asp-controller="Category" asp-action="Delete">
         @Html.AntiForgeryToken()
         <input asp-for="Id" type="hidden" />
-        <p>Are you sure to delete <strong>@Model.Name</strong>?</p>
-        <button class="btn btn-danger" type="submit">Delete</button>
-        <a class="btn btn-secondary" asp-controller="Category" asp-action="Index">Cancel</a>
+        <p>Bạn có chắc chắn muốn xóa danh mục <strong>@Model.Name</strong>?</p>
+        <button type="submit" class="btn btn-danger">Xóa</button>
+        <a class="btn btn-secondary" asp-controller="Category" asp-action="Index">Hủy</a>
     </form>
 </div>
 </main>

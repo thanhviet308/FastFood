@@ -1,6 +1,6 @@
 @model FastFoodShop.Domain.Entities.Product
 @{
-    ViewData["Title"] = "Create Product - FastFood Shop";
+    ViewData["Title"] = "Tạo Sản phẩm - FastFood Shop";
     Layout = null; // tự include header/sidebar/footer
     Func<string, string> invalid = name =>
     (ViewData.ModelState.TryGetValue(name, out var e) && e.Errors.Count > 0) ? "is-invalid" : "";
@@ -93,7 +93,7 @@
                                     <div class="mb-3 col-12 col-md-6">
                                         <label class="form-label">Danh mục</label>
                                         <select class="form-select" name="CategoryId">
-                                            <option value="">-- chọn category --</option>
+                                            <option value="">-- Chọn danh mục --</option>
                                             @foreach (var c in (IEnumerable<FastFoodShop.Domain.Entities.Category>)ViewBag.Categories ?? Enumerable.Empty<FastFoodShop.Domain.Entities.Category>())
                                             {
                                                 <option value="@c.Id">@c.Name</option>
@@ -104,8 +104,8 @@
                                     <div class="mb-3 col-auto">
                                         <label asp-for="IsActive" class="form-label">Trạng thái</label>
                                         <select asp-for="IsActive" class="form-select w-auto" style="min-width: 120px;">
-                                            <option value="true">True</option>
-                                            <option value="false">False</option>
+                                            <option value="true">Hoạt động</option>
+                                            <option value="false">Ngừng hoạt động</option>
                                         </select>
                                     </div>
 
@@ -125,7 +125,7 @@
                                     </div>
 
                                     <div class="col-12 mb-3">
-                                        <img style="max-height: 250px; display: none;" alt="avatar preview"
+                                        <img style="max-height: 250px; display: none;" alt="Xem trước hình ảnh"
                                             id="avatarPreview" />
                                     </div>
 

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace FastFoodShop.Controllers
 {
+    [Area("Admin")]
     [Authorize(Roles = "ADMIN")]
     [Route("admin")]
     public class DashboardController : Controller

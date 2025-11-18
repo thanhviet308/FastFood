@@ -1,6 +1,6 @@
 @model IEnumerable<FastFoodShop.Domain.Entities.User>
 @{
-    ViewData["Title"] = "Dashboard - FastFood Shop";
+    ViewData["Title"] = "Người dùng - FastFood Shop";
     Layout = null; // tự include header/sidebar/footer
 
     int currentPage = ViewBag.CurrentPage ?? 1;
@@ -91,7 +91,7 @@
                                 </table>
 
                                 <!-- Pagination -->
-                                <nav aria-label="User pagination">
+                                <nav aria-label="Phân trang người dùng">
                                     <ul class="pagination justify-content-center">
                                         <!-- Previous -->
                                         <li class="page-item @(currentPage <= 1 ? "disabled" : "")">

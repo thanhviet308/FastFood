@@ -1,10 +1,12 @@
 using FastFoodShop.Domain.Interfaces;
 using FastFoodShop.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FastFoodShop.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "ADMIN")]
     [Route("admin/orders")]
     public class OrderController : Controller
     {
@@ -23,14 +25,14 @@ namespace FastFoodShop.Controllers
             var s = size.GetValueOrDefault(10);
 
             var result = await _orders.FetchAllAsync(p, s);
-
-            // ViewBag dùng cho phân trang
+            
+            ViewBag.Orders = result.Items;
             ViewBag.CurrentPage = p;
             ViewBag.Total = result.Total;
             ViewBag.PageSize = s;
             ViewBag.TotalPages = (int)Math.Ceiling(result.Total / (double)s);
 
-            return View("~/Views/Admin/Order/Show.cshtml", result.Items);
+            return View("~/Views/Admin/Order/Show.cshtml");
         }
 
         // GET /admin/orders/{id}
@@ -38,7 +40,7 @@ namespace FastFoodShop.Controllers
         public async Task<IActionResult> Details(long id)
         {
             var order = await _orders.GetByIdAsync(id);
-            if (order is null) return RedirectToAction(nameof(Index));
+            if (order is null) return RedirectToAction(nameof(Index), new { error = "khong_tim_thay" });
 
             // order đã Include OrderDetails + Product trong service
             ViewBag.Id = id;
@@ -50,7 +52,7 @@ namespace FastFoodShop.Controllers
         public async Task<IActionResult> DeleteConfirm(long id)
         {
             var order = await _orders.GetByIdAsync(id);
-            if (order is null) return RedirectToAction(nameof(Index));
+            if (order is null) return RedirectToAction(nameof(Index), new { error = "khong_tim_thay" });
 
             ViewBag.Id = id;
             return View("~/Views/Admin/Order/Delete.cshtml", new Order { Id = id });

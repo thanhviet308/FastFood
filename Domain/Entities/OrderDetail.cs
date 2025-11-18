@@ -30,8 +30,5 @@ namespace FastFoodShop.Domain.Entities
 
         public long? VariantId { get; set; }
         public ProductVariant? Variant { get; set; }
-
-        [StringLength(255)]
-        public string? Note { get; set; }
     }
 }

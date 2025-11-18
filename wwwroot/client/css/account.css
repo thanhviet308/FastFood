@@ -1,0 +1,389 @@
+/* Account Management Styles */
+.account-page {
+    min-height: calc(100vh - 200px);
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding-bottom: 3rem !important;
+    display: block !important;
+    visibility: visible !important;
+}
+
+/* Ensure all account content is visible */
+.account-page .container,
+.account-page .row,
+.account-page .col-lg-4,
+.account-page .col-lg-8,
+.account-card {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.account-card {
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    height: 100%;
+    margin-bottom: 2rem;
+}
+
+.account-card:hover {
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.account-card .card-header {
+    background: linear-gradient(135deg, #EF5350 0%, #FF8A65 100%);
+    color: white;
+    padding: 1.5rem;
+    border: none;
+    font-weight: 600;
+}
+
+.account-card .card-header h5 {
+    margin: 0;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+}
+
+.account-card .card-body {
+    padding: 1.5rem;
+}
+
+/* Avatar Styles */
+.avatar-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+
+.avatar-circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #EF5350 0%, #FF8A65 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 2.5rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+}
+
+.avatar-circle:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Account Statistics */
+.account-stats {
+    display: flex !important;
+    justify-content: space-around;
+    padding: 1rem 0;
+    border-top: 1px solid #e9ecef;
+    margin-top: 1rem;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 0.5rem;
+}
+
+.stat-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #EF5350;
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+/* Form Styles */
+.form-label {
+    font-weight: 600;
+    color: #2C3E50;
+    margin-bottom: 0.5rem;
+}
+
+.form-control {
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+}
+
+.form-control:focus {
+    border-color: #EF5350;
+    box-shadow: 0 0 0 0.2rem rgba(239, 83, 80, 0.25);
+}
+
+.form-control[readonly] {
+    background-color: #f8f9fa;
+    cursor: not-allowed;
+}
+
+.form-control:not([readonly]):focus {
+    background-color: #ffffff;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(239, 83, 80, 0.15);
+}
+
+/* Button Styles */
+.btn {
+    border-radius: 8px;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #EF5350 0%, #FF8A65 100%);
+    box-shadow: 0 2px 4px rgba(239, 83, 80, 0.3);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #E53935 0%, #FF7043 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(239, 83, 80, 0.4);
+}
+
+.btn-outline-primary {
+    border: 2px solid #EF5350;
+    color: #EF5350;
+    background: transparent;
+}
+
+.btn-outline-primary:hover {
+    background: linear-gradient(135deg, #EF5350 0%, #FF8A65 100%);
+    border-color: transparent;
+    color: white;
+}
+
+.btn-outline-secondary {
+    border: 2px solid #6c757d;
+    color: #6c757d;
+    background: transparent;
+}
+
+.btn-outline-secondary:hover {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-warning {
+    background: linear-gradient(135deg, #FFC107 0%, #FFB74D 100%);
+    color: #212529;
+    box-shadow: 0 2px 4px rgba(255, 193, 7, 0.3);
+}
+
+.btn-warning:hover {
+    background: linear-gradient(135deg, #FFB300 0%, #FFA726 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(255, 193, 7, 0.4);
+}
+
+/* Card Spacing */
+.account-card + .account-card {
+    margin-top: 1.5rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .account-card .card-body {
+        padding: 1rem;
+    }
+    
+    .avatar-circle {
+        width: 80px;
+        height: 80px;
+        font-size: 2rem;
+    }
+    
+    .account-stats {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .stat-item {
+        padding: 0.25rem;
+    }
+    
+    .btn {
+        padding: 0.625rem 1.25rem;
+        font-size: 0.9rem;
+    }
+    
+    .form-control {
+        padding: 0.625rem 0.875rem;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .account-card {
+        margin-bottom: 1rem;
+    }
+    
+    .card-header h5 {
+        font-size: 1rem;
+    }
+    
+    .stat-number {
+        font-size: 1.25rem;
+    }
+    
+    .form-label {
+        font-size: 0.875rem;
+    }
+}
+
+/* Loading Animation */
+.account-card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Success/Error States */
+.is-valid {
+    border-color: #28a745 !important;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3e%3cpath fill='%2328a745' d='m2.3 6.73.9-.92 2.1-2.1 2.1 2.1.9.9-3.02 3.02z'/%3e%3c/svg%3e") !important;
+}
+
+.is-invalid {
+    border-color: #dc3545 !important;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23dc3545' viewBox='0 0 12 12'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e") !important;
+}
+
+/* Enhanced form group spacing */
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+/* Password Form Specific Styles */
+#passwordForm {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-top: 1rem;
+}
+
+#passwordForm .form-group {
+    margin-bottom: 1rem;
+}
+
+#passwordForm .form-control {
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
+}
+
+#passwordForm .form-control:focus {
+    border-color: #EF5350;
+    box-shadow: 0 0 0 0.2rem rgba(239, 83, 80, 0.25);
+}
+
+#passwordForm .btn {
+    margin-top: 0.5rem;
+}
+
+/* Custom scrollbar for textarea */
+textarea.form-control {
+    resize: vertical;
+    min-height: 80px;
+}
+
+textarea.form-control:focus {
+    box-shadow: 0 0 0 0.2rem rgba(239, 83, 80, 0.25);
+}
+
+/* Button group spacing */
+.d-flex.gap-2 {
+    gap: 0.75rem !important;
+}
+
+/* Card header button alignment */
+.card-header .btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+}
+
+/* Hover effects for form elements */
+.form-control:hover:not([readonly]) {
+    border-color: #adb5bd;
+}
+
+/* Account page layout fixes */
+.account-page {
+    padding-top: 2rem !important;
+    padding-bottom: 4rem !important;
+}
+
+/* Spinner fixes */
+#spinner {
+    z-index: 9999;
+    transition: opacity 0.3s ease;
+}
+
+#spinner:not(.show) {
+    opacity: 0;
+    pointer-events: none;
+}
+
+#spinner.show {
+    opacity: 1;
+}
+
+.account-page .container {
+    padding-top: 1rem;
+    padding-bottom: 2rem;
+}
+
+/* Ensure footer doesn't overlap */
+.minimal-footer {
+    margin-top: 3rem;
+}
+
+/* Page header spacing */
+.account-page .text-center.mb-5 {
+    margin-bottom: 3rem !important;
+}
+
+/* Card spacing improvements */
+.account-card {
+    margin-bottom: 2rem;
+}
+
+/* Last card special spacing */
+.account-page .row.g-4 > .col-lg-8:last-child .account-card:last-child {
+    margin-bottom: 0;
+}
+
+/* Focus ring enhancement */
+.form-control:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(239, 83, 80, 0.25), 0 0 0 0.1rem rgba(239, 83, 80, 0.5);
+}

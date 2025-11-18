@@ -1,0 +1,543 @@
+/* Order History Styles */
+
+/* Header Icon Fix - Ensure consistent sizing */
+.minimal-header .btn-sm {
+    padding: 0.375rem 0.75rem !important;
+    font-size: 0.875rem !important;
+    line-height: 1.5 !important;
+    border-radius: 0.25rem !important;
+    min-width: auto !important;
+    width: auto !important;
+    height: auto !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.minimal-header .btn-sm i {
+    font-size: 0.875rem !important;
+    line-height: 1 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: auto !important;
+    height: auto !important;
+}
+
+/* Ensure icons in header buttons are properly sized */
+.minimal-header .btn i.fas,
+.minimal-header .btn i.far,
+.minimal-header .btn i.fab {
+    font-size: 0.875rem !important;
+    vertical-align: middle !important;
+    display: inline-block !important;
+    width: auto !important;
+    height: auto !important;
+}
+
+/* Override any conflicting button styles */
+.minimal-header .btn-outline-secondary,
+.minimal-header .btn-outline-primary,
+.minimal-header .btn-primary {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0 !important;
+    min-height: 31px !important; /* Standard Bootstrap sm button height */
+}
+
+/* Fix for missing base button styles in account layout */
+.header-action-buttons .btn {
+    font-size: 0.875rem !important;
+    padding: 0.375rem 0.75rem !important;
+    line-height: 1.5 !important;
+    min-height: 31px !important;
+}
+
+.header-action-buttons .btn i {
+    font-size: 0.875rem !important;
+    line-height: 1 !important;
+}
+
+.order-filters {
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    margin-bottom: 2rem;
+}
+
+.order-stats {
+    margin-bottom: 2rem;
+}
+
+.stats-card {
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.stats-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.stats-icon {
+    font-size: 2rem;
+    margin-bottom: 0.75rem;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.total-orders .stats-icon {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.pending-orders .stats-icon {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.completed-orders .stats-icon {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.total-spent .stats-icon {
+    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+}
+
+.stats-number {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #2C3E50;
+    margin-bottom: 0.25rem;
+}
+
+.stats-label {
+    font-size: 0.875rem;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+/* Order Cards */
+.order-card {
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.order-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.order-card-header {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.order-number {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #2C3E50;
+}
+
+.order-date {
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+.order-status {
+    text-align: right;
+}
+
+.status-badge {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-pending {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+
+.status-confirmed {
+    background: linear-gradient(135deg, #cce5ff 0%, #74b9ff 100%);
+    color: #004085;
+    border: 1px solid #74b9ff;
+}
+
+.status-shipping {
+    background: linear-gradient(135deg, #d1ecf1 0%, #00cec9 100%);
+    color: #0c5460;
+    border: 1px solid #00cec9;
+}
+
+.status-delivered {
+    background: linear-gradient(135deg, #d4edda 0%, #55a3ff 100%);
+    color: #155724;
+    border: 1px solid #55a3ff;
+}
+
+.status-cancelled {
+    background: linear-gradient(135deg, #f8d7da 0%, #ff6b6b 100%);
+    color: #721c24;
+    border: 1px solid #ff6b6b;
+}
+
+.order-card-body {
+    padding: 1.5rem;
+}
+
+.order-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.order-customer {
+    flex: 1;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: #495057;
+}
+
+.order-customer strong {
+    color: #2C3E50;
+}
+
+.order-total {
+    text-align: right;
+    margin-left: 2rem;
+}
+
+.total-amount {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #EF5350;
+    margin-bottom: 0.25rem;
+}
+
+.total-label {
+    font-size: 0.8rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.order-note {
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    color: #856404;
+    margin-top: 1rem;
+}
+
+.order-note strong {
+    color: #856404;
+}
+
+.order-card-footer {
+    background: #f8f9fa;
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #e9ecef;
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-end;
+}
+
+/* Empty State */
+.empty-orders {
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 3rem 2rem;
+    margin: 2rem 0;
+}
+
+.empty-orders i {
+    color: #dee2e6;
+}
+
+.empty-orders h4 {
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+}
+
+.empty-orders p {
+    color: #adb5bd;
+    margin-bottom: 2rem;
+}
+
+/* Modal Styles */
+.modal-content {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+    background: linear-gradient(135deg, #EF5350 0%, #FF8A65 100%);
+    color: white;
+    border: none;
+    border-radius: 12px 12px 0 0;
+}
+
+.modal-header .btn-close {
+    filter: brightness(0) invert(1);
+}
+
+.modal-body {
+    padding: 2rem;
+}
+
+/* Order Details Modal */
+.order-details-header {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.order-details-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.order-details-item:last-child {
+    border-bottom: none;
+}
+
+.item-info {
+    flex: 1;
+}
+
+.item-name {
+    font-weight: 600;
+    color: #2C3E50;
+    margin-bottom: 0.25rem;
+}
+
+.item-quantity {
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+.item-price {
+    text-align: right;
+}
+
+.item-unit-price {
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+.item-total-price {
+    font-weight: 700;
+    color: #EF5350;
+    font-size: 1.1rem;
+}
+
+.order-details-summary {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.summary-row:last-child {
+    margin-bottom: 0;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #2C3E50;
+    border-top: 2px solid #dee2e6;
+    padding-top: 0.5rem;
+}
+
+/* Button Styles */
+.btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    border-radius: 6px;
+}
+
+.btn-outline-primary {
+    border: 2px solid #EF5350;
+    color: #EF5350;
+    background: transparent;
+}
+
+.btn-outline-primary:hover {
+    background: linear-gradient(135deg, #EF5350 0%, #FF8A65 100%);
+    border-color: transparent;
+    color: white;
+}
+
+.btn-outline-danger {
+    border: 2px solid #dc3545;
+    color: #dc3545;
+    background: transparent;
+}
+
+.btn-outline-danger:hover {
+    background: linear-gradient(135deg, #dc3545 0%, #e74c3c 100%);
+    border-color: transparent;
+    color: white;
+}
+
+/* Filter Styles */
+.form-select {
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-select:focus {
+    border-color: #EF5350;
+    box-shadow: 0 0 0 0.2rem rgba(239, 83, 80, 0.25);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .order-card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .order-status {
+        text-align: left;
+    }
+    
+    .order-summary {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .order-total {
+        text-align: left;
+        margin-left: 0;
+    }
+    
+    .order-card-footer {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .stats-card {
+        padding: 1rem;
+    }
+    
+    .stats-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+    }
+    
+    .stats-number {
+        font-size: 1.25rem;
+    }
+    
+    .modal-body {
+        padding: 1.5rem;
+    }
+    
+    .order-details-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .item-price {
+        text-align: left;
+        width: 100%;
+    }
+}
+
+@media (max-width: 576px) {
+    .order-filters {
+        padding: 1rem;
+    }
+    
+    .order-card-header,
+    .order-card-body,
+    .order-card-footer {
+        padding: 1rem;
+    }
+    
+    .status-badge {
+        padding: 0.375rem 0.75rem;
+        font-size: 0.75rem;
+    }
+    
+    .total-amount {
+        font-size: 1.25rem;
+    }
+}
+
+/* Animation */
+.order-card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Loading State */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* Search Highlight */
+.highlight {
+    background-color: #fff3cd;
+    padding: 0.125rem 0.25rem;
+    border-radius: 4px;
+    font-weight: 600;
+}

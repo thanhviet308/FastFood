@@ -16,6 +16,7 @@ namespace FastFoodShop.Domain.Interfaces
 
         Task<(IReadOnlyList<Product> Items, int Total)> FetchAsync(int page, int size);
         Task<(IReadOnlyList<Product> Items, int Total)> FetchBaseAsync(int page, int size);
+        Task<IReadOnlyList<Product>> FetchAllAsync();
         Task<(IReadOnlyList<Product> Items, int Total)> FetchFeaturedAsync(int page, int size);
 
         Task<(IReadOnlyList<Product> Items, int Total)> FetchWithSpecAsync(
@@ -36,7 +37,7 @@ namespace FastFoodShop.Domain.Interfaces
 
         Task HandlePlaceOrderAsync(
             User user, ISession session,
-            string receiverName, string receiverAddress, string receiverPhone);
+            string receiverName, string receiverAddress, string receiverPhone, string? note = null);
 
         Task<int> UpdateAsync(Product product);
 

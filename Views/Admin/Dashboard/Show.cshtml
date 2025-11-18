@@ -1,5 +1,5 @@
 @{
-    ViewData["Title"] = "Dashboard - FastFood Shop";
+    ViewData["Title"] = "Bảng điều khiển - FastFood Shop";
     Layout = null; // vì đang tự include header/sidebar/footer, chưa dùng layout tổng
 }
 
@@ -40,7 +40,7 @@
                             <div class="card bg-primary text-white mb-4">
                                 <div class="card-body">Số lượng Người dùng (@ViewBag.CountUsers)</div>
                                 <div class="card-footer d-flex align-items-center justify-content-between">
-                                    <a class="small text-white stretched-link" asp-controller="User"
+                                    <a class="small text-white stretched-link" asp-area="Admin" asp-controller="User"
                                         asp-action="Index">Xem chi tiết</a>
                                     <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                                 </div>
@@ -51,7 +51,7 @@
                             <div class="card bg-danger text-white mb-4">
                                 <div class="card-body">Số lượng Sản phẩm (@ViewBag.CountProducts)</div>
                                 <div class="card-footer d-flex align-items-center justify-content-between">
-                                    <a class="small text-white stretched-link" asp-controller="Product"
+                                    <a class="small text-white stretched-link" asp-area="Admin" asp-controller="Product"
                                         asp-action="Index">Xem chi tiết</a>
                                     <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                                 </div>
@@ -62,7 +62,7 @@
                             <div class="card bg-success text-white mb-4">
                                 <div class="card-body">Số lượng Đơn hàng (@ViewBag.CountOrders)</div>
                                 <div class="card-footer d-flex align-items-center justify-content-between">
-                                    <a class="small text-white stretched-link" asp-controller="Order"
+                                    <a class="small text-white stretched-link" asp-area="Admin" asp-controller="Order"
                                         asp-action="Index">Xem chi tiết</a>
                                     <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                                 </div>

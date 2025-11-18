@@ -1,6 +1,6 @@
 @model FastFoodShop.Domain.Entities.Category
 @{
-    ViewData["Title"] = "Update Category - FastFood Shop";
+    ViewData["Title"] = "Cập nhật Danh mục - FastFood Shop";
     Layout = null;
 }
 <!DOCTYPE html>
@@ -18,7 +18,7 @@
 <div id="layoutSidenav_content">
 <main>
 <div class="container-fluid px-4">
-    <h1 class="mt-4">Update Category</h1>
+    <h1 class="mt-4">Cập nhật Danh mục</h1>
     <form method="post" asp-controller="Category" asp-action="Update" class="row g-3">
         @Html.AntiForgeryToken()
         <input asp-for="Id" type="hidden" />
@@ -38,7 +38,7 @@
             <textarea asp-for="Description" class="form-control"></textarea>
         </div>
         <div class="col-12">
-            <button type="submit" class="btn btn-warning">Update</button>
+            <button type="submit" class="btn btn-warning">Cập nhật</button>
         </div>
     </form>
 </div>

@@ -3,9 +3,12 @@ using FastFoodShop.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FastFoodShop.Controllers
 {
+    [Area("Admin")]
+    [Authorize(Roles = "ADMIN")]
     [Route("admin/users")]
     public class UserController : Controller
     {
@@ -43,7 +46,7 @@ namespace FastFoodShop.Controllers
         public async Task<IActionResult> Detail(long id)
         {
             var u = await _users.GetByIdAsync(id);
-            if (u is null) return RedirectToAction(nameof(Index));
+            if (u is null) return RedirectToAction(nameof(Index), new { error = "khong_tim_thay" });
             ViewBag.Id = id;
             return View("~/Views/Admin/User/Detail.cshtml", u); // Views/Admin/User/Detail.cshtml
         }
@@ -56,10 +59,10 @@ namespace FastFoodShop.Controllers
         // POST /admin/users/create
         [HttpPost("create")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([FromForm] User form, IFormFile nhatraicayFile)
+        public async Task<IActionResult> Create([FromForm] User form, IFormFile avatarFile)
         {
             // Nếu chưa chọn file thì add lỗi thủ công
-            if (nhatraicayFile == null || nhatraicayFile.Length == 0)
+            if (avatarFile == null || avatarFile.Length == 0)
             {
                 ModelState.AddModelError("Avatar", "Vui lòng chọn ảnh đại diện");
             }
@@ -68,9 +71,9 @@ namespace FastFoodShop.Controllers
                 return View("~/Views/Admin/User/Create.cshtml", form);
 
             // Upload avatar
-            if (nhatraicayFile is { Length: > 0 })
+            if (avatarFile is { Length: > 0 })
             {
-                var avatar = await _upload.SaveFileAsync(nhatraicayFile, "avatar");
+                var avatar = await _upload.SaveFileAsync(avatarFile, "avatar");
                 form.Avatar = avatar;
             }
 
@@ -126,7 +129,7 @@ namespace FastFoodShop.Controllers
         public async Task<IActionResult> DeleteConfirm(long id)
         {
             var user = await _users.GetByIdAsync(id);  // nhớ GetByIdAsync phải có Include(u => u.Role)
-            if (user == null) return NotFound();
+            if (user == null) return RedirectToAction(nameof(Index), new { error = "khong_tim_thay" });
 
             return View("~/Views/Admin/User/Delete.cshtml", user);
         }

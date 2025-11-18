@@ -27,131 +27,22 @@ namespace FastFoodShop.Controllers
             _vnPayService = vnPayService;
         }
 
-        // GET /debug/auth
-        [HttpGet("debug/auth")]
-        public async Task<IActionResult> DebugAuth()
+        // Authentication helper method
+        private bool TryGetUser(out long userId, out string email)
         {
-            Console.WriteLine("=== DEBUG AUTH ENDPOINT CALLED ===");
+            userId = 0;
+            email = string.Empty;
 
-            // Check authentication status
-            var isAuthenticated = User.Identity?.IsAuthenticated ?? false;
-            Console.WriteLine($"IsAuthenticated: {isAuthenticated}");
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            var emailClaim = User.FindFirst(ClaimTypes.Email);
 
-            if (isAuthenticated)
+            if (userIdClaim != null && long.TryParse(userIdClaim.Value, out userId))
             {
-                // Get all claims
-                Console.WriteLine("All claims:");
-                foreach (var claim in User.Claims)
-                {
-                    Console.WriteLine($"  {claim.Type}: {claim.Value}");
-                }
-
-                // Try to get user info
-                if (TryGetUser(out var userId, out var email))
-                {
-                    Console.WriteLine($"User ID from claims: {userId}");
-                    Console.WriteLine($"Email from claims: {email}");
-
-                    // Check if user exists in database
-                    var user = await _userService.GetByIdAsync(userId);
-                    if (user != null)
-                    {
-                        Console.WriteLine($"User found in database: ID={user.Id}, Email={user.Email}, FullName={user.FullName}");
-                    }
-                    else
-                    {
-                        Console.WriteLine($"User NOT found in database for ID: {userId}");
-
-                        // Try to find by email
-                        if (!string.IsNullOrEmpty(email))
-                        {
-                            var userByEmail = await _userService.GetByEmailAsync(email);
-                            if (userByEmail != null)
-                            {
-                                Console.WriteLine($"User found by email: ID={userByEmail.Id}, Email={userByEmail.Email}, FullName={userByEmail.FullName}");
-                            }
-                            else
-                            {
-                                Console.WriteLine($"User NOT found by email: {email}");
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("Failed to parse user ID from claims");
-                }
-            }
-            else
-            {
-                Console.WriteLine("User is not authenticated");
+                email = emailClaim?.Value ?? string.Empty;
+                return true;
             }
 
-            // Return JSON response for debugging
-            return Json(new
-            {
-                isAuthenticated,
-                claims = User.Claims.Select(c => new { type = c.Type, value = c.Value }),
-                userId = TryGetUser(out var uid, out var eml) ? uid : 0,
-                email = eml
-            });
-        }
-
-        // GET /debug/users
-        [HttpGet("debug/users")]
-        public async Task<IActionResult> DebugUsers()
-        {
-            Console.WriteLine("=== DEBUG USERS ENDPOINT CALLED ===");
-
-            // Get first 10 users from database
-            var (users, total) = await _userService.GetAllAsync(1, 10);
-
-            Console.WriteLine($"Total users in database: {total}");
-            foreach (var user in users)
-            {
-                Console.WriteLine($"User: ID={user.Id}, Email={user.Email}, FullName={user.FullName}, Role={user.Role?.Name}");
-            }
-
-            return Json(new
-            {
-                totalUsers = total,
-                users = users.Select(u => new
-                {
-                    id = u.Id,
-                    email = u.Email,
-                    fullName = u.FullName,
-                    role = u.Role?.Name
-                })
-            });
-        }
-
-        // GET /debug/variants
-        [HttpGet("debug/variants")]
-        public async Task<IActionResult> DebugVariants()
-        {
-            Console.WriteLine("=== DEBUG VARIANTS ENDPOINT CALLED ===");
-
-            // Get all variants from database
-            var variants = await _db.ProductVariants.ToListAsync();
-            Console.WriteLine($"Total variants found: {variants.Count}");
-
-            foreach (var variant in variants)
-            {
-                Console.WriteLine($"Variant: ID={variant.Id}, ProductID={variant.ProductId}, VariantName={variant.VariantName}, Price={variant.Price}, Active={variant.IsActive}");
-            }
-
-            return Json(new
-            {
-                totalVariants = variants.Count,
-                variants = variants.Select(v => new
-                {
-                    id = v.Id,
-                    productId = v.ProductId,
-                    variantName = v.VariantName,
-                    price = v.Price,
-                    isActive = v.IsActive
-                })
-            });
+            return false;
         }
 
         // GET /api/products/{id}/variants
@@ -205,15 +96,6 @@ namespace FastFoodShop.Controllers
             return Json(new { count });
         }
 
-        // ➤ Helper: lấy userId/email từ Claims
-        private bool TryGetUser(out long userId, out string? email)
-        {
-            userId = 0;
-            email = User.Identity?.Name;
-            var idClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            return long.TryParse(idClaim, out userId);
-        }
-
         // [Authorize]
         // [HttpPost("/api/add-product-to-cart")]
         // [ValidateAntiForgeryToken]
@@ -228,7 +110,7 @@ namespace FastFoodShop.Controllers
         // public class CartRequest { public long ProductId { get; set; } public int Quantity { get; set; } = 1; }
 
 
-        // GET /cart  → hiển thị giỏ hàng
+        // GET /cart - display cart
         [Authorize]
         [HttpGet("cart")]
         public async Task<IActionResult> GetCartPage()
@@ -244,7 +126,7 @@ namespace FastFoodShop.Controllers
             ViewBag.TotalPrice = totalPrice;
             ViewBag.Cart = cart;
 
-            // ✅ Cập nhật Session cho badge (nhất quán: badge đọc 'distinct')
+            // Update Session for badge (consistent: badge reads 'distinct')
             var distinct = cartDetails.Count;
             long totalQtyLong = cartDetails.Sum(d => (long)d.Quantity);
             int totalQty = totalQtyLong > int.MaxValue ? int.MaxValue : (int)totalQtyLong;
@@ -314,7 +196,8 @@ namespace FastFoodShop.Controllers
             [FromForm] string receiverName,
             [FromForm] string receiverAddress,
             [FromForm] string receiverPhone,
-            [FromForm] string paymentMethod)
+            [FromForm] string paymentMethod,
+            [FromForm] string? orderNote = null)
         {
             
 
@@ -355,6 +238,12 @@ namespace FastFoodShop.Controllers
 
                 if (paymentMethod == "VNPAY")
                 {
+                    // Store customer info and note in session for later use after payment return
+                    HttpContext.Session.SetString("ReceiverName", receiverName);
+                    HttpContext.Session.SetString("ReceiverAddress", receiverAddress);
+                    HttpContext.Session.SetString("ReceiverPhone", receiverPhone);
+                    HttpContext.Session.SetString("OrderNote", orderNote ?? "");
+                    
                     // Create VNPAY payment URL
                     var orderId = DateTime.Now.Ticks.ToString();
                     var orderDescription = $"Thanh toán đơn hàng {orderId} - {user.FullName}";
@@ -368,14 +257,13 @@ namespace FastFoodShop.Controllers
                 }
                 else
                 {
-                    await _products.HandlePlaceOrderAsync(user, HttpContext.Session, receiverName, receiverAddress, receiverPhone);
+                    await _products.HandlePlaceOrderAsync(user, HttpContext.Session, receiverName, receiverAddress, receiverPhone, orderNote);
                     
                     return RedirectToAction(nameof(Thanks));
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                
                 ViewBag.ErrorMessage = "Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại.";
                 return await GetCheckOutPage();
             }
@@ -399,10 +287,23 @@ namespace FastFoodShop.Controllers
                     var user = await _userService.GetByIdAsync(userId);
                     if (user == null) return Redirect("/login");
                     
+                    // Get customer info from session (stored before payment)
+                    var receiverName = HttpContext.Session.GetString("ReceiverName") ?? user.FullName ?? "Khách hàng";
+                    var receiverAddress = HttpContext.Session.GetString("ReceiverAddress") ?? "Chưa cập nhật";
+                    var receiverPhone = HttpContext.Session.GetString("ReceiverPhone") ?? user.Phone ?? "Chưa cập nhật";
+                    var orderNote = HttpContext.Session.GetString("OrderNote");
+                    
                     await _products.HandlePlaceOrderAsync(user, HttpContext.Session, 
-                        $"Payment Order {response.OrderId}", 
-                        "VNPAY Payment", 
-                        "VNPAY");
+                        receiverName, 
+                        receiverAddress, 
+                        receiverPhone, 
+                        orderNote);
+                    
+                    // Clear session data after successful order
+                    HttpContext.Session.Remove("ReceiverName");
+                    HttpContext.Session.Remove("ReceiverAddress");
+                    HttpContext.Session.Remove("ReceiverPhone");
+                    HttpContext.Session.Remove("OrderNote");
                     
                     ViewBag.PaymentMessage = "Thanh toán thành công! Đơn hàng của bạn đã được xác nhận.";
                     ViewBag.PaymentSuccess = true;
@@ -415,7 +316,7 @@ namespace FastFoodShop.Controllers
                 
                 return View("~/Views/Client/Cart/PaymentResult.cshtml");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 ViewBag.PaymentMessage = "Có lỗi xảy ra khi xử lý kết quả thanh toán.";
                 ViewBag.PaymentSuccess = false;
@@ -487,16 +388,16 @@ namespace FastFoodShop.Controllers
                 allVariants.AddRange(variants);
             }
 
-            // Tính totalPages
+            // Calculate totalPages
             var totalPages = (int)Math.Ceiling(total / (double)pageSize);
 
-            // QueryString để build phân trang (loại bỏ tham số page hiện tại)
+            // QueryString for pagination (remove current page parameter)
             var qs = HttpContext.Request.QueryString.HasValue
                 ? HttpContext.Request.QueryString.Value ?? ""
                 : "";
             if (!string.IsNullOrEmpty(qs))
             {
-                // loại bỏ ?page= hoặc &page=
+                // remove ?page= or &page=
                 qs = System.Text.RegularExpressions.Regex.Replace(qs, @"([?&])page=\d+", "$1");
             }
 
@@ -507,6 +408,26 @@ namespace FastFoodShop.Controllers
             ViewBag.Variants = allVariants;
 
             return View("~/Views/Client/Product/Show.cshtml", items);
+        }
+
+        // GET /products/all - Display all products without pagination
+        [HttpGet("products/all")]
+        public async Task<IActionResult> GetAllProducts()
+        {
+            var allProducts = await _products.FetchAllAsync();
+
+            // Load variants for all products
+            var allVariants = new List<FastFoodShop.Domain.Entities.ProductVariant>();
+            foreach (var product in allProducts)
+            {
+                var variants = await _products.GetVariantsAsync(product.Id);
+                allVariants.AddRange(variants);
+            }
+
+            ViewBag.Variants = allVariants;
+            ViewBag.ShowAll = true; // Flag to indicate this is showing all products
+
+            return View("~/Views/Client/Product/Show.cshtml", allProducts);
         }
     }
 }

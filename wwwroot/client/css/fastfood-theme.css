@@ -283,6 +283,24 @@ body {
     box-shadow: 0 5px 15px rgba(239, 83, 80, 0.4);
 }
 
+.ff-btn-show-all {
+    background: linear-gradient(135deg, var(--ff-success) 0%, #20c997 100%);
+    color: white;
+    border: 2px solid var(--ff-success);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ff-btn-show-all:hover {
+    background: linear-gradient(135deg, #20c997 0%, var(--ff-success) 100%);
+    color: white;
+    border-color: #20c997;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+}
+
 .ff-form-select,
 .ff-form-input {
     border-radius: 15px;

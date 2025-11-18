@@ -1,9 +1,12 @@
 using FastFoodShop.Domain.Interfaces;
 using FastFoodShop.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FastFoodShop.Controllers
 {
+    [Area("Admin")]
+    [Authorize(Roles = "ADMIN")]
     [Route("admin/categories")]
     public class CategoryController : Controller
     {
@@ -36,7 +39,7 @@ namespace FastFoodShop.Controllers
         public async Task<IActionResult> Update(long id)
         {
             var c = await _products.GetCategoryByIdAsync(id);
-            if (c is null) return RedirectToAction(nameof(Index));
+            if (c is null) return RedirectToAction(nameof(Index), new { error = "khong_tim_thay" });
             return View("~/Views/Admin/Category/Update.cshtml", c);
         }
 
@@ -52,7 +55,7 @@ namespace FastFoodShop.Controllers
         public async Task<IActionResult> DeleteConfirm(long id)
         {
             var c = await _products.GetCategoryByIdAsync(id);
-            if (c is null) return RedirectToAction(nameof(Index));
+            if (c is null) return RedirectToAction(nameof(Index), new { error = "khong_tim_thay" });
             return View("~/Views/Admin/Category/Delete.cshtml", c);
         }
 

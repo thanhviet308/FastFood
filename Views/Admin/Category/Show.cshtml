@@ -1,6 +1,6 @@
 @model IEnumerable<FastFoodShop.Domain.Entities.Category>
 @{
-    ViewData["Title"] = "Categories - FastFood Shop";
+    ViewData["Title"] = "Danh mục - FastFood Shop";
     Layout = null;
 }
 <!DOCTYPE html>
@@ -18,27 +18,61 @@
 <div id="layoutSidenav_content">
 <main>
 <div class="container-fluid px-4">
-    <h1 class="mt-4">Categories</h1>
-    <a class="btn btn-primary mb-3" asp-controller="Category" asp-action="Create">Create</a>
-    <table class="table table-bordered">
+    <h1 class="mt-4">Quản lý Danh mục</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item">
+            <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Bảng điều khiển</a>
+        </li>
+        <li class="breadcrumb-item active">Danh mục</li>
+    </ol>
+    <a class="btn btn-primary mb-3" asp-controller="Category" asp-action="Create">
+        <i class="fas fa-plus me-2"></i>Tạo danh mục mới
+    </a>
+    <table class="table table-bordered table-hover">
         <thead>
         <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Active</th>
-            <th>Action</th>
+            <th>Tên danh mục</th>
+            <th>Mô tả</th>
+            <th>Trạng thái</th>
+            <th>Thao tác</th>
         </tr>
         </thead>
         <tbody>
-        @foreach (var c in Model ?? Enumerable.Empty<FastFoodShop.Domain.Entities.Category>())
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var c in Model)
+            {
+                <tr>
+                    <td>@c.Name</td>
+                    <td>@c.Description</td>
+                    <td>
+                        @if (c.IsActive)
+                        {
+                            <span class="badge bg-success">Hoạt động</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Ngừng hoạt động</span>
+                        }
+                    </td>
+                    <td>
+                        <a class="btn btn-sm btn-warning" asp-controller="Category" asp-action="Update" asp-route-id="@c.Id">
+                            <i class="fas fa-edit me-1"></i>Sửa
+                        </a>
+                        <a class="btn btn-sm btn-danger" asp-controller="Category" asp-action="DeleteConfirm" asp-route-id="@c.Id">
+                            <i class="fas fa-trash me-1"></i>Xóa
+                        </a>
+                    </td>
+                </tr>
+            }
+        }
+        else
         {
             <tr>
-                <td>@c.Name</td>
-                <td>@c.Description</td>
-                <td>@(c.IsActive ? "Yes" : "No")</td>
-                <td>
-                    <a class="btn btn-sm btn-warning" asp-controller="Category" asp-action="Update" asp-route-id="@c.Id">Edit</a>
-                    <a class="btn btn-sm btn-danger" asp-controller="Category" asp-action="DeleteConfirm" asp-route-id="@c.Id">Delete</a>
+                <td colspan="4" class="text-center text-muted py-4">
+                    <i class="fas fa-folder-open fa-2x mb-2"></i>
+                    <div>Chưa có danh mục nào</div>
+                    <small>Hãy tạo danh mục đầu tiên cho cửa hàng của bạn</small>
                 </td>
             </tr>
         }

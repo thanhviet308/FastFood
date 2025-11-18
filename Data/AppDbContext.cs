@@ -16,6 +16,7 @@ namespace FastFoodShop.Data
         public DbSet<OrderDetail> OrderDetails => Set<OrderDetail>();
         public DbSet<Cart> Carts => Set<Cart>();
         public DbSet<CartDetail> CartDetails => Set<CartDetail>();
+        public DbSet<Review> Reviews => Set<Review>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -91,6 +92,13 @@ namespace FastFoodShop.Data
                 .WithMany(c => c.CartDetails!)
                 .HasForeignKey(cd => cd.CartId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // Review relationships
+            modelBuilder.Entity<Review>()
+                .HasOne(r => r.User)
+                .WithMany()
+                .HasForeignKey(r => r.UserId)
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

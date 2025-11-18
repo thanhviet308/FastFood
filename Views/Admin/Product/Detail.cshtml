@@ -1,6 +1,6 @@
 @model FastFoodShop.Domain.Entities.Product
 @{
-    ViewData["Title"] = "Detail Product - FastFood Shop";
+    ViewData["Title"] = "Chi tiết Sản phẩm - FastFood Shop";
     Layout = null; // tự include header/sidebar/footer
 }
 
@@ -58,7 +58,7 @@
                                         <li class="list-group-item">Mã: @Model.Id</li>
                                         <li class="list-group-item">Tên: @Model.Name</li>
                                         
-                                        <li class="list-group-item">Category: @(Model.Category?.Name ?? "-")</li>
+                                        <li class="list-group-item">Danh mục: @(Model.Category?.Name ?? "-")</li>
                                         <li class="list-group-item">Trạng thái: @(Model.IsActive ? "Đang bán" : "Ẩn")</li>
                                         <li class="list-group-item">Mô tả ngắn: @Model.ShortDesc</li>
                                         <li class="list-group-item">Mô tả chi tiết: @Model.DetailDesc</li>

@@ -1,0 +1,217 @@
+@model IEnumerable<FastFoodShop.Domain.Entities.Review>
+@{
+    ViewData["Title"] = "Đánh Giá - FastFood Shop";
+    Layout = null;
+}
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@{
+    var af = Xsrf.GetAndStoreTokens(Context);
+}
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+@{
+    var isAuth = User?.Identity?.IsAuthenticated == true;
+    var sumCart = HttpContextAccessor.HttpContext?.Session.GetInt32("sum") ?? 0;
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"]</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap" rel="stylesheet" />
+
+    <!-- Icon Font Stylesheet -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet" />
+
+    <!-- Libraries Stylesheet -->
+    <link href="~/client/lib/lightbox/css/lightbox.min.css" rel="stylesheet" />
+    <link href="~/client/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="~/client/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/client/css/style.css" rel="stylesheet" />
+    <!-- FastFood Theme Stylesheet -->
+    <link href="~/client/css/fastfood-theme.css" rel="stylesheet" />
+    <!-- Minimal Theme Stylesheet - Enhanced Header/Footer -->
+    <link href="~/client/css/minimal-theme.css" rel="stylesheet" />
+    <!-- Review Stylesheet -->
+    <link href="~/client/css/review.css" rel="stylesheet" />
+
+    <!-- jQuery Toast -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.css" rel="stylesheet" />
+
+    <meta name="X-CSRF-TOKEN" content="@af.RequestToken" />
+</head>
+
+<body>
+    <!-- Spinner Start -->
+    <div id="spinner" class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-grow text-primary" role="status"></div>
+    </div>
+    <!-- Spinner End -->
+
+    <!-- Header Partial -->
+    @await Html.PartialAsync("~/Views/Client/Layout/_Header.cshtml")
+
+    <!-- Review Page Start -->
+    <div class="container-fluid py-5">
+        <div class="container">
+            <!-- Page Header -->
+            <div class="text-center mb-5">
+                <h1 class="display-4 ff-text-gradient mb-3">Đánh Giá Của Khách Hàng</h1>
+                <p class="lead text-muted">Chia sẻ trải nghiệm của bạn với FastFood Shop</p>
+            </div>
+
+            <div class="row g-4">
+                <!-- Submit Review Form -->
+                <div class="col-lg-4">
+                    <div class="review-form-card">
+                        <h4 class="mb-4 ff-text-gradient">
+                            <i class="fas fa-star me-2"></i>Gửi Đánh Giá
+                        </h4>
+                        
+                        <form id="reviewForm">
+                            <div class="mb-3">
+                                <label class="form-label">Đánh giá của bạn</label>
+                                <div class="star-rating mb-2" id="starRating">
+                                    <i class="far fa-star" data-rating="1"></i>
+                                    <i class="far fa-star" data-rating="2"></i>
+                                    <i class="far fa-star" data-rating="3"></i>
+                                    <i class="far fa-star" data-rating="4"></i>
+                                    <i class="far fa-star" data-rating="5"></i>
+                                </div>
+                                <input type="hidden" id="rating" name="Rating" value="0" />
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="content" class="form-label">Nội dung đánh giá</label>
+                                <textarea class="form-control" id="content" name="Content" rows="4" 
+                                    placeholder="Chia sẻ trải nghiệm của bạn với chúng tôi..." required></textarea>
+                            </div>
+
+                            @if (!isAuth)
+                            {
+                                <div class="mb-3">
+                                    <label for="userName" class="form-label">Họ tên</label>
+                                    <input type="text" class="form-control" id="userName" name="UserName" 
+                                        placeholder="Nhập họ tên của bạn" required />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="userEmail" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="userEmail" name="UserEmail" 
+                                        placeholder="Nhập email của bạn" required />
+                                </div>
+                            }
+
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-paper-plane me-2"></i>Gửi Đánh Giá
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Reviews List -->
+                <div class="col-lg-8">
+                    <div class="reviews-container">
+                        <h4 class="mb-4 ff-text-gradient">
+                            <i class="fas fa-comments me-2"></i>Đánh Giá Từ Khách Hàng
+                        </h4>
+
+                        @if (Model != null && Model.Any())
+                        {
+                            <div class="reviews-stats mb-4">
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <div class="stat-card text-center">
+                                            <div class="stat-number">@Model.Count()</div>
+                                            <div class="stat-label">Đánh giá</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="stat-card text-center">
+                                            <div class="stat-number">@Model.Average(r => r.Rating).ToString("F1")</div>
+                                            <div class="stat-label">Điểm trung bình</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="stat-card text-center">
+                                            <div class="stat-number">@Model.Count(r => r.Rating == 5)</div>
+                                            <div class="stat-label">Đánh giá 5 sao</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="reviews-list">
+                                @foreach (var review in Model)
+                                {
+                                    <div class="review-card mb-4">
+                                        <div class="review-header d-flex justify-content-between align-items-start mb-3">
+                                            <div class="reviewer-info">
+                                                <h6 class="reviewer-name mb-1">
+                                                    @(review.User?.FullName ?? review.UserName ?? "Khách hàng")
+                                                </h6>
+                                                <div class="review-rating">
+                                                    @for (int i = 1; i <= 5; i++)
+                                                    {
+                                                        <i class="fas fa-star @(i <= review.Rating ? "text-warning" : "text-muted-light")"></i>
+                                                    }
+                                                </div>
+                                            </div>
+                                            <small class="review-date text-muted">
+                                                @review.CreatedAt.ToString("dd/MM/yyyy")
+                                            </small>
+                                        </div>
+                                        <div class="review-content">
+                                            <p class="mb-0">@review.Content</p>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="text-center py-5">
+                                <i class="fas fa-comment-slash fa-3x text-muted mb-3"></i>
+                                <h5 class="text-muted">Chưa có đánh giá nào</h5>
+                                <p class="text-muted">Hãy là người đầu tiên đánh giá!</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Review Page End -->
+
+    <!-- Footer Partial -->
+    @await Html.PartialAsync("~/Views/Client/Layout/_Footer.cshtml")
+
+    <!-- JavaScript Libraries -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/client/lib/easing/easing.min.js"></script>
+    <script src="~/client/lib/waypoints/waypoints.min.js"></script>
+    <script src="~/client/lib/lightbox/js/lightbox.min.js"></script>
+    <script src="~/client/lib/owlcarousel/owl.carousel.min.js"></script>
+
+    <!-- jQuery Toast -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.js"></script>
+
+    <!-- Template Javascript -->
+    <script src="~/client/js/main.js"></script>
+
+    <!-- Review Script -->
+    <script src="~/client/js/review.js"></script>
+</body>
+
+</html>

@@ -87,15 +87,34 @@ namespace FastFoodShop.Services
             size = Math.Clamp(size, 1, 100);
 
             var baseQuery = _db.Products.AsNoTracking().Where(p => p.IsActive);
-            var total = await baseQuery.GroupBy(p => p.Name).CountAsync();
-            var items = await baseQuery
+            
+            // Get all products and group them in memory to avoid EF projection issues
+            var allProducts = await baseQuery.ToListAsync();
+            var groupedProducts = allProducts
                 .GroupBy(p => p.Name)
                 .Select(g => g.OrderByDescending(p => p.Id).First())
+                .ToList();
+                
+            var total = groupedProducts.Count;
+            var items = groupedProducts
                 .OrderByDescending(p => p.Id)
                 .Skip((page - 1) * size)
                 .Take(size)
-                .ToListAsync();
+                .ToList();
+                
             return (items, total);
+        }
+
+        public async Task<IReadOnlyList<Product>> FetchAllAsync()
+        {
+            var baseQuery = _db.Products.AsNoTracking().Where(p => p.IsActive);
+            var allProducts = await baseQuery.ToListAsync();
+            var items = allProducts
+                .GroupBy(p => p.Name)
+                .Select(g => g.OrderByDescending(p => p.Id).First())
+                .OrderByDescending(p => p.Id)
+                .ToList();
+            return items;
         }
 
         public async Task<(IReadOnlyList<Product> Items, int Total)> FetchWithSpecAsync(
@@ -210,18 +229,18 @@ namespace FastFoodShop.Services
                 await _db.SaveChangesAsync();
                 await tx.CommitAsync();
 
-                // ✅ Đếm DISTINCT trực tiếp theo CartId (nhanh & chính xác)
+                // Count distinct products directly by CartId (fast & accurate)
                 var distinct = await _db.CartDetails
                     .Where(d => d.CartId == cart.Id)
                     .Select(d => d.ProductId)
                     .Distinct()
                     .CountAsync();
 
-                // Optional: set session nếu nơi khác dùng
+                // Optional: set session if used elsewhere
                 session?.SetInt32("sum", cart.Sum);
                 session?.SetInt32("distinct", distinct);
 
-                return distinct; // 👈 Trả về số loại khác nhau để FE cập nhật badge
+                return distinct; // Return distinct count for FE badge update
             }
             catch (Exception ex)
             {
@@ -371,7 +390,7 @@ namespace FastFoodShop.Services
 
         public async Task HandlePlaceOrderAsync(
             User user, ISession session,
-            string receiverName, string receiverAddress, string receiverPhone)
+            string receiverName, string receiverAddress, string receiverPhone, string? note = null)
         {
             var cart = await _db.Carts.Include(c => c.CartDetails!).ThenInclude(d => d.Product)
                                       .FirstOrDefaultAsync(c => c.UserId == user.Id);
@@ -395,7 +414,8 @@ namespace FastFoodShop.Services
                 ReceiverAddress = receiverAddress,
                 ReceiverPhone = receiverPhone,
                 Status = "PENDING",
-                TotalPrice = sum
+                TotalPrice = sum,
+                Note = note
             };
             _db.Orders.Add(order);
             await _db.SaveChangesAsync();
@@ -407,7 +427,8 @@ namespace FastFoodShop.Services
                     OrderId = order.Id,
                     ProductId = d.ProductId,
                     Price = d.Price,
-                    Quantity = d.Quantity
+                    Quantity = d.Quantity,
+                    VariantId = d.VariantId
                 };
                 _db.OrderDetails.Add(od);
             }

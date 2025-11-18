@@ -1,6 +1,6 @@
 @model FastFoodShop.Domain.Entities.Order
 @{
-    ViewData["Title"] = "Delete Order - FastFood Shop";
+    ViewData["Title"] = "Xóa Đơn hàng - FastFood Shop";
     Layout = null; // tự include header/sidebar/footer
 }
 
@@ -28,36 +28,36 @@
         <div id="layoutSidenav_content">
             <main>
                 <div class="container-fluid px-4">
-                    <h1 class="mt-4">Orders</h1>
+                    <h1 class="mt-4">Đơn hàng</h1>
                     <ol class="breadcrumb mb-4">
                         <li class="breadcrumb-item">
-                            <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+                            <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Bảng điều khiển</a>
                         </li>
                         <li class="breadcrumb-item">
-                            <a asp-area="Admin" asp-controller="Order" asp-action="Index">Order</a>
+                            <a asp-area="Admin" asp-controller="Order" asp-action="Index">Đơn hàng</a>
                         </li>
-                        <li class="breadcrumb-item active">Delete</li>
+                        <li class="breadcrumb-item active">Xóa</li>
                     </ol>
 
                     <div class="mt-5">
                         <div class="row">
                             <div class="col-12 mx-auto">
                                 <div class="d-flex justify-content-between">
-                                    <h3>Delete the order with id = @Model.Id</h3>
+                                    <h3>Xóa đơn hàng ID = @Model.Id</h3>
                                 </div>
 
                                 <hr />
                                 <div class="alert alert-danger">
-                                    Are you sure to delete this order?
+                                    Bạn có chắc chắn muốn xóa đơn hàng này?
                                 </div>
 
                                 <form asp-area="Admin" asp-controller="Order" asp-action="Delete" method="post">
                                     @Html.AntiForgeryToken()
                                     <input asp-for="Id" type="hidden" />
 
-                                    <button type="submit" class="btn btn-danger">Confirm</button>
+                                    <button type="submit" class="btn btn-danger">Xác nhận</button>
                                     <a class="btn btn-secondary ms-2" asp-area="Admin" asp-controller="Order"
-                                        asp-action="Index">Cancel</a>
+                                        asp-action="Index">Hủy</a>
                                 </form>
                             </div>
                         </div>
