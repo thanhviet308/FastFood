@@ -21,7 +21,8 @@ namespace FastFoodShop.Controllers
         {
             // Gán dữ liệu cho ViewBag để hiển thị trong Razor
             ViewBag.CountUsers = await _users.CountUsersAsync();
-            ViewBag.CountProducts = await _users.CountProductsAsync();
+            ViewBag.CountProducts = await _users.CountActiveProductsAsync();
+            ViewBag.CountTotalProducts = await _users.CountProductsAsync();
             ViewBag.CountOrders = await _users.CountOrdersAsync();
 
             // Render view: /Views/Admin/Dashboard/Show.cshtml

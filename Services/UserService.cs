@@ -110,6 +110,7 @@ namespace FastFoodShop.Services
         // --- Counters ---
         public Task<long> CountUsersAsync() => _db.Users.LongCountAsync();
         public Task<long> CountProductsAsync() => _db.Products.LongCountAsync();
+        public Task<long> CountActiveProductsAsync() => _db.Products.Where(p => p.IsActive).LongCountAsync();
         public Task<long> CountOrdersAsync() => _db.Orders.LongCountAsync();
     }
 }

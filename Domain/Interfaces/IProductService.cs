@@ -15,6 +15,7 @@ namespace FastFoodShop.Domain.Interfaces
         Task<Product> CreateAsync(Product pr);
 
         Task<(IReadOnlyList<Product> Items, int Total)> FetchAsync(int page, int size);
+        Task<(IReadOnlyList<Product> Items, int Total)> FetchAllAsync(int page, int size);
         Task<(IReadOnlyList<Product> Items, int Total)> FetchBaseAsync(int page, int size);
         Task<IReadOnlyList<Product>> FetchAllAsync();
         Task<(IReadOnlyList<Product> Items, int Total)> FetchFeaturedAsync(int page, int size);

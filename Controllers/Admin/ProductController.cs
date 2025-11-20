@@ -26,7 +26,8 @@ namespace FastFoodShop.Controllers
         public async Task<IActionResult> Index([FromQuery] int page = 1)
         {
             const int pageSize = 5;
-            var result = await _products.FetchAsync(page, pageSize);
+            // Admin should see ALL products (including inactive) for management
+            var result = await _products.FetchAllAsync(page, pageSize);
 
             ViewBag.CurrentPage = page;
             ViewBag.TotalPages = (int)Math.Ceiling(result.Total / (double)pageSize);

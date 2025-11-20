@@ -48,6 +48,19 @@ namespace FastFoodShop.Services
             return pr;
         }
 
+        public async Task<(IReadOnlyList<Product> Items, int Total)> FetchAllAsync(int page, int size)
+        {
+            page = Math.Max(1, page);
+            size = Math.Clamp(size, 1, 100);
+
+            var query = _db.Products.AsNoTracking()
+                .Include(p => p.Category)
+                .OrderByDescending(p => p.Id);
+            var total = await query.CountAsync();
+            var items = await query.Skip((page - 1) * size).Take(size).ToListAsync();
+            return (items, total);
+        }
+
         public async Task<(IReadOnlyList<Product> Items, int Total)> FetchAsync(int page, int size)
         {
             page = Math.Max(1, page);

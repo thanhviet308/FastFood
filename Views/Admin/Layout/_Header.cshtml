@@ -16,29 +16,125 @@
     <!-- Welcome -->
     <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
         <span style="color: white;">
-            Xin chào, @((User?.Identity?.IsAuthenticated ?? false) ? User.Identity!.Name : "Khách")
+            Xin chào, @((User?.Identity?.IsAuthenticated ?? false) ? (User.FindFirst("full_name")?.Value ?? User.Identity!.Name) : "Khách")
         </span>
     </form>
 
     <!-- Navbar User Menu -->
-    <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
-        <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown"
-                aria-expanded="false">
-                <i class="fas fa-user fa-fw"></i>
+    <div class="user-menu-wrapper" style="position: relative;">
+        <button id="userMenuToggle" class="btn btn-link nav-link" style="color: white; border: none; background: none;">
+            <i class="fas fa-user fa-fw me-1"></i><i class="fas fa-chevron-down" style="font-size: 0.8rem;"></i>
+        </button>
+        <div id="userMenuDropdown" class="user-dropdown-menu" style="display: none; position: absolute; top: 100%; right: 0; background: white; border: 1px solid #dee2e6; border-radius: 0.25rem; box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15); min-width: 150px; z-index: 1000;">
+            <a class="dropdown-item" href="#" style="display: block; padding: 0.5rem 1rem; color: #212529; text-decoration: none; border-bottom: 1px solid #e9ecef;">
+                <i class="fas fa-cog me-2"></i>Cài đặt
             </a>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Cài đặt</a></li>
-                <li>
-                    <hr class="dropdown-divider" />
-                </li>
-                <li>
-                    <form asp-controller="Account" asp-action="Logout" method="post" class="px-3">
-                        @Html.AntiForgeryToken()
-                        <button class="dropdown-item w-100" type="submit"><i class="fas fa-sign-out-alt me-2"></i>Đăng xuất</button>
-                    </form>
-                </li>
-            </ul>
-        </li>
-    </ul>
+            <form action="/logout" method="post" style="margin: 0; padding: 0.5rem 1rem;">
+                @Html.AntiForgeryToken()
+                <button class="dropdown-item w-100" type="submit" style="display: block; width: 100%; padding: 0; border: none; background: none; color: #212529; text-align: left; cursor: pointer;">
+                    <i class="fas fa-sign-out-alt me-2"></i>Đăng xuất
+                </button>
+            </form>
+        </div>
+    </div>
 </nav>
+
+<style>
+/* User menu styles */
+.user-menu-wrapper {
+    position: relative;
+}
+
+.user-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+    min-width: 150px;
+    z-index: 1000;
+    margin-top: 0.5rem;
+}
+
+.user-dropdown-menu a,
+.user-dropdown-menu button {
+    display: block;
+    width: 100%;
+    padding: 0.5rem 1rem;
+    color: #212529;
+    text-decoration: none;
+    border: none;
+    background: none;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.15s ease-in-out;
+}
+
+.user-dropdown-menu a:hover,
+.user-dropdown-menu button:hover {
+    background-color: #f8f9fa;
+    color: #0d6efd;
+}
+
+.user-dropdown-menu a:first-child {
+    border-bottom: 1px solid #e9ecef;
+}
+
+#userMenuToggle {
+    color: white;
+    border: none;
+    background: none;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    transition: background-color 0.15s ease-in-out;
+}
+
+#userMenuToggle:hover {
+    background-color: rgba(255,255,255,0.1);
+}
+</style>
+
+<script>
+// Simple user menu toggle
+document.addEventListener('DOMContentLoaded', function() {
+    const userMenuToggle = document.getElementById('userMenuToggle');
+    const userMenuDropdown = document.getElementById('userMenuDropdown');
+    
+    if (userMenuToggle && userMenuDropdown) {
+        userMenuToggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const isVisible = userMenuDropdown.style.display === 'block';
+            userMenuDropdown.style.display = isVisible ? 'none' : 'block';
+            
+            // Add animation effect
+            if (!isVisible) {
+                userMenuDropdown.style.opacity = '0';
+                userMenuDropdown.style.transform = 'translateY(-10px)';
+                setTimeout(() => {
+                    userMenuDropdown.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
+                    userMenuDropdown.style.opacity = '1';
+                    userMenuDropdown.style.transform = 'translateY(0)';
+                }, 10);
+            }
+        });
+        
+        // Close menu when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.user-menu-wrapper')) {
+                userMenuDropdown.style.display = 'none';
+            }
+        });
+        
+        // Close menu when pressing Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                userMenuDropdown.style.display = 'none';
+            }
+        });
+    }
+});
+</script>

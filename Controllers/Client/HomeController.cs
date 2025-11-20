@@ -132,7 +132,7 @@ namespace FastFoodShop.Controllers
             // ✅ Check role trực tiếp từ user trong DB
             if (user.Role?.Name == "ADMIN")
             {
-                return View("~/Views/Admin/Dashboard/Show.cshtml");
+                return Redirect("/admin");
             }
 
             return Redirect("/");
@@ -168,7 +168,7 @@ namespace FastFoodShop.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return Redirect("/");
+            return Redirect("/login");
         }
 
 

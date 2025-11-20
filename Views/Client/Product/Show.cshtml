@@ -92,9 +92,6 @@
                         <div class="d-flex flex-wrap justify-content-center gap-3 mb-4">
                             <button class="ff-btn-filter active" data-filter="all">Tất cả</button>
                             <button class="ff-btn-filter" data-filter="featured">Nổi bật</button>
-                            <button class="ff-btn-filter" data-filter="new">Mới</button>
-                            <button class="ff-btn-filter" data-filter="sale">Khuyến mãi</button>
-                            <a href="/products/all" class="ff-btn-filter ff-btn-show-all">Hiển thị tất cả</a>
                         </div>
                         <div class="row">
                             <div class="col-md-6 col-lg-3">
@@ -111,8 +108,8 @@
                                     <option value="">Danh mục</option>
                                     <option value="burger">Burger</option>
                                     <option value="pizza">Pizza</option>
-                                    <option value="drink">Đồ uống</option>
-                                    <option value="snack">Đồ ăn vặt</option>
+                                    <option value="gà rán">Gà Rán</option>
+                                    <option value="đồ uống">Đồ Uống</option>
                                 </select>
                             </div>
                             <div class="col-md-12 col-lg-6">
@@ -152,35 +149,28 @@
                                         alt="@product.Name" class="img-fluid" />
                                 }
                                 @if (product.IsFeatured)
-
-                                {
-                                    <div class="ff-product-badge">Nổi bật</div>
-                                }
-                                <div class="ff-product-overlay">
-                                    <button class="ff-btn-quick-view" data-product-id="@product.Id">
-                                        <i class="fa-solid fa-eye"></i>
-                                    </button>
-                                </div>
+                                                {
+                                                    <div class="ff-product-badge">NỔI BẬT</div>
+                                                }
                             </div>
                             <div class="ff-product-content">
-                                <div class="ff-product-category">@product.Category?.Name</div>
-                                <h4 class="ff-product-title">
-                                    <a asp-controller="Item" asp-action="GetProductPage" asp-route-id="@product.Id"
-                                        class="text-decoration-none">
-                                        @product.Name
-                                    </a>
-                                </h4>
-                                <p class="ff-product-description">@product.ShortDesc</p>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div class="ff-product-price">
-                                        <span class="text-muted">Xem chi tiết</span>
+                                    <h4 class="ff-product-title">
+                                        <a asp-controller="Item" asp-action="GetProductPage" asp-route-id="@product.Id"
+                                            class="text-decoration-none">
+                                            @product.Name
+                                        </a>
+                                    </h4>
+                                    <p class="ff-product-description">@product.ShortDesc</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="ff-product-price">
+                                            <span class="text-muted">Xem chi tiết</span>
+                                        </div>
                                     </div>
-                                    <button data-product-id="@product.Id" class="btnAddToCartHomepage ff-btn-primary btn-sm"
+                                    <button data-product-id="@product.Id" class="btnAddToCartHomepage ff-product-cart-btn"
                                         aria-label="Thêm vào giỏ hàng">
-                                        <i class="fa-solid fa-cart-plus"></i>
+                                        <i class="fas fa-cart-plus"></i>
                                     </button>
                                 </div>
-                            </div>
                         </div>
                     </div>
                 }
@@ -572,10 +562,20 @@
             $(this).addClass('active');
 
             const filter = $(this).data('filter');
+            console.log('Filter clicked:', filter); // Debug
             filterProducts(filter);
         });
 
+        // Category filter functionality
+        $('#categorySelect').change(function () {
+            const category = $(this).val();
+            filterProductsByCategory(category);
+        });
+
         function filterProducts(filter) {
+            console.log('Filtering by:', filter); // Debug
+            let visibleCount = 0;
+            
             $('.product-item').each(function () {
                 const $item = $(this);
                 let show = false;
@@ -583,7 +583,55 @@
                 if (filter === 'all') {
                     show = true;
                 } else if (filter === 'featured') {
-                    show = $item.data('featured') === 'true';
+                    const isFeatured = $item.data('featured');
+                    console.log('Product featured status:', isFeatured); // Debug
+                    show = isFeatured === 'true' || isFeatured === true;
+                }
+
+                if (show) {
+                    $item.fadeIn(300);
+                    visibleCount++;
+                } else {
+                    $item.fadeOut(300);
+                }
+            });
+            
+            console.log('Visible products after filter:', visibleCount); // Debug
+            
+            // Hiển thị thông báo nếu không có sản phẩm nào
+            if (visibleCount === 0 && filter === 'featured') {
+                showNoProductsMessage('Không có sản phẩm nổi bật nào');
+            } else {
+                hideNoProductsMessage();
+            }
+        }
+        
+        function showNoProductsMessage(message) {
+            if ($('.no-products-message').length === 0) {
+                $('#productsContainer').append(`
+                    <div class="col-12 text-center no-products-message">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>${message}
+                        </div>
+                    </div>
+                `);
+            }
+        }
+        
+        function hideNoProductsMessage() {
+            $('.no-products-message').remove();
+        }
+
+        function filterProductsByCategory(category) {
+            $('.product-item').each(function () {
+                const $item = $(this);
+                const productCategory = $item.data('category');
+                let show = false;
+
+                if (!category || category === '') {
+                    show = true; // Show all if no category selected
+                } else {
+                    show = productCategory === category;
                 }
 
                 if (show) {
@@ -593,6 +641,49 @@
                 }
             });
         }
+
+        // Auto-filter by category from URL parameter
+        function autoFilterByUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const category = urlParams.get('category');
+            
+            if (category) {
+                // Mapping từ URL parameter sang tên category trong database
+                const categoryMapping = {
+                    'burger': 'burger',
+                    'pizza': 'pizza', 
+                    'chicken': 'gà rán',
+                    'drinks': 'đồ uống'
+                };
+                
+                const mappedCategory = categoryMapping[category] || category;
+                
+                // Set the dropdown value
+                $('#categorySelect').val(mappedCategory);
+                // Filter products
+                filterProductsByCategory(mappedCategory);
+            }
+        }
+
+        // Call auto-filter on page load
+        $(document).ready(function() {
+            console.log('Page loaded, checking for featured products...');
+            
+            // Log số lượng sản phẩm nổi bật
+            const featuredCount = $('.product-item[data-featured="true"]').length;
+            console.log('Total featured products found:', featuredCount);
+            
+            // Log tất cả sản phẩm và trạng thái featured của chúng
+            $('.product-item').each(function() {
+                const $item = $(this);
+                const name = $item.find('.ff-product-title').text().trim();
+                const isFeatured = $item.data('featured');
+                const category = $item.data('category');
+                console.log('Product:', name, '| Featured:', isFeatured, '| Category:', category);
+            });
+            
+            autoFilterByUrl();
+        });
     </script>
 </body>
 

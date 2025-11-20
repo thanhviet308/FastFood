@@ -14,7 +14,7 @@
     <meta name="description" content="FastFood Shop" />
     <meta name="author" content="FastFood Shop" />
     <title>@ViewData["Title"]</title>
-    <link href="~/css/styles.css" rel="stylesheet" />
+    <link href="~/css/admin-styles.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css?t=@DateTime.Now.Ticks" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" integrity="sha512-fD9DI5bZwQxOi7MhYWnnNPlvXdp/2Pj3XSTRrFs5FQa4mizyGLnJcN6tuvUS6LbmgN1ut+XGSABKvjN0H6Aoow==" crossorigin="anonymous"></script>
 </head>
@@ -60,7 +60,7 @@
                                         <li class="list-group-item">Tên: @Model.Name</li>
                                         
                                         <li class="list-group-item">Danh mục: @(Model.Category?.Name ?? "-")</li>
-                                        <li class="list-group-item">Trạng thái: @(Model.IsActive ? "Đang bán" : "Ẩn")</li>
+                                        <li class="list-group-item">Trạng thái: @(Model.IsActive ? "Hoạt động" : "Không hoạt động")</li>
                                         <li class="list-group-item">Mô tả ngắn: @Model.ShortDesc</li>
                                         <li class="list-group-item">Mô tả chi tiết: @Model.DetailDesc</li>
                                     </ul>
@@ -81,7 +81,7 @@
                                                 <tr>
                                                     <td>@v.VariantName</td>
                                                     <td>@string.Format("{0:N0} đ", v.Price)</td>
-                                                    <td>@(v.IsActive ? "Đang bán" : "Ẩn")</td>
+                                                    <td>@(v.IsActive ? "Hoạt động" : "Không hoạt động")</td>
                                                 </tr>
                                             }
                                         </tbody>

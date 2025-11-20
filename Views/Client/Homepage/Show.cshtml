@@ -76,16 +76,6 @@
                 <p class="lead text-muted">Những món ăn được yêu thích nhất tại FastFood Shop</p>
             </div>
             <div class="tab-class text-center">
-                <div class="row g-4 mb-5">
-                    <div class="col-lg-12 text-center">
-                        <div class="d-inline-flex gap-2 justify-content-center">
-                            <a class="d-flex m-2 py-2 ff-btn-primary rounded-pill disabled homepage-filter-btn" href="#">
-                                Chỉ hiển thị nổi bật
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="tab-content">
                     <div id="tab-1" class="tab-pane fade show p-0 active">
                         <div class="row g-4">
@@ -107,7 +97,7 @@
                                                     }
                                                     @if (product.IsFeatured)
                                                     {
-                                                        <div class="ff-product-badge">Nổi bật</div>
+                                                        <div class="ff-product-badge">NỔI BẬT</div>
                                                     }
                                                 </div>
                                                 <div class="ff-product-content">
@@ -118,13 +108,13 @@
                                                     </h4>
                                                     <p class="ff-product-description">@product.ShortDesc</p>
                                                     <div class="d-flex justify-content-between align-items-center">
-                                                        <div class="ff-product-price text-muted">Liên hệ</div>
-                                                        <button data-product-id="@product.Id"
-                                                            class="btnAddToCartHomepage ff-btn-primary btn-sm"
-                                                            aria-label="Thêm vào giỏ hàng">
-                                                            <i class="fas fa-cart-plus"></i>
-                                                        </button>
+                                                        <div class="ff-product-price text-muted">Xem chi tiết</div>
                                                     </div>
+                                                    <button data-product-id="@product.Id"
+                                                        class="btnAddToCartHomepage ff-product-cart-btn"
+                                                        aria-label="Thêm vào giỏ hàng">
+                                                        <i class="fas fa-cart-plus"></i>
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>

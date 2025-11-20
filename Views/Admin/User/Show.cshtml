@@ -17,7 +17,7 @@
     <meta name="description" content="FastFood Shop" />
     <meta name="author" content="FastFood Shop" />
     <title>@ViewData["Title"]</title>
-    <link href="~/css/styles.css" rel="stylesheet" />
+    <link href="~/css/admin-styles.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css?t=@DateTime.Now.Ticks" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" integrity="sha512-fD9DI5bZwQxOi7MhYWnnNPlvXdp/2Pj3XSTRrFs5FQa4mizyGLnJcN6tuvUS6LbmgN1ut+XGSABKvjN0H6Aoow==" crossorigin="anonymous"></script>
 </head>
@@ -45,7 +45,7 @@
                                 <div class="d-flex justify-content-between mb-3">
                                     <h3>Bảng người dùng</h3>
                                     <a asp-controller="User" asp-action="Create" class="btn btn-primary">
-                                        Tạo người dùng
+                                        <i class="fas fa-plus me-2"></i>Tạo người dùng
                                     </a>
                                 </div>
 
@@ -72,12 +72,18 @@
                                                     <td>@user.Role?.Name</td>
                                                     <td>
                                                         <a asp-controller="User" asp-action="Detail"
-                                                            asp-route-id="@user.Id" class="btn btn-success btn-sm">Xem</a>
+                                                            asp-route-id="@user.Id" class="btn btn-success btn-sm">
+                                                            <i class="fas fa-eye me-1"></i>Xem
+                                                        </a>
                                                         <a asp-controller="User" asp-action="Update"
                                                             asp-route-id="@user.Id"
-                                                            class="btn btn-warning btn-sm mx-2">Cập nhật</a>
+                                                            class="btn btn-warning btn-sm mx-2">
+                                                            <i class="fas fa-edit me-1"></i>Cập nhật
+                                                        </a>
                                                         <a asp-controller="User" asp-action="Delete"
-                                                            asp-route-id="@user.Id" class="btn btn-danger btn-sm">Xóa</a>
+                                                            asp-route-id="@user.Id" class="btn btn-danger btn-sm">
+                                                            <i class="fas fa-trash me-1"></i>Xóa
+                                                        </a>
                                                     </td>
                                                 </tr>
                                             }

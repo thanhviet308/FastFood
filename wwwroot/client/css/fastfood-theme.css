@@ -121,16 +121,17 @@ body {
 /* Product Cards */
 .ff-product-card {
     background: #ffffff;
-    border-radius: 16px;
+    border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    border: 1px solid #f0f0f0;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: none;
+    position: relative;
 }
 
 .ff-product-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
 }
 
 .ff-product-image {
@@ -153,17 +154,55 @@ body {
 
 .ff-product-badge {
     position: absolute;
-    top: 15px;
-    right: 15px;
-    background: var(--ff-accent);
+    top: 12px;
+    right: 12px;
+    background: #dc3545;
     color: white;
-    padding: 5px 15px;
+    padding: 4px 12px;
     border-radius: 20px;
     font-family: var(--ff-font-secondary);
-    font-weight: 600;
-    font-size: 0.9rem;
+    font-weight: 700;
+    font-size: 0.75rem;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+    z-index: 2;
+}
+
+.ff-product-cart-btn {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: #dc3545;
+    color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+    transition: all 0.3s ease;
+    z-index: 2;
+}
+
+.ff-product-cart-btn:hover {
+    transform: translateY(-2px) scale(1.1);
+    box-shadow: 0 6px 16px rgba(220, 53, 69, 0.5);
+    background: #c82333;
+}
+
+.ff-product-cart-btn i {
+    font-size: 1.1rem;
+}
+
+.ff-product-price {
+    font-size: 1.1rem;
+    font-weight: 400;
+    color: #6c757d;
+    margin-top: 8px;
+    margin-bottom: 15px;
 }
 
 .product-overlay {
@@ -186,6 +225,8 @@ body {
 
 .ff-product-content {
     padding: 18px;
+    position: relative;
+    min-height: 120px;
 }
 
 .ff-product-title {
@@ -439,6 +480,17 @@ body {
     .ff-product-card {
         margin-bottom: 20px;
     }
+}
+
+/* Prevent layout breaking on zoom */
+.ff-product-card {
+    min-width: 0;
+    word-wrap: break-word;
+}
+
+.product-item {
+    min-width: 0;
+    box-sizing: border-box;
 }
 
 /* Cart Page Styles */

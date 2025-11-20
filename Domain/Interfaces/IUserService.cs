@@ -31,6 +31,7 @@ namespace FastFoodShop.Domain.Interfaces
         // Đếm số liệu tổng hợp
         Task<long> CountUsersAsync();
         Task<long> CountProductsAsync();
+        Task<long> CountActiveProductsAsync();
         Task<long> CountOrdersAsync();
     }
 }
