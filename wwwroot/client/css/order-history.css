@@ -209,6 +209,27 @@
     border: 1px solid #ff6b6b;
 }
 
+/* Trạng thái mới: Chưa thanh toán */
+.status-unpaid {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffc107 100%);
+    color: #856404;
+    border: 1px solid #ffc107;
+}
+
+/* Trạng thái mới: Thanh toán thành công */
+.status-paid {
+    background: linear-gradient(135deg, #d4edda 0%, #28a745 100%);
+    color: #155724;
+    border: 1px solid #28a745;
+}
+
+/* Trạng thái không xác định */
+.status-unknown {
+    background: linear-gradient(135deg, #e2e3e5 0%, #6c757d 100%);
+    color: #383d41;
+    border: 1px solid #6c757d;
+}
+
 .order-card-body {
     padding: 1.5rem;
 }

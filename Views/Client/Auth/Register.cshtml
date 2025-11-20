@@ -48,16 +48,8 @@
                     <div class="feature-text">Đăng ký nhanh chóng chỉ trong 30 giây</div>
                 </div>
                 <div class="auth-feature">
-                    <div class="feature-icon">🎁</div>
-                    <div class="feature-text">Tặng ngay 50.000đ cho thành viên mới</div>
-                </div>
-                <div class="auth-feature">
                     <div class="feature-icon">📱</div>
                     <div class="feature-text">Theo dõi đơn hàng và lịch sử mua sắm</div>
-                </div>
-                <div class="auth-feature">
-                    <div class="feature-icon">💎</div>
-                    <div class="feature-text">Tích điểm đổi quà và nhận voucher độc quyền</div>
                 </div>
             </div>
         </div>
@@ -174,15 +166,7 @@
                     </div>
                 </div>
 
-                <!-- Terms and Conditions -->
-                <div class="form-group">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="acceptTerms" name="acceptTerms" required />
-                        <label class="form-check-label" for="acceptTerms">
-                            Tôi đồng ý với <a href="/terms" class="auth-link" target="_blank">điều khoản sử dụng</a> và <a href="/privacy" class="auth-link" target="_blank">chính sách bảo mật</a>
-                        </label>
-                    </div>
-                </div>
+
 
                 <!-- Submit Button -->
                 <button type="submit" class="btn-auth">
@@ -252,14 +236,6 @@
                 if (!form.checkValidity()) {
                     e.preventDefault();
                     form.classList.add('was-validated');
-                    return;
-                }
-                
-                // Check if terms are accepted
-                const termsCheckbox = document.getElementById('acceptTerms');
-                if (!termsCheckbox.checked) {
-                    e.preventDefault();
-                    alert('Vui lòng đồng ý với điều khoản sử dụng và chính sách bảo mật');
                     return;
                 }
                 

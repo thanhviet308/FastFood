@@ -15,7 +15,8 @@
     <title>@ViewData["Title"]</title>
 
     <link href="~/css/styles.css" rel="stylesheet" />
-    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css?t=@DateTime.Now.Ticks" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" integrity="sha512-fD9DI5bZwQxOi7MhYWnnNPlvXdp/2Pj3XSTRrFs5FQa4mizyGLnJcN6tuvUS6LbmgN1ut+XGSABKvjN0H6Aoow==" crossorigin="anonymous"></script>
 </head>
 
 <body class="sb-nav-fixed">
@@ -75,23 +76,22 @@
                                                 <td>@(order.User?.FullName ?? "Khách vãng lai")</td>
                                                 <td>
                                                     @{
-                                                        var statusClass = order.Status switch
+                                                        // Đơn giản hóa trạng thái chỉ còn 2 loại dựa trên thanh toán
+                                                        var (statusClass, statusText) = order.Status switch
                                                         {
-                                                            "PENDING" => "badge bg-warning text-dark",
-                                                            "CONFIRMED" => "badge bg-info text-white",
-                                                            "SHIPPING" => "badge bg-primary text-white",
-                                                            "DELIVERED" => "badge bg-success text-white",
-                                                            "CANCELLED" => "badge bg-danger text-white",
-                                                            _ => "badge bg-secondary text-white"
-                                                        };
-                                                        var statusText = order.Status switch
-                                                        {
-                                                            "PENDING" => "Chờ xác nhận",
-                                                            "CONFIRMED" => "Đã xác nhận",
-                                                            "SHIPPING" => "Đang giao",
-                                                            "DELIVERED" => "Đã giao",
-                                                            "CANCELLED" => "Đã hủy",
-                                                            _ => order.Status
+                                                            // Chưa thanh toán: PENDING và CONFIRMED
+                                                            "PENDING" => ("badge bg-warning text-dark", "Chưa thanh toán"),
+                                                            "CONFIRMED" => ("badge bg-warning text-dark", "Chưa thanh toán"),
+                                                            
+                                                            // Đã thanh toán: SHIPPING và DELIVERED
+                                                            "SHIPPING" => ("badge bg-success text-white", "Thanh toán thành công"),
+                                                            "DELIVERED" => ("badge bg-success text-white", "Thanh toán thành công"),
+                                                            
+                                                            // Đã hủy: giữ nguyên
+                                                            "CANCELLED" => ("badge bg-danger text-white", "Đã hủy"),
+                                                            
+                                                            // Mặc định
+                                                            _ => ("badge bg-secondary text-white", order.Status ?? "Không xác định")
                                                         };
                                                     }
                                                     <span class="@statusClass">@statusText</span>

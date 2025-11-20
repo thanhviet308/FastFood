@@ -71,7 +71,19 @@ $(document).ready(function() {
         if (selectedStatus === '') {
             filteredOrders = [...orders];
         } else {
-            filteredOrders = orders.filter(order => order.status === selectedStatus);
+            // Logic mới: lọc theo trạng thái thanh toán
+            filteredOrders = orders.filter(order => {
+                switch (selectedStatus) {
+                    case 'unpaid': // Chưa thanh toán
+                        return order.status === 'Pending' || order.status === 'Confirmed';
+                    case 'paid': // Thanh toán thành công
+                        return order.status === 'Shipping' || order.status === 'Delivered';
+                    case 'cancelled': // Đã hủy
+                        return order.status === 'Cancelled';
+                    default:
+                        return false;
+                }
+            });
         }
         
         displayFilteredOrders();

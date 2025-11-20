@@ -27,6 +27,45 @@ namespace FastFoodShop.Controllers
             _vnPayService = vnPayService;
         }
 
+        // GET /api/products/{id}/all-variants (Debug endpoint - shows all variants including inactive)
+        [HttpGet("api/products/{id:long}/all-variants")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetAllProductVariants([FromRoute] long id)
+        {
+            Console.WriteLine($"=== GetAllProductVariants API called for product ID: {id} ===");
+            
+            var product = await _products.GetByIdAsync(id);
+            if (product is null) 
+            {
+                Console.WriteLine($"❌ Product {id} not found");
+                return NotFound(new { message = "Sản phẩm không tồn tại" });
+            }
+
+            var variants = await _products.GetVariantsAsync(id);
+            Console.WriteLine($"📊 Total variants found: {variants.Count}");
+            
+            // Log details of all variants
+            foreach (var v in variants)
+            {
+                Console.WriteLine($"  - Variant: ID={v.Id}, Name={v.VariantName}, Price={v.Price}, IsActive={v.IsActive}");
+            }
+
+            return Json(new
+            {
+                productName = product.Name,
+                totalVariants = variants.Count,
+                activeVariants = variants.Count(v => v.IsActive),
+                inactiveVariants = variants.Count(v => !v.IsActive),
+                allVariants = variants.Select(v => new
+                {
+                    id = v.Id,
+                    variantName = v.VariantName,
+                    price = v.Price,
+                    isActive = v.IsActive
+                })
+            });
+        }
+
         // Authentication helper method
         private bool TryGetUser(out long userId, out string email)
         {
@@ -36,36 +75,62 @@ namespace FastFoodShop.Controllers
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             var emailClaim = User.FindFirst(ClaimTypes.Email);
 
+            Console.WriteLine($"TryGetUser - Claims found:");
+            Console.WriteLine($"  - User.Identity.IsAuthenticated: {User?.Identity?.IsAuthenticated}");
+            Console.WriteLine($"  - userIdClaim: {userIdClaim?.Value ?? "null"}");
+            Console.WriteLine($"  - emailClaim: {emailClaim?.Value ?? "null"}");
+
             if (userIdClaim != null && long.TryParse(userIdClaim.Value, out userId))
             {
                 email = emailClaim?.Value ?? string.Empty;
+                Console.WriteLine($"  - Success: userId={userId}, email={email}");
                 return true;
             }
 
+            Console.WriteLine($"  - Failed: userIdClaim is null or invalid");
             return false;
         }
 
-        // GET /api/products/{id}/variants
+        // GET /api/products/{id}/variants (Public endpoint - no auth required)
         [HttpGet("api/products/{id:long}/variants")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetProductVariants([FromRoute] long id)
         {
+            Console.WriteLine($"=== GetProductVariants API called for product ID: {id} ===");
+            
             var product = await _products.GetByIdAsync(id);
-            if (product is null) return NotFound(new { message = "Sản phẩm không tồn tại" });
+            if (product is null) 
+            {
+                Console.WriteLine($"❌ Product {id} not found");
+                return NotFound(new { message = "Sản phẩm không tồn tại" });
+            }
 
             var variants = await _products.GetVariantsAsync(id);
-            var activeVariants = variants.Where(v => v.IsActive).ToList();
+            Console.WriteLine($"📊 Total variants found: {variants.Count}");
+            
+            // Log details of all variants
+            foreach (var v in variants)
+            {
+                Console.WriteLine($"  - Variant: ID={v.Id}, Name={v.VariantName}, Price={v.Price}, IsActive={v.IsActive}");
+            }
 
-            return Json(new
+            // Return all variants (including inactive) and let frontend handle display
+            Console.WriteLine($"✅ Returning all variants (including inactive): {variants.Count}");
+
+            var result = new
             {
                 productName = product.Name,
-                variants = activeVariants.Select(v => new
+                variants = variants.Select(v => new
                 {
                     id = v.Id,
                     variantName = v.VariantName,
                     price = v.Price,
                     isActive = v.IsActive
                 })
-            });
+            };
+            
+            Console.WriteLine($"🔄 Returning {result.variants.Count()} variants to client");
+            return Json(result);
         }
 
         // GET /product/{id}
@@ -324,15 +389,72 @@ namespace FastFoodShop.Controllers
             }
         }
 
+        // POST /add-product-from-view-detail-test (No auth required for testing)
+        [HttpPost("add-product-from-view-detail-test")]
+        [IgnoreAntiforgeryToken] // Ignore anti-forgery token for testing
+        public async Task<IActionResult> HandleAddProductFromViewDetailTest(
+            [FromForm] long id,
+            [FromForm] int quantity,
+            [FromForm] long? variantId)
+        {
+            // For testing purposes - log the received data
+            Console.WriteLine($"TEST: ProductId={id}, Quantity={quantity}, VariantId={variantId}");
+            Console.WriteLine($"TEST: User.Identity.IsAuthenticated = {User?.Identity?.IsAuthenticated}");
+            Console.WriteLine($"TEST: Request.Headers[Cookie] = {Request.Headers.ContainsKey("Cookie")}");
+            
+            if (!TryGetUser(out var userId, out var email))
+            {
+                Console.WriteLine($"TEST: User not authenticated, returning error");
+                return Json(new { success = false, message = "Vui lòng đăng nhập để thêm vào giỏ hàng.", testMode = true });
+            }
+
+            try
+            {
+                var user = await _userService.GetByIdAsync(userId);
+                if (user == null)
+                {
+                    return Json(new { success = false, message = "Không tìm thấy thông tin người dùng.", testMode = true });
+                }
+
+                var result = await _products.HandleAddProductToCartAsync(user.Email ?? "", id, HttpContext.Session, quantity, variantId);
+                
+                if (result > 0)
+                {
+                    return Json(new { success = true, message = "Thêm sản phẩm vào giỏ hàng thành công! (Test Mode)", testMode = true });
+                }
+                else
+                {
+                    return Json(new { success = false, message = "Không thể thêm sản phẩm vào giỏ hàng. Vui lòng thử lại.", testMode = true });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = $"Lỗi: {ex.Message}", testMode = true });
+            }
+        }
+
         // POST /add-product-from-view-detail
-        [Authorize]
         [HttpPost("add-product-from-view-detail")]
-        [ValidateAntiForgeryToken]
+        [IgnoreAntiforgeryToken] // Temporarily ignore for testing
         public async Task<IActionResult> HandleAddProductFromViewDetail(
             [FromForm] long id,
             [FromForm] int quantity,
             [FromForm] long? variantId)
         {
+            // Debug logging
+            Console.WriteLine($"HandleAddProductFromViewDetail called:");
+            Console.WriteLine($"  - id: {id}");
+            Console.WriteLine($"  - quantity: {quantity}");
+            Console.WriteLine($"  - variantId: {variantId}");
+            Console.WriteLine($"  - User.Identity.IsAuthenticated: {User?.Identity?.IsAuthenticated}");
+            Console.WriteLine($"  - ModelState.IsValid: {ModelState.IsValid}");
+            
+            if (!ModelState.IsValid)
+            {
+                Console.WriteLine($"  - ModelState errors: {string.Join(", ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage))}");
+                return Json(new { success = false, message = "Dữ liệu không hợp lệ." });
+            }
+
             if (!TryGetUser(out var userId, out var email))
                 return Json(new { success = false, message = "Vui lòng đăng nhập để thêm vào giỏ hàng." });
 

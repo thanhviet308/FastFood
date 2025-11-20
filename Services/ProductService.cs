@@ -54,6 +54,7 @@ namespace FastFoodShop.Services
             size = Math.Clamp(size, 1, 100);
 
             var query = _db.Products.AsNoTracking()
+                .Where(p => p.IsActive)
                 .Include(p => p.Category)
                 .OrderByDescending(p => p.Id);
             var total = await query.CountAsync();
@@ -65,7 +66,7 @@ namespace FastFoodShop.Services
         {
             page = Math.Max(1, page);
             size = Math.Max(1, size);
-            var query = _db.Products.AsNoTracking().Where(p => p.IsFeatured);
+            var query = _db.Products.AsNoTracking().Where(p => p.IsFeatured && p.IsActive);
             var total = await query.CountAsync();
 
 
