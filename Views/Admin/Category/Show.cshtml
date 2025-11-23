@@ -26,12 +26,15 @@
         </li>
         <li class="breadcrumb-item active">Danh mục</li>
     </ol>
-    <a class="btn btn-primary mb-3" asp-controller="Category" asp-action="Create">
-        <i class="fas fa-plus me-2"></i>Tạo danh mục mới
-    </a>
+    <div class="d-flex justify-content-end mb-3">
+        <a class="btn btn-primary" asp-controller="Category" asp-action="Create">
+            <i class="fas fa-plus me-2"></i>Tạo danh mục mới
+        </a>
+    </div>
     <table class="table table-bordered table-hover">
         <thead>
         <tr>
+            <th>Mã danh mục</th>
             <th>Tên danh mục</th>
             <th>Mô tả</th>
             <th>Thao tác</th>
@@ -43,6 +46,7 @@
             @foreach (var c in Model)
             {
                 <tr>
+                    <td>@c.Id</td>
                     <td>@c.Name</td>
                     <td>@c.Description</td>
                     <td>

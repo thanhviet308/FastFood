@@ -55,7 +55,7 @@ namespace FastFoodShop.Services
 
             var query = _db.Products.AsNoTracking()
                 .Include(p => p.Category)
-                .OrderByDescending(p => p.Id);
+                .OrderBy(p => p.Id);
             var total = await query.CountAsync();
             var items = await query.Skip((page - 1) * size).Take(size).ToListAsync();
             return (items, total);
@@ -358,8 +358,12 @@ namespace FastFoodShop.Services
 
         public async Task<Cart?> GetCartByUserAsync(User user)
         {
-            var cart = await _db.Carts.Include(c => c.CartDetails!).ThenInclude(d => d.Product)
-                              .FirstOrDefaultAsync(c => c.UserId == user.Id);
+            var cart = await _db.Carts
+                .Include(c => c.CartDetails!)
+                    .ThenInclude(d => d.Product)
+                .Include(c => c.CartDetails!)
+                    .ThenInclude(d => d.Variant)
+                .FirstOrDefaultAsync(c => c.UserId == user.Id);
             return cart;
         }
 
@@ -406,8 +410,12 @@ namespace FastFoodShop.Services
             User user, ISession session,
             string receiverName, string receiverAddress, string receiverPhone, string? note = null)
         {
-            var cart = await _db.Carts.Include(c => c.CartDetails!).ThenInclude(d => d.Product)
-                                      .FirstOrDefaultAsync(c => c.UserId == user.Id);
+            var cart = await _db.Carts
+                .Include(c => c.CartDetails!)
+                    .ThenInclude(d => d.Product)
+                .Include(c => c.CartDetails!)
+                    .ThenInclude(d => d.Variant)
+                .FirstOrDefaultAsync(c => c.UserId == user.Id);
 
             if (cart is null || cart.CartDetails?.Count == 0)
             {

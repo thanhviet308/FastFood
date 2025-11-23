@@ -19,7 +19,17 @@
 <div id="layoutSidenav_content">
 <main>
 <div class="container-fluid px-4">
-    <h1 class="mt-4">Cập nhật Danh mục</h1>
+    <h1 class="mt-4">Quản lý Danh mục</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item">
+            <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Bảng điều khiển</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a asp-controller="Category" asp-action="Index">Danh mục</a>
+        </li>
+        <li class="breadcrumb-item active">Cập nhật</li>
+    </ol>
+    <h2 class="h4 mb-3">Cập nhật danh mục</h2>
     <form method="post" asp-controller="Category" asp-action="Update" class="row g-3">
         @Html.AntiForgeryToken()
         <input asp-for="Id" type="hidden" />
@@ -28,10 +38,10 @@
             <input asp-for="Name" class="form-control" />
         </div>
         <div class="col-auto">
-            <label asp-for="IsActive" class="form-label">Trạng thái</label>
-            <select asp-for="IsActive" class="form-select w-auto" style="min-width: 120px;">
-                <option value="true">True</option>
-                <option value="false">False</option>
+            <label asp-for="IsActive" class="form-label"></label>
+            <select asp-for="IsActive" class="form-select w-auto" style="min-width: 150px;">
+                <option value="true">Hoạt động</option>
+                <option value="false">Tạm ẩn</option>
             </select>
         </div>
         <div class="col-12">

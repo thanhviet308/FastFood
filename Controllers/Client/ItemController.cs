@@ -75,19 +75,26 @@ namespace FastFoodShop.Controllers
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             var emailClaim = User.FindFirst(ClaimTypes.Email);
 
-            Console.WriteLine($"TryGetUser - Claims found:");
-            Console.WriteLine($"  - User.Identity.IsAuthenticated: {User?.Identity?.IsAuthenticated}");
-            Console.WriteLine($"  - userIdClaim: {userIdClaim?.Value ?? "null"}");
-            Console.WriteLine($"  - emailClaim: {emailClaim?.Value ?? "null"}");
+            Console.WriteLine($"=== TryGetUser DEBUG ===");
+            Console.WriteLine($"User.Identity exists: {User?.Identity != null}");
+            Console.WriteLine($"User.Identity.IsAuthenticated: {User?.Identity?.IsAuthenticated}");
+            Console.WriteLine($"Claims count: {User?.Claims?.Count() ?? 0}");
+            Console.WriteLine($"All claims:");
+            foreach (var claim in User?.Claims ?? new List<Claim>())
+            {
+                Console.WriteLine($"  - {claim.Type}: {claim.Value}");
+            }
+            Console.WriteLine($"userIdClaim: {userIdClaim?.Value ?? "null"}");
+            Console.WriteLine($"emailClaim: {emailClaim?.Value ?? "null"}");
 
             if (userIdClaim != null && long.TryParse(userIdClaim.Value, out userId))
             {
                 email = emailClaim?.Value ?? string.Empty;
-                Console.WriteLine($"  - Success: userId={userId}, email={email}");
+                Console.WriteLine($"SUCCESS: userId={userId}, email={email}");
                 return true;
             }
 
-            Console.WriteLine($"  - Failed: userIdClaim is null or invalid");
+            Console.WriteLine($"FAILED: userIdClaim is null or invalid");
             return false;
         }
 
@@ -184,6 +191,14 @@ namespace FastFoodShop.Controllers
             var user = new User { Id = userId };
             var cart = await _products.GetCartByUserAsync(user);
             var cartDetails = cart?.CartDetails?.ToList() ?? new List<CartDetail>();
+
+            // Debug logging for variants
+            Console.WriteLine($"=== GetCartPage DEBUG ===");
+            Console.WriteLine($"Total cart items: {cartDetails.Count}");
+            foreach (var item in cartDetails)
+            {
+                Console.WriteLine($"Item: {item.Product?.Name} - Variant: {item.Variant?.VariantName ?? "NULL"} - Price: {item.Price:N0}đ");
+            }
 
             double totalPrice = 0;
             foreach (var cd in cartDetails) totalPrice += (double)(cd.Price * cd.Quantity);
@@ -435,6 +450,7 @@ namespace FastFoodShop.Controllers
 
         // POST /add-product-from-view-detail
         [HttpPost("add-product-from-view-detail")]
+        [AllowAnonymous] // IMPORTANT: Allow anonymous to prevent auto-redirect to login
         [IgnoreAntiforgeryToken] // Temporarily ignore for testing
         public async Task<IActionResult> HandleAddProductFromViewDetail(
             [FromForm] long id,
@@ -442,50 +458,70 @@ namespace FastFoodShop.Controllers
             [FromForm] long? variantId)
         {
             // Debug logging
-            Console.WriteLine($"HandleAddProductFromViewDetail called:");
-            Console.WriteLine($"  - id: {id}");
-            Console.WriteLine($"  - quantity: {quantity}");
-            Console.WriteLine($"  - variantId: {variantId}");
-            Console.WriteLine($"  - User.Identity.IsAuthenticated: {User?.Identity?.IsAuthenticated}");
-            Console.WriteLine($"  - ModelState.IsValid: {ModelState.IsValid}");
+            Console.WriteLine($"=== HandleAddProductFromViewDetail DEBUG ===");
+            Console.WriteLine($"Timestamp: {DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}");
+            Console.WriteLine($"Request Method: {Request.Method}");
+            Console.WriteLine($"Request Content-Type: {Request.ContentType}");
+            Console.WriteLine($"User Authenticated: {User?.Identity?.IsAuthenticated}");
+            Console.WriteLine($"Form Data - id: {id}, quantity: {quantity}, variantId: {variantId}");
             
             if (!ModelState.IsValid)
             {
-                Console.WriteLine($"  - ModelState errors: {string.Join(", ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage))}");
-                return Json(new { success = false, message = "Dữ liệu không hợp lệ." });
+                Console.WriteLine($"ModelState errors: {string.Join(", ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage))}");
+                var errorResponse = new { success = false, message = "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại thông tin." };
+                Console.WriteLine($"Returning error response: {System.Text.Json.JsonSerializer.Serialize(errorResponse)}");
+                return Json(errorResponse);
             }
 
             if (!TryGetUser(out var userId, out var email))
-                return Json(new { success = false, message = "Vui lòng đăng nhập để thêm vào giỏ hàng." });
+            {
+                Console.WriteLine($"User not authenticated - should redirect to login");
+                var loginResponse = new { success = false, message = "Vui lòng đăng nhập để thêm vào giỏ hàng." };
+                Console.WriteLine($"Returning login required response: {System.Text.Json.JsonSerializer.Serialize(loginResponse)}");
+                Console.WriteLine($"Response Content-Type: application/json");
+                Console.WriteLine($"Response Status: 200 OK");
+                return Json(loginResponse);
+            }
 
-            
+            Console.WriteLine($"User authenticated - UserId: {userId}, Email: {email}");
 
             // Get user by ID instead of email to avoid email mismatch issues
             var user = await _userService.GetByIdAsync(userId);
             if (user == null)
             {
-                
-                return Json(new { success = false, message = "Không tìm thấy thông tin người dùng." });
+                Console.WriteLine($"User not found in database for UserId: {userId}");
+                var userNotFoundResponse = new { success = false, message = "Không tìm thấy thông tin người dùng. Vui lòng đăng nhập lại." };
+                Console.WriteLine($"Returning user not found response: {System.Text.Json.JsonSerializer.Serialize(userNotFoundResponse)}");
+                return Json(userNotFoundResponse);
             }
 
             try
             {
+                Console.WriteLine($"Calling HandleAddProductToCartAsync with UserId: {userId}, ProductId: {id}, Quantity: {quantity}, VariantId: {variantId}");
                 var result = await _products.HandleAddProductToCartAsync(user.Email ?? "", id, HttpContext.Session, quantity, variantId);
                 
-
+                Console.WriteLine($"HandleAddProductToCartAsync returned: {result}");
+                
                 if (result > 0)
                 {
-                    return Json(new { success = true, message = "Thêm sản phẩm vào giỏ hàng thành công!" });
+                    var successResponse = new { success = true, message = "Thêm sản phẩm vào giỏ hàng thành công!" };
+                    Console.WriteLine($"Returning success response: {System.Text.Json.JsonSerializer.Serialize(successResponse)}");
+                    return Json(successResponse);
                 }
                 else
                 {
-                    return Json(new { success = false, message = "Không thể thêm sản phẩm vào giỏ hàng. Vui lòng thử lại." });
+                    var failResponse = new { success = false, message = "Không thể thêm sản phẩm vào giỏ hàng. Vui lòng thử lại sau." };
+                    Console.WriteLine($"Returning failure response: {System.Text.Json.JsonSerializer.Serialize(failResponse)}");
+                    return Json(failResponse);
                 }
             }
             catch (Exception ex)
             {
-                
-                return Json(new { success = false, message = $"Lỗi: {ex.Message}" });
+                Console.WriteLine($"Exception occurred: {ex.GetType().Name} - {ex.Message}");
+                Console.WriteLine($"Stack trace: {ex.StackTrace}");
+                var exceptionResponse = new { success = false, message = $"Có lỗi xảy ra: {ex.Message}. Vui lòng thử lại sau." };
+                Console.WriteLine($"Returning exception response: {System.Text.Json.JsonSerializer.Serialize(exceptionResponse)}");
+                return Json(exceptionResponse);
             }
         }
 

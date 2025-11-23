@@ -116,6 +116,24 @@
     color: #6c757d;
     font-size: 0.9rem;
     margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.ff-cart-item-variant i {
+    color: var(--ff-primary);
+    font-size: 0.8rem;
+}
+
+.ff-checkout-item-variant {
+    color: #6c757d;
+    font-size: 0.85rem;
+    margin-bottom: 0.25rem;
+    font-weight: 500;
+}
+
+.ff-checkout-item-variant i {
+    color: var(--ff-primary);
+    font-size: 0.75rem;
 }
 
 .ff-cart-item-price {

@@ -1,3 +1,4 @@
+using System.Linq;
 using FastFoodShop.Domain.Interfaces;
 using FastFoodShop.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +18,8 @@ namespace FastFoodShop.Controllers
         public async Task<IActionResult> Index()
         {
             var items = await _products.GetAllCategoriesAsync();
-            return View("~/Views/Admin/Category/Show.cshtml", items);
+            var ordered = items.OrderBy(c => c.Id).ToList();
+            return View("~/Views/Admin/Category/Show.cshtml", ordered);
         }
 
         [HttpGet("create")]

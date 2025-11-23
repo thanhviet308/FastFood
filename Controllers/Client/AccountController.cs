@@ -1,8 +1,7 @@
-using FastFoodShop.Data;
 using FastFoodShop.Domain.Entities;
+using FastFoodShop.Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace FastFoodShop.Controllers.Client
@@ -13,11 +12,11 @@ namespace FastFoodShop.Controllers.Client
     [Authorize]
     public class AccountController : Controller
     {
-        private readonly AppDbContext _context;
+        private readonly IAccountService _accountService;
 
-        public AccountController(AppDbContext context)
+        public AccountController(IAccountService accountService)
         {
-            _context = context;
+            _accountService = accountService;
         }
 
         /// <summary>
@@ -27,7 +26,7 @@ namespace FastFoodShop.Controllers.Client
         public async Task<IActionResult> Manage()
         {
             var userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var user = await _context.Users.FindAsync(userId);
+            var user = await _accountService.GetUserByIdAsync(userId);
             
             if (user == null)
             {
@@ -51,23 +50,16 @@ namespace FastFoodShop.Controllers.Client
             }
 
             var userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var user = await _context.Users.FindAsync(userId);
+            var success = await _accountService.UpdateUserAsync(userId, model);
             
-            if (user == null)
+            if (success)
             {
-                return Json(new { success = false, message = "Người dùng không tồn tại" });
+                return Json(new { success = true, message = "Cập nhật thông tin thành công!" });
             }
-
-            // Update user information
-            user.FullName = model.FullName;
-            user.Email = model.Email;
-            user.Phone = model.Phone;
-            user.Address = model.Address;
-            // Note: UpdatedAt property doesn't exist in User entity, so we skip this
-
-            await _context.SaveChangesAsync();
-            
-            return Json(new { success = true, message = "Cập nhật thông tin thành công!" });
+            else
+            {
+                return Json(new { success = false, message = "Người dùng không tồn tại hoặc có lỗi xảy ra" });
+            }
         }
 
         /// <summary>
@@ -89,25 +81,16 @@ namespace FastFoodShop.Controllers.Client
             }
 
             var userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var user = await _context.Users.FindAsync(userId);
+            var success = await _accountService.ChangePasswordAsync(userId, currentPassword, newPassword);
             
-            if (user == null)
+            if (success)
             {
-                return Json(new { success = false, message = "Người dùng không tồn tại" });
+                return Json(new { success = true, message = "Đổi mật khẩu thành công!" });
             }
-
-            // Verify current password (in a real app, you'd hash passwords)
-            if (user.Password != currentPassword)
+            else
             {
-                return Json(new { success = false, message = "Mật khẩu hiện tại không đúng" });
+                return Json(new { success = false, message = "Mật khẩu hiện tại không đúng hoặc có lỗi xảy ra" });
             }
-
-            user.Password = newPassword;
-            // Note: UpdatedAt property doesn't exist in User entity, so we skip this
-            
-            await _context.SaveChangesAsync();
-            
-            return Json(new { success = true, message = "Đổi mật khẩu thành công!" });
         }
 
         /// <summary>
@@ -117,11 +100,9 @@ namespace FastFoodShop.Controllers.Client
         public async Task<IActionResult> GetStatistics()
         {
             var userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var statistics = await _accountService.GetUserStatisticsAsync(userId);
             
-            var totalOrders = await _context.Orders.CountAsync(o => o.UserId == userId);
-            var totalReviews = await _context.Reviews.CountAsync(r => r.UserId == userId);
-            
-            return Json(new { totalOrders, totalReviews });
+            return Json(new { totalOrders = statistics.TotalOrders, totalReviews = statistics.TotalReviews });
         }
 
         /// <summary>
@@ -131,13 +112,7 @@ namespace FastFoodShop.Controllers.Client
         public async Task<IActionResult> OrderHistory()
         {
             var userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            
-            var orders = await _context.Orders
-                .Where(o => o.UserId == userId)
-                .Include(o => o.OrderDetails)
-                    .ThenInclude(od => od.Product)
-                .OrderByDescending(o => o.Id) // Use Id as proxy for creation order since CreatedAt doesn't exist
-                .ToListAsync();
+            var orders = await _accountService.GetUserOrdersAsync(userId);
 
             return View("~/Views/Client/Account/OrderHistory.cshtml", orders);
         }
@@ -149,11 +124,7 @@ namespace FastFoodShop.Controllers.Client
         public async Task<IActionResult> OrderDetails(long id)
         {
             var userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            
-            var order = await _context.Orders
-                .Include(o => o.OrderDetails)
-                    .ThenInclude(od => od.Product)
-                .FirstOrDefaultAsync(o => o.Id == id && o.UserId == userId);
+            var order = await _accountService.GetUserOrderByIdAsync(userId, id);
 
             if (order == null)
             {
@@ -212,36 +183,16 @@ namespace FastFoodShop.Controllers.Client
             try
             {
                 var userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-                var user = await _context.Users.FindAsync(userId);
-                
-                if (user == null)
+                var avatarUrl = await _accountService.UploadAvatarAsync(userId, avatar);
+
+                if (!string.IsNullOrEmpty(avatarUrl))
                 {
-                    return Json(new { success = false, message = "Người dùng không tồn tại" });
+                    return Json(new { success = true, message = "Cập nhật ảnh đại diện thành công!", avatarUrl = avatarUrl });
                 }
-
-                // Create uploads directory if it doesn't exist
-                var uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "avatars");
-                if (!Directory.Exists(uploadsPath))
+                else
                 {
-                    Directory.CreateDirectory(uploadsPath);
+                    return Json(new { success = false, message = "Người dùng không tồn tại hoặc có lỗi xảy ra" });
                 }
-
-                // Generate unique filename
-                var fileName = $"user_{userId}_{DateTime.Now:yyyyMMddHHmmss}{Path.GetExtension(avatar.FileName)}";
-                var filePath = Path.Combine(uploadsPath, fileName);
-
-                // Save file
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await avatar.CopyToAsync(stream);
-                }
-
-                // Update user avatar URL
-                var avatarUrl = $"/uploads/avatars/{fileName}";
-                user.Avatar = avatarUrl;
-                await _context.SaveChangesAsync();
-
-                return Json(new { success = true, message = "Cập nhật ảnh đại diện thành công!", avatarUrl = avatarUrl });
             }
             catch (Exception ex)
             {

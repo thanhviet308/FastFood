@@ -302,6 +302,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Send AJAX request
                 console.log('📡 Sending AJAX request...');
                 console.log('🌐 Request URL:', this.action);
+                console.log('📋 Form data:');
+                for (let [key, value] of formData.entries()) {
+                    console.log(`  ${key}: ${value}`);
+                }
                 
                 // Ensure we have the correct URL
                 const requestUrl = this.action || '/add-product-from-view-detail';
@@ -375,7 +379,21 @@ document.addEventListener('DOMContentLoaded', function() {
                         document.getElementById('quantity').value = 1;
                     } else {
                         console.log('❌ Server returned error:', data.message);
-                        showToast(data.message, 'error');
+                        
+                        // Kiểm tra nếu là lỗi yêu cầu đăng nhập
+                        const errorMessage = data.message || 'Không thể thêm sản phẩm vào giỏ hàng.';
+                        const isLoginRequired = errorMessage.includes('đăng nhập');
+                        
+                        showToast(errorMessage, isLoginRequired ? 'warning' : 'error');
+                        
+                        // Nếu yêu cầu đăng nhập, redirect sau 1.5 giây để nhanh hơn
+                        if (isLoginRequired) {
+                            console.log('Redirecting to login from product detail AJAX response in 1.5 seconds...');
+                            setTimeout(() => {
+                                window.location.href = '/login';
+                            }, 1500);
+                        }
+                        
                         button.innerHTML = originalText;
                         button.disabled = false;
                         button.classList.remove('btn-loading');
@@ -444,17 +462,13 @@ function validateAddToCart() {
     // Check if user is authenticated
     if (!isUserAuthenticated || isUserAuthenticated.value !== 'true') {
         console.log('❌ User not authenticated');
-        showToast('Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng', 'error');
-        // Don't redirect - let user see the message and decide to login
-        console.log('❌ User not authenticated, showing toast and returning false');
-        // Add visual feedback to the button
-        const submitButton = document.querySelector('button[type="submit"]');
-        if (submitButton) {
-            submitButton.classList.add('btn-danger');
-            setTimeout(() => {
-                submitButton.classList.remove('btn-danger');
-            }, 2000);
-        }
+        showToast('Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng', 'warning');
+        
+        // Redirect to login after showing message - nhanh hơn 1.5 giây
+        setTimeout(() => {
+            window.location.href = '/login';
+        }, 1500); // Giảm xuống 1.5 giây để nhanh hơn nhưng vẫn đọc được thông báo
+        
         return false;
     }
     

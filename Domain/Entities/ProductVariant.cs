@@ -14,17 +14,22 @@ namespace FastFoodShop.Domain.Entities
         public long? ProductId { get; set; }
         public Product? Product { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Tên biến thể không được để trống")]
         [StringLength(255)]
+        [Display(Name = "Tên biến thể")]
         public string VariantName { get; set; } = string.Empty;
 
-        [Required]
+        [Required(ErrorMessage = "Giá biến thể không được để trống")]
         [Column(TypeName = "decimal(18,2)")]
+        [Display(Name = "Giá")]
         public decimal Price { get; set; }
 
+        [Display(Name = "Trạng thái biến thể")]
         public bool IsActive { get; set; } = true;
 
+        [Display(Name = "Ngày tạo")]
         public DateTime? CreatedAt { get; set; }
+        [Display(Name = "Ngày cập nhật")]
         public DateTime? UpdatedAt { get; set; }
     }
 }

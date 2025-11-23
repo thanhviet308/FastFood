@@ -10,13 +10,16 @@ namespace FastFoodShop.Domain.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Tên danh mục không được để trống")]
         [StringLength(255)]
+        [Display(Name = "Tên danh mục")]
         public string Name { get; set; } = string.Empty;
 
         [Column(TypeName = "nvarchar(max)")]
+        [Display(Name = "Mô tả")]
         public string? Description { get; set; }
 
+        [Display(Name = "Trạng thái hoạt động")]
         public bool IsActive { get; set; } = true;
 
         public DateTime? CreatedAt { get; set; }

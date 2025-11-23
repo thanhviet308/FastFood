@@ -19,7 +19,17 @@
 <div id="layoutSidenav_content">
 <main>
 <div class="container-fluid px-4">
-    <h1 class="mt-4">Xóa Danh mục</h1>
+    <h1 class="mt-4">Quản lý Danh mục</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item">
+            <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Bảng điều khiển</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a asp-controller="Category" asp-action="Index">Danh mục</a>
+        </li>
+        <li class="breadcrumb-item active">Xóa</li>
+    </ol>
+    <h2 class="h4 mb-3">Xóa danh mục</h2>
     <form method="post" asp-controller="Category" asp-action="Delete">
         @Html.AntiForgeryToken()
         <input asp-for="Id" type="hidden" />

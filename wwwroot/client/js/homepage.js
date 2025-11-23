@@ -160,18 +160,25 @@ function showVariantModal(variants, productName) {
 
 function addToCart(productId, variantId, quantity) {
     const csrfToken = document.querySelector('meta[name="X-CSRF-TOKEN"]')?.getAttribute('content');
+    
+    console.log('CSRF Token:', csrfToken);
+    console.log('Product ID:', productId);
+    console.log('Variant ID:', variantId);
+    console.log('Quantity:', quantity);
+    console.log('Request body:', `id=${productId}&variantId=${variantId}&quantity=${quantity}`);
 
     fetch('/add-product-from-view-detail', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
-            'RequestVerificationToken': csrfToken
+            'RequestVerificationToken': csrfToken || ''
         },
         body: `id=${productId}&variantId=${variantId}&quantity=${quantity}`
     })
         .then(response => {
             console.log('Response status:', response.status);
             console.log('Response headers:', response.headers.get('content-type'));
+            console.log('Response ok:', response.ok);
 
             // Check if response is ok
             if (!response.ok) {
@@ -181,13 +188,20 @@ function addToCart(productId, variantId, quantity) {
             // Try to parse as JSON, but handle text response too
             return response.text().then(text => {
                 console.log('Raw response:', text);
+                console.log('Response length:', text.length);
+                
+                // Try to parse as JSON
                 try {
-                    return JSON.parse(text);
+                    const jsonData = JSON.parse(text);
+                    console.log('Parsed JSON:', jsonData);
+                    return jsonData;
                 } catch (e) {
-                    // If not JSON, treat as success with the text as message
+                    console.log('Failed to parse as JSON, error:', e);
+                    console.log('Treating as text response');
+                    // If not JSON, treat as error
                     return {
-                        success: response.ok,
-                        message: text || 'Thêm sản phẩm vào giỏ hàng thành công!',
+                        success: false,
+                        message: text || 'Có lỗi xảy ra khi thêm vào giỏ hàng',
                         isTextResponse: true
                     };
                 }
@@ -195,13 +209,12 @@ function addToCart(productId, variantId, quantity) {
         })
         .then(data => {
             console.log('Cart add response:', data);
+            console.log('Response success:', data.success);
+            console.log('Response message:', data.message);
 
-            // Check for success indicators
-            const isSuccess = data.success === true ||
-                (data.message && data.message.includes('thành công')) ||
-                (data.status && data.status === 'success') ||
-                response.ok;
-
+            // Check for success indicators - be more explicit
+            const isSuccess = data.success === true;
+            
             if (isSuccess) {
                 // Show success message using jQuery Toast
                 $.toast({
@@ -217,17 +230,34 @@ function addToCart(productId, variantId, quantity) {
                 // Update cart count in header
                 updateCartCount();
             } else {
-                // Show error message
+                // Show error message - kiểm tra nếu là lỗi đăng nhập
                 const errorMessage = data.message || 'Không thể thêm sản phẩm vào giỏ hàng.';
+                console.log('Error message:', errorMessage);
+                console.log('Is login required?', errorMessage.includes('đăng nhập'));
+                
+                const isLoginRequired = errorMessage.includes('đăng nhập');
+                
                 $.toast({
-                    heading: 'Lỗi',
+                    heading: isLoginRequired ? 'Yêu cầu đăng nhập' : 'Lỗi',
                     text: errorMessage,
                     showHideTransition: 'slide',
-                    icon: 'error',
+                    icon: isLoginRequired ? 'warning' : 'error',
                     position: 'top-right',
                     stack: 5,
                     hideAfter: 5000
                 });
+                
+                // Nếu yêu cầu đăng nhập, chuyển hướng sau 1.5 giây để nhanh nhưng vẫn đọc được thông báo
+                if (isLoginRequired) {
+                    console.log('Redirecting to login in 1.5 seconds...');
+                    console.log('Current location:', window.location.href);
+                    console.log('About to redirect to:', '/login');
+                    // Chuyển nhanh sau 1.5 giây - vừa đủ đọc thông báo
+                    setTimeout(() => {
+                        console.log('Executing redirect...');
+                        window.location.href = '/login';
+                    }, 1500);
+                }
             }
         })
         .catch(error => {

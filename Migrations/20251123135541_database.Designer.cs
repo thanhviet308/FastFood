@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FastFoodShop.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251117144503_AddOrderNote")]
-    partial class AddOrderNote
+    [Migration("20251123135541_database")]
+    partial class database
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -166,10 +166,6 @@ namespace FastFoodShop.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<string>("Note")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
                     b.Property<long?>("OrderId")
                         .HasColumnType("bigint");
 
@@ -298,16 +294,7 @@ namespace FastFoodShop.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsApproved")
-                        .HasColumnType("bit");
-
-                    b.Property<long?>("ProductId")
-                        .HasColumnType("bigint");
-
                     b.Property<int>("Rating")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Type")
                         .HasColumnType("int");
 
                     b.Property<string>("UserEmail")
@@ -324,10 +311,6 @@ namespace FastFoodShop.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
-
-                    b.HasIndex("IsApproved", "CreatedAt");
-
-                    b.HasIndex("ProductId", "CreatedAt");
 
                     b.ToTable("reviews");
                 });
@@ -498,17 +481,10 @@ namespace FastFoodShop.Migrations
 
             modelBuilder.Entity("FastFoodShop.Domain.Entities.Review", b =>
                 {
-                    b.HasOne("FastFoodShop.Domain.Entities.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("FastFoodShop.Domain.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("Product");
 
                     b.Navigation("User");
                 });

@@ -24,7 +24,7 @@ namespace FastFoodShop.Services
             var q = _db.Users
                 .Include(u => u.Role)           // load Role kèm User
                 .AsNoTracking()
-                .OrderByDescending(u => u.Id);
+                .OrderBy(u => u.Id);
 
             var total = await q.CountAsync();
 
