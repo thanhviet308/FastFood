@@ -172,13 +172,9 @@
     }
 
     // Add to cart (Ajax) - Only for detail page, homepage uses variant selection modal
+    // Removed login check - allow anonymous users
     $(document).on('click', '.btnAddToCartDetail', function (event) {
         event.preventDefault();
-
-        if (typeof isLogin === 'function' && !isLogin()) {
-            showErrorToast('Bạn cần đăng nhập tài khoản');
-            return;
-        }
 
         const $btn = $(this).prop('disabled', true);
 
@@ -212,11 +208,7 @@
             },
             error: function (xhr) {
                 console.error(xhr.status, xhr.responseText);
-                if (xhr.status === 401 || xhr.status === 403) {
-                    showErrorToast('Bạn cần đăng nhập để thực hiện thao tác này.');
-                } else {
-                    showErrorToast('Có lỗi xảy ra, vui lòng thử lại.');
-                }
+                showErrorToast('Có lỗi xảy ra, vui lòng thử lại.');
             },
             complete: function () {
                 $btn.prop('disabled', false);
@@ -233,6 +225,7 @@
                 $b.text('0').css('display', 'none');
             }
         }
+        // Load cart count for both logged in and anonymous users
         $.get('/cart/count')
             .done(function (data) {
                 var n = Number(data && typeof data === 'object' ? data.count : data);

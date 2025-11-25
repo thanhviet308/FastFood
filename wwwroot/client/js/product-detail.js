@@ -459,20 +459,8 @@ function validateAddToCart() {
     clearQuantityError();
     clearVariantError();
     
-    // Check if user is authenticated
-    if (!isUserAuthenticated || isUserAuthenticated.value !== 'true') {
-        console.log('❌ User not authenticated');
-        showToast('Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng', 'warning');
-        
-        // Redirect to login after showing message - nhanh hơn 1.5 giây
-        setTimeout(() => {
-            window.location.href = '/login';
-        }, 1500); // Giảm xuống 1.5 giây để nhanh hơn nhưng vẫn đọc được thông báo
-        
-        return false;
-    }
-    
-    console.log('✅ User authenticated, continuing validation...');
+    // Không cần kiểm tra đăng nhập nữa - cho phép anonymous users
+    console.log('✅ Continuing validation (anonymous users allowed)...');
     
     // Validate quantity
     if (!quantityInput || !quantityInput.value) {

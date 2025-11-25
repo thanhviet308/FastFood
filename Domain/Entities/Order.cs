@@ -28,6 +28,14 @@ namespace FastFoodShop.Domain.Entities
         [StringLength(50)]
         public string? Status { get; set; }
 
+        [StringLength(50)]
+        [Column("payment_status")]
+        public string? PaymentStatus { get; set; }
+
+        // Ngày tạo đơn (dùng để thống kê doanh thu theo tháng)
+        [Column("created_at")]
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+
         [StringLength(1000)]
         public string? Note { get; set; }
 

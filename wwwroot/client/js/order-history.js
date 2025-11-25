@@ -56,7 +56,8 @@ $(document).ready(function() {
         orders = orderCards.map(function() {
             return {
                 element: $(this),
-                status: $(this).data('status'),
+                status: $(this).data('status'), // trạng thái đơn (PENDING, DELIVERED,...)
+                paymentStatus: $(this).data('payment-status'), // trạng thái thanh toán (UNPAID, PAID)
                 orderNumber: $(this).data('order-number')
             };
         }).get();
@@ -71,15 +72,15 @@ $(document).ready(function() {
         if (selectedStatus === '') {
             filteredOrders = [...orders];
         } else {
-            // Logic mới: lọc theo trạng thái thanh toán
+            // Lọc theo trạng thái thanh toán
             filteredOrders = orders.filter(order => {
                 switch (selectedStatus) {
                     case 'unpaid': // Chưa thanh toán
-                        return order.status === 'Pending' || order.status === 'Confirmed';
+                        return order.paymentStatus === 'UNPAID';
                     case 'paid': // Thanh toán thành công
-                        return order.status === 'Shipping' || order.status === 'Delivered';
+                        return order.paymentStatus === 'PAID';
                     case 'cancelled': // Đã hủy
-                        return order.status === 'Cancelled';
+                        return order.status === 'CANCELLED';
                     default:
                         return false;
                 }

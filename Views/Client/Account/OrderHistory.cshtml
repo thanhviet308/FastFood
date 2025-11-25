@@ -52,7 +52,7 @@
                             <div class="stats-icon">
                                 <i class="fa-solid fa-clock"></i>
                             </div>
-                            <div class="stats-number">@Model.Count(o => o.Status == "Pending" || o.Status == "Confirmed")</div>
+                            <div class="stats-number">@Model.Count(o => o.PaymentStatus == "UNPAID")</div>
                             <div class="stats-label">Chưa thanh toán</div>
                         </div>
                     </div>
@@ -61,7 +61,7 @@
                             <div class="stats-icon">
                                 <i class="fa-solid fa-circle-check"></i>
                             </div>
-                            <div class="stats-number">@Model.Count(o => o.Status == "Shipping" || o.Status == "Delivered")</div>
+                            <div class="stats-number">@Model.Count(o => o.PaymentStatus == "PAID")</div>
                             <div class="stats-label">Thanh toán thành công</div>
                         </div>
                     </div>
@@ -113,7 +113,7 @@
             <div class="orders-list">
                 @foreach (var order in Model)
                 {
-                    <div class="order-card mb-4" data-status="@order.Status" data-order-number="ORD-@order.Id.ToString("D6")">
+                    <div class="order-card mb-4" data-status="@order.Status" data-payment-status="@order.PaymentStatus" data-order-number="ORD-@order.Id.ToString("D6")">
                         <div class="order-card-header">
                             <div>
                                 <div class="order-number">#ORD-@order.Id.ToString("D6")</div>
@@ -124,12 +124,11 @@
                             </div>
                             <div class="order-status">
                                 @{
-                                    var (paymentStatusClass, paymentStatusText) = order.Status switch
+                                    var (paymentStatusClass, paymentStatusText) = order.PaymentStatus switch
                                     {
-                                        "Pending" or "Confirmed" => ("status-badge status-unpaid", "Chưa thanh toán"),
-                                        "Shipping" or "Delivered" => ("status-badge status-paid", "Thanh toán thành công"),
-                                        "Cancelled" => ("status-badge status-cancelled", "Đã hủy"),
-                                        _ => ("status-badge status-unknown", order.Status)
+                                        "UNPAID" => ("status-badge status-unpaid", "Chưa thanh toán"),
+                                        "PAID" => ("status-badge status-paid", "Thanh toán thành công"),
+                                        _ => ("status-badge status-unknown", order.PaymentStatus ?? "Không rõ")
                                     };
                                 }
                                 <span class="@paymentStatusClass">

@@ -33,5 +33,8 @@ namespace FastFoodShop.Domain.Interfaces
         Task<long> CountProductsAsync();
         Task<long> CountActiveProductsAsync();
         Task<long> CountOrdersAsync();
+        Task<long> CountCategoriesAsync();
+        Task<long> CountReviewsAsync();
+        Task<double> GetAverageRatingAsync();
     }
 }

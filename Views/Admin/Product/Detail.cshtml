@@ -41,33 +41,71 @@
 
                     <div class="container mt-5">
                         <div class="row">
-                            <div class="col-12 mx-auto">
-                                <div class="d-flex justify-content-between">
-                                    <h3>Chi tiết sản phẩm (Mã: @Model.Id)</h3>
+                            <div class="col-12 col-xl-10 mx-auto">
+                                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                                    <h3 class="mb-0">Chi tiết sản phẩm (Mã: @Model.Id)</h3>
+                                    <a asp-controller="Product" asp-action="Index" class="btn btn-outline-secondary">
+                                        <i class="fas fa-arrow-left me-1"></i>Quay lại
+                                    </a>
                                 </div>
 
                                 <hr />
 
-                                    <div class="card" style="width: 60%">
-                                    <img class="card-img-top" src="~/images/product/@Model.Image"
-                                        asp-append-version="true" alt="product image" />
+                                <div class="row g-4">
+                                    <div class="col-lg-5">
+                                        <div class="card shadow-sm">
+                                            @if (!string.IsNullOrEmpty(Model.Image))
+                                            {
+                                                <img class="card-img-top img-fluid" style="max-height: 350px; object-fit: cover;"
+                                                     src="~/images/product/@Model.Image"
+                                                     asp-append-version="true" alt="@Model.Name" />
+                                            }
+                                            else
+                                            {
+                                                <img class="card-img-top img-fluid" style="max-height: 350px; object-fit: cover;"
+                                                     src="https://placehold.co/600x400?text=Không+có+ảnh"
+                                                     alt="@Model.Name" />
+                                            }
+                                        </div>
+                                    </div>
 
+                                    <div class="col-lg-7">
+                                        <div class="card shadow-sm h-100">
                                     <div class="card-header">
-                                        Thông tin sản phẩm
+                                                <h5 class="mb-0">Thông tin sản phẩm</h5>
                                     </div>
                                     <ul class="list-group list-group-flush">
-                                        <li class="list-group-item">Mã: @Model.Id</li>
-                                        <li class="list-group-item">Tên: @Model.Name</li>
-                                        
-                                        <li class="list-group-item">Danh mục: @(Model.Category?.Name ?? "-")</li>
-                                        <li class="list-group-item">Trạng thái: @(Model.IsActive ? "Hoạt động" : "Không hoạt động")</li>
-                                        <li class="list-group-item">Mô tả ngắn: @Model.ShortDesc</li>
-                                        <li class="list-group-item">Mô tả chi tiết: @Model.DetailDesc</li>
+                                                <li class="list-group-item"><strong>Mã:</strong> @Model.Id</li>
+                                                <li class="list-group-item"><strong>Tên:</strong> @Model.Name</li>
+                                                <li class="list-group-item">
+                                                    <strong>Danh mục:</strong> @(ViewBag.CategoryName ?? Model.Category?.Name ?? "Không xác định")
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <strong>Trạng thái:</strong>
+                                                    @(Model.IsActive ? "Hoạt động" : "Không hoạt động")
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <strong>Mô tả ngắn:</strong>
+                                                    <div class="mt-1 text-muted">@Model.ShortDesc</div>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <strong>Mô tả chi tiết:</strong>
+                                                    <div class="mt-1 text-muted">@Model.DetailDesc</div>
+                                                </li>
                                     </ul>
                                 </div>
-                                <div class="mt-4">
-                                    <h5>Biến thể</h5>
-                                    <table class="table">
+                                    </div>
+                                </div>
+
+                                <div class="card mt-4 shadow-sm">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">Biến thể</h5>
+                                        <span class="badge bg-secondary">
+                                            Tổng: @(((IEnumerable<FastFoodShop.Domain.Entities.ProductVariant>)ViewBag.Variants ?? Enumerable.Empty<FastFoodShop.Domain.Entities.ProductVariant>()).Count())
+                                        </span>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table class="table mb-0">
                                         <thead>
                                             <tr>
                                                 <th>Tên</th>
@@ -81,14 +119,25 @@
                                                 <tr>
                                                     <td>@v.VariantName</td>
                                                     <td>@string.Format("{0:N0} đ", v.Price)</td>
-                                                    <td>@(v.IsActive ? "Hoạt động" : "Không hoạt động")</td>
+                                                        <td>
+                                                            <span class="badge @(v.IsActive ? "bg-success" : "bg-secondary")">
+                                                                @(v.IsActive ? "Hoạt động" : "Không hoạt động")
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                                @if (ViewBag.Variants == null || !((IEnumerable<FastFoodShop.Domain.Entities.ProductVariant>)ViewBag.Variants).Any())
+                                                {
+                                                    <tr>
+                                                        <td colspan="3" class="text-center text-muted py-4">
+                                                            Chưa có biến thể nào cho sản phẩm này.
+                                                        </td>
                                                 </tr>
                                             }
                                         </tbody>
                                     </table>
                                 </div>
-
-                                <a asp-controller="Product" asp-action="Index" class="btn btn-success mt-3">Quay lại</a>
+                                </div>
                             </div>
                         </div>
                     </div>

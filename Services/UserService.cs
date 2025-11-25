@@ -112,5 +112,14 @@ namespace FastFoodShop.Services
         public Task<long> CountProductsAsync() => _db.Products.LongCountAsync();
         public Task<long> CountActiveProductsAsync() => _db.Products.Where(p => p.IsActive).LongCountAsync();
         public Task<long> CountOrdersAsync() => _db.Orders.LongCountAsync();
+        public Task<long> CountCategoriesAsync() => _db.Categories.LongCountAsync();
+        public Task<long> CountReviewsAsync() => _db.Reviews.LongCountAsync();
+        
+        public async Task<double> GetAverageRatingAsync()
+        {
+            var hasReviews = await _db.Reviews.AnyAsync();
+            if (!hasReviews) return 0;
+            return await _db.Reviews.AverageAsync(r => (double)r.Rating);
+        }
     }
 }

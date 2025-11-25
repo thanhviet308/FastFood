@@ -14,6 +14,11 @@
             cartDistinct = await ProductService.GetDistinctCountByEmailAsync(email);
         }
     }
+    else
+    {
+        // Anonymous user - get from session
+        cartDistinct = HttpContextAccessor.HttpContext?.Session.GetInt32("distinct") ?? 0;
+    }
 }
 
 <div id="siteHeader" class="container-fluid minimal-header">
@@ -63,9 +68,7 @@
                         </a>
                         <div class="dropdown-menu">
                             <a href="/cart" class="dropdown-item">Giỏ hàng</a>
-                            <a href="/checkout" class="dropdown-item">Thanh toán</a>
                             <a href="/reviews" class="dropdown-item">Đánh giá</a>
-                            <a href="/contact" class="dropdown-item">Liên hệ</a>
                         </div>
                     </div>
 
@@ -81,14 +84,14 @@
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </button>
 
+                    <!-- Cart - Always visible for both logged in and anonymous users -->
+                    <a href="/cart" class="btn btn-outline-primary btn-sm position-relative" title="Giỏ hàng">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                        <span id="sumCart" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="@(cartDistinct > 0 ? "display:inline-block" : "display:none")">@cartDistinct</span>
+                    </a>
+
                     @if (isAuth)
                     {
-                        <!-- Cart -->
-                        <a href="/cart" class="btn btn-outline-primary btn-sm position-relative" title="Giỏ hàng">
-                            <i class="fa-solid fa-cart-shopping"></i>
-                            <span id="sumCart" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="@(cartDistinct > 0 ? "display:inline-block" : "display:none")">@cartDistinct</span>
-                        </a>
-
                         <!-- User dropdown -->
                         <div class="dropdown">
                             <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">

@@ -1,4 +1,5 @@
-@model IEnumerable<FastFoodShop.Domain.Entities.Product>
+@using FastFoodShop.Domain.Entities
+@model IEnumerable<Product>
 @{
     ViewData["Title"] = "Thực Đơn - FastFood Shop";
 
@@ -12,8 +13,11 @@
 
 @{
     var isAuth = User?.Identity?.IsAuthenticated == true;
-
     var sumCart = HttpContextAccessor.HttpContext?.Session.GetInt32("sum") ?? 0;
+    var categories = ViewBag.Categories as IEnumerable<Category> ?? new List<Category>();
+    var products = Model ?? Enumerable.Empty<Product>();
+    long? selectedCategoryId = ViewBag.SelectedCategoryId != null ? (long)ViewBag.SelectedCategoryId : (long?)null;
+    var hasProducts = products.Any();
 }
 
 <!DOCTYPE html>
@@ -32,7 +36,9 @@
         rel="stylesheet" />
 
     <!-- Icon Font Stylesheet -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet" />
 
     <!-- Libraries Stylesheet -->
@@ -94,25 +100,19 @@
                             <button class="ff-btn-filter" data-filter="featured">Nổi bật</button>
                         </div>
                         <div class="row">
-                            <div class="col-md-6 col-lg-3">
-                                <select class="form-select ff-form-select" id="sortSelect">
-                                    <option value="">Sắp xếp theo</option>
-                                    <option value="name-asc">Tên A-Z</option>
-                                    <option value="name-desc">Tên Z-A</option>
-                                    <option value="price-asc">Giá thấp - cao</option>
-                                    <option value="price-desc">Giá cao - thấp</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6 col-lg-3">
+                            <div class="col-md-6 col-lg-4">
                                 <select class="form-select ff-form-select" id="categorySelect">
                                     <option value="">Danh mục</option>
-                                    <option value="burger">Burger</option>
-                                    <option value="pizza">Pizza</option>
-                                    <option value="gà rán">Gà Rán</option>
-                                    <option value="đồ uống">Đồ Uống</option>
+                                    @foreach (var category in categories)
+                                    {
+                                        var isSelected = selectedCategoryId.HasValue && selectedCategoryId == category.Id;
+                                        <option value="@category.Id" selected="@(isSelected ? "selected" : null)">
+                                            @category.Name
+                                        </option>
+                                    }
                                 </select>
                             </div>
-                            <div class="col-md-12 col-lg-6">
+                            <div class="col-md-12 col-lg-8">
                                 <div class="input-group">
                                     <input type="text" class="form-control ff-form-input"
                                         placeholder="Tìm kiếm món ăn..." id="searchInput">
@@ -125,55 +125,54 @@
                     </div>
                 </div>
             </div>
-
             <!-- Products Grid -->
-            <div class="row g-4" id="productsContainer">
-                @foreach (var product in Model)
-
+            <div class="row g-4 justify-content-center" id="productsContainer">
+                @foreach (var product in products)
                 {
-                    <div class="col-md-6 col-lg-4 col-xl-3 product-item" data-category="@product.Category?.Name?.ToLower()"
+                    <div class="col-md-6 col-lg-4 col-xl-3 product-item" data-category="@product.CategoryId"
                         data-featured="@product.IsFeatured.ToString().ToLower()">
                         <div class="ff-product-card h-100">
                             <div class="ff-product-image">
                                 @if (!string.IsNullOrEmpty(product.Image))
-
                                 {
-                                    <img src="~/images/product/@product.Image" alt="@product.Name" class="img-fluid"
+                                    <img src="@Url.Content("~/images/product/" + product.Image)" alt="@product.Name" class="img-fluid"
                                         onerror="this.src='https://placehold.co/300x200?text=%F0%9F%8D%94&background=f8f9fa&text=888888'" />
                                 }
-
                                 else
-
                                 {
                                     <img src="https://placehold.co/300x200?text=%F0%9F%8D%94&background=f8f9fa&text=888888"
                                         alt="@product.Name" class="img-fluid" />
                                 }
                                 @if (product.IsFeatured)
-                                                {
-                                                    <div class="ff-product-badge">NỔI BẬT</div>
-                                                }
+                                {
+                                    <div class="ff-product-badge">NỔI BẬT</div>
+                                }
                             </div>
                             <div class="ff-product-content">
-                                    <h4 class="ff-product-title">
-                                        <a asp-controller="Item" asp-action="GetProductPage" asp-route-id="@product.Id"
-                                            class="text-decoration-none">
-                                            @product.Name
-                                        </a>
-                                    </h4>
-                                    <p class="ff-product-description">@product.ShortDesc</p>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div class="ff-product-price">
-                                            <span class="text-muted">Xem chi tiết</span>
-                                        </div>
+                                <h4 class="ff-product-title">
+                                    <a asp-controller="Item" asp-action="GetProductPage" asp-route-id="@product.Id"
+                                        class="text-decoration-none">
+                                        @product.Name
+                                    </a>
+                                </h4>
+                                <p class="ff-product-description">@product.ShortDesc</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="ff-product-price">
+                                        <span class="text-muted">Xem chi tiết</span>
                                     </div>
-                                    <button data-product-id="@product.Id" class="btnAddToCartHomepage ff-product-cart-btn"
-                                        aria-label="Thêm vào giỏ hàng">
-                                        <i class="fas fa-cart-plus"></i>
-                                    </button>
                                 </div>
+                                <button data-product-id="@product.Id" class="btnAddToCartHomepage ff-product-cart-btn"
+                                    aria-label="Thêm vào giỏ hàng">
+                                    <i class="fas fa-cart-plus"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 }
+            </div>
+            <div class="col-12 text-center text-muted mt-4" id="noProductsMessage"
+                style="display:@(hasProducts ? "none" : "block");">
+                Không có sản phẩm nào khớp với bộ lọc hiện tại.
             </div>
 
             <!-- Pagination -->
@@ -186,7 +185,6 @@
                             <nav aria-label="Page navigation">
                                 <ul class="pagination justify-content-center">
                                     @if (ViewBag.CurrentPage > 1)
-
                                     {
                                         <li class="page-item">
                                             <a class="page-link" href="?page=@(ViewBag.CurrentPage - 1)@ViewBag.QueryString"
@@ -197,7 +195,6 @@
                                     }
 
                                     @for (int i = 1; i <= ViewBag.TotalPages; i++)
-
                                     {
                                         <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
                                             <a class="page-link" href="?page=@i@ViewBag.QueryString">@i</a>
@@ -205,7 +202,6 @@
                                     }
 
                                     @if (ViewBag.CurrentPage < ViewBag.TotalPages)
-
                                     {
                                         <li class="page-item">
                                             <a class="page-link" href="?page=@(ViewBag.CurrentPage + 1)@ViewBag.QueryString"
@@ -295,6 +291,77 @@
             $('html, body').animate({ scrollTop: 0 }, 1500, 'easeInOutExpo');
             return false;
         });
+
+        // Client-side search + featured filter (current page only)
+        const productItems = Array.from(document.querySelectorAll('#productsContainer .product-item'));
+        const filterButtons = document.querySelectorAll('.ff-btn-filter');
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+        const noProductsMessage = document.getElementById('noProductsMessage');
+        let activeFilter = 'all';
+
+        function normalize(text) {
+            return (text ?? '').toString().trim().toLowerCase();
+        }
+
+        function applyFilters() {
+            const searchTerm = normalize(searchInput?.value);
+            let visibleCount = 0;
+
+            productItems.forEach(item => {
+                const isFeatured = item.dataset.featured === 'true';
+                const title = normalize(item.querySelector('.ff-product-title')?.innerText);
+                const shortDesc = normalize(item.querySelector('.ff-product-description')?.innerText);
+
+                const matchFeatured = activeFilter === 'all' || (activeFilter === 'featured' && isFeatured);
+                const matchSearch = !searchTerm || title.includes(searchTerm) || shortDesc.includes(searchTerm);
+
+                const isVisible = matchFeatured && matchSearch;
+                item.style.display = isVisible ? '' : 'none';
+                if (isVisible) visibleCount++;
+            });
+
+            if (noProductsMessage) {
+                noProductsMessage.style.display = visibleCount === 0 ? 'block' : 'none';
+            }
+        }
+
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                activeFilter = btn.dataset.filter ?? 'all';
+                applyFilters();
+            });
+        });
+
+        searchBtn?.addEventListener('click', applyFilters);
+        searchInput?.addEventListener('keyup', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                applyFilters();
+            }
+        });
+
+        applyFilters();
+
+        // Category dropdown -> server filtering to fetch correct dataset
+        const categorySelect = document.getElementById('categorySelect');
+        const categoryToggle = document.getElementById('btnCategoryFilter');
+        function applyCategorySelection() {
+            const params = new URLSearchParams(window.location.search);
+            if (categorySelect?.value) {
+                params.set('categoryId', categorySelect.value);
+            } else {
+                params.delete('categoryId');
+            }
+            params.delete('page');
+            const query = params.toString();
+            const newUrl = query ? `${window.location.pathname}?${query}` : window.location.pathname;
+            window.location.href = newUrl;
+        }
+        categorySelect?.addEventListener('change', applyCategorySelection);
+        categoryToggle?.addEventListener('click', applyCategorySelection);
 
         // Cart functionality
         let isProcessingCart = false;
@@ -406,20 +473,7 @@
                 return;
             }
 
-            // Check if user is authenticated
-            const isAuth = @Html.Raw(Json.Serialize(isAuth));
-            console.log('User authenticated:', isAuth);
-            
-            if (!isAuth) {
-                $.toast({
-                    heading: 'Thông báo',
-                    text: 'Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng',
-                    showHideTransition: 'slide',
-                    icon: 'warning',
-                    position: 'top-right'
-                });
-                return;
-            }
+            // Không cần kiểm tra đăng nhập - cho phép anonymous users
 
             isProcessingCart = true;
 
@@ -569,8 +623,30 @@
         // Category filter functionality
         $('#categorySelect').change(function () {
             const category = $(this).val();
+            console.log('Category dropdown changed to:', category);
+            
+            // Cập nhật URL mà không reload trang
+            const url = new URL(window.location.href);
+            if (category) {
+                url.searchParams.set('category', getCategoryNameFromId(category));
+            } else {
+                url.searchParams.delete('category');
+            }
+            window.history.replaceState({}, '', url);
+            
             filterProductsByCategory(category);
         });
+        
+        // Hàm chuyển đổi từ category ID sang category name cho URL
+        function getCategoryNameFromId(categoryId) {
+            const reverseMapping = {
+                '1': 'burger',
+                '2': 'pizza', 
+                '6': 'chicken',
+                '7': 'drinks'
+            };
+            return reverseMapping[categoryId] || categoryId;
+        }
 
         function filterProducts(filter) {
             console.log('Filtering by:', filter); // Debug
@@ -623,6 +699,9 @@
         }
 
         function filterProductsByCategory(category) {
+            console.log('filterProductsByCategory called with category:', category, 'type:', typeof category);
+            let visibleCount = 0;
+            
             $('.product-item').each(function () {
                 const $item = $(this);
                 const productCategory = $item.data('category');
@@ -631,15 +710,22 @@
                 if (!category || category === '') {
                     show = true; // Show all if no category selected
                 } else {
-                    show = productCategory === category;
+                    // Convert both to string for comparison
+                    show = String(productCategory) === String(category);
+                    console.log('Product category:', productCategory, '(' + typeof productCategory + ')', 
+                               'Filter category:', category, '(' + typeof category + ')', 
+                               'Show:', show);
                 }
 
                 if (show) {
                     $item.fadeIn();
+                    visibleCount++;
                 } else {
                     $item.fadeOut();
                 }
             });
+            
+            console.log('Total visible products after filter:', visibleCount);
         }
 
         // Auto-filter by category from URL parameter
@@ -648,33 +734,37 @@
             const category = urlParams.get('category');
             
             if (category) {
-                // Mapping từ URL parameter sang tên category trong database
+                // Mapping từ URL parameter sang category ID (phải khớp với C# controller mapping)
                 const categoryMapping = {
-                    'burger': 'burger',
-                    'pizza': 'pizza', 
-                    'chicken': 'gà rán',
-                    'drinks': 'đồ uống'
+                    'burger': '1',     // Burger category ID
+                    'pizza': '2',      // Pizza category ID  
+                    'chicken': '6',    // Gà Rán category ID
+                    'drinks': '7'      // Tacos category ID (this is what "Đồ Uống" maps to)
                 };
                 
-                const mappedCategory = categoryMapping[category] || category;
+                const mappedCategoryId = categoryMapping[category] || category;
+                
+                console.log('Auto-filtering by category:', category, '-> mapped to category ID:', mappedCategoryId);
                 
                 // Set the dropdown value
-                $('#categorySelect').val(mappedCategory);
-                // Filter products
-                filterProductsByCategory(mappedCategory);
+                $('#categorySelect').val(mappedCategoryId);
+                // Filter products by category ID
+                filterProductsByCategory(mappedCategoryId);
             }
         }
 
         // Call auto-filter on page load
-        $(document).ready(function() {
-            console.log('Page loaded, checking for featured products...');
+        $(document).ready(function () {
+            console.log('Product Show page loaded, checking for category filter...');
+            console.log('Current URL:', window.location.href);
+            console.log('URL search params:', window.location.search);
             
             // Log số lượng sản phẩm nổi bật
             const featuredCount = $('.product-item[data-featured="true"]').length;
             console.log('Total featured products found:', featuredCount);
             
             // Log tất cả sản phẩm và trạng thái featured của chúng
-            $('.product-item').each(function() {
+            $('.product-item').each(function () {
                 const $item = $(this);
                 const name = $item.find('.ff-product-title').text().trim();
                 const isFeatured = $item.data('featured');

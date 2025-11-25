@@ -113,7 +113,7 @@
                         
                         @foreach (var item in Model)
                         {
-                            <div class="ff-cart-item" data-cart-detail-id="@item.Id">
+                            <div class="ff-cart-item" data-cart-detail-id="@item.Id" data-item-price="@item.Price.ToString(System.Globalization.CultureInfo.InvariantCulture)">
                                 <div class="ff-cart-item-image">
                                     @if (!string.IsNullOrEmpty(item.Product?.Image))
                                     {
@@ -147,7 +147,7 @@
                                     </div>
                                 </div>
                                 <div class="ff-cart-item-total">
-                                    <span class="ff-item-total-price">@((item.Price * item.Quantity).ToString("N0"))đ</span>
+                                    <span class="ff-item-total-price" data-price="@item.Price.ToString(System.Globalization.CultureInfo.InvariantCulture)" data-quantity="@item.Quantity">@((item.Price * item.Quantity).ToString("N0"))đ</span>
                                     <form asp-action="DeleteCartDetail" asp-route-id="@item.Id" method="post" class="d-inline">
                                         @Html.AntiForgeryToken()
                                         <button type="submit" class="ff-cart-item-remove" title="Xóa sản phẩm">

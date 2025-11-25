@@ -229,35 +229,28 @@ function addToCart(productId, variantId, quantity) {
 
                 // Update cart count in header
                 updateCartCount();
-            } else {
-                // Show error message - kiểm tra nếu là lỗi đăng nhập
-                const errorMessage = data.message || 'Không thể thêm sản phẩm vào giỏ hàng.';
-                console.log('Error message:', errorMessage);
-                console.log('Is login required?', errorMessage.includes('đăng nhập'));
                 
-                const isLoginRequired = errorMessage.includes('đăng nhập');
+                // Also update badge if count is returned
+                if (data.count !== undefined) {
+                    var $b = $('#sumCart');
+                    if ($b.length) {
+                        $b.text(data.count);
+                        $b.css('display', data.count > 0 ? 'inline-block' : 'none');
+                    }
+                }
+            } else {
+                // Show error message
+                const errorMessage = data.message || 'Không thể thêm sản phẩm vào giỏ hàng.';
                 
                 $.toast({
-                    heading: isLoginRequired ? 'Yêu cầu đăng nhập' : 'Lỗi',
+                    heading: 'Lỗi',
                     text: errorMessage,
                     showHideTransition: 'slide',
-                    icon: isLoginRequired ? 'warning' : 'error',
+                    icon: 'error',
                     position: 'top-right',
                     stack: 5,
                     hideAfter: 5000
                 });
-                
-                // Nếu yêu cầu đăng nhập, chuyển hướng sau 1.5 giây để nhanh nhưng vẫn đọc được thông báo
-                if (isLoginRequired) {
-                    console.log('Redirecting to login in 1.5 seconds...');
-                    console.log('Current location:', window.location.href);
-                    console.log('About to redirect to:', '/login');
-                    // Chuyển nhanh sau 1.5 giây - vừa đủ đọc thông báo
-                    setTimeout(() => {
-                        console.log('Executing redirect...');
-                        window.location.href = '/login';
-                    }, 1500);
-                }
             }
         })
         .catch(error => {

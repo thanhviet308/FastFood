@@ -90,15 +90,18 @@ namespace FastFoodShop.Services
                     return false;
                 }
 
-                // In a real app, you should hash passwords
-                // For now, comparing plain text as in your original code
-                if (user.Password != currentPassword)
+                // Verify current password using password hasher (mặc định password đã được hash)
+                var verifyResult = _passwordHasher.VerifyHashedPassword(user, user.Password, currentPassword);
+
+                // Nếu verify thất bại, fallback thêm trường hợp password đang lưu là plain text
+                if (verifyResult == PasswordVerificationResult.Failed && user.Password != currentPassword)
                 {
                     _logger.LogWarning("Invalid current password for user: {UserId}", userId);
                     return false;
                 }
 
-                user.Password = newPassword; // Should hash this in production
+                // Hash mật khẩu mới trước khi lưu (kể cả khi trước đó là plain text)
+                user.Password = _passwordHasher.HashPassword(user, newPassword);
                 await _context.SaveChangesAsync();
                 
                 _logger.LogInformation("Password changed successfully for user: {UserId}", userId);

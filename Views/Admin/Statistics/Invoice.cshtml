@@ -1,0 +1,230 @@
+@model FastFoodShop.Domain.Entities.Order
+@{
+    ViewData["Title"] = $"Hóa đơn #{Model.Id} - FastFood Shop";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        @@media print {
+            .no-print { display: none !important; }
+            body { margin: 0; padding: 20px; }
+        }
+        /* Layout giống phiếu in siêu thị: khổ hẹp, chữ nhỏ, ít màu */
+        body {
+            font-size: 13px;
+        }
+        .invoice-container {
+            max-width: 520px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 16px 20px;
+            border: 1px dashed #ced4da;
+        }
+        .invoice-header {
+            border-bottom: 1px dashed #999;
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+        }
+        .invoice-header h2 {
+            font-size: 20px;
+            margin-bottom: 2px;
+        }
+        .invoice-header h3 {
+            font-size: 16px;
+        }
+        .invoice-footer {
+            border-top: 1px dashed #999;
+            padding-top: 12px;
+            margin-top: 16px;
+            font-size: 12px;
+        }
+        .table {
+            margin-bottom: 8px;
+        }
+        .table th,
+        .table td {
+            padding: 4px 6px;
+            vertical-align: middle;
+        }
+        .order-summary {
+            max-width: 260px;
+            margin-left: auto;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="invoice-container">
+        <!-- Print Button -->
+        <div class="text-end mb-3 no-print">
+            <button onclick="window.print()" class="btn btn-primary">
+                <i class="fas fa-print me-2"></i>In hóa đơn
+            </button>
+            <a href="javascript:window.close()" class="btn btn-secondary">
+                <i class="fas fa-times me-2"></i>Đóng
+            </a>
+        </div>
+
+        <!-- Invoice Header -->
+        <div class="invoice-header">
+            <div class="row">
+                <div class="col-7">
+                    <h2 class="mb-1">FastFood Shop</h2>
+                    <p class="mb-0">ĐC: 123 Đường Ẩm Thực, Q.1, TP.HCM</p>
+                    <p class="mb-0">ĐT: 090 123 4567</p>
+                    <p class="mb-0">MST: 0312 345 678</p>
+                </div>
+                <div class="col-5 text-end">
+                    <h3 class="mb-1 text-uppercase" style="font-size: 14px;">HÓA ĐƠN BÁN HÀNG</h3>
+                    <p class="mb-0"><strong>Số HĐ:</strong> HDBH-@Model.Id.ToString("D6")</p>
+                    <p class="mb-0"><strong>Đơn hàng:</strong> DH-@Model.Id.ToString("D6")</p>
+                    <p class="mb-0"><strong>Ngày:</strong> @DateTime.Now.ToString("dd/MM/yyyy HH:mm")</p>
+                    <p class="mb-0"><strong>HTTT:</strong> @(Model.PaymentStatus == "PAID" ? "Đã thanh toán" : "Tiền mặt")</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Customer Info -->
+        <div class="mb-2">
+            <h6 class="text-danger mb-1">Thông tin khách hàng</h6>
+            <table class="table table-borderless">
+                <tr>
+                    <td width="150"><strong>Họ tên:</strong></td>
+                    <td>@(Model.User?.FullName ?? Model.ReceiverName ?? "Khách vãng lai")</td>
+                </tr>
+                <tr>
+                    <td><strong>Địa chỉ:</strong></td>
+                    <td>@(Model.ReceiverAddress ?? "N/A")</td>
+                </tr>
+                <tr>
+                    <td><strong>Số điện thoại:</strong></td>
+                    <td>@(Model.ReceiverPhone ?? "N/A")</td>
+                </tr>
+                <tr>
+                    <td><strong>Thanh toán:</strong></td>
+                    <td>
+                        @{
+                            var (paymentClass, paymentText) = Model.PaymentStatus switch
+                            {
+                                "PAID" => ("badge bg-success text-white", "Đã thanh toán"),
+                                "UNPAID" => ("badge bg-warning text-dark", "Chưa thanh toán"),
+                                _ => ("badge bg-warning text-dark", "Chưa thanh toán")
+                            };
+                        }
+                        <span class="@paymentClass">
+                            @paymentText
+                        </span>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Order Details -->
+        <div class="mb-2">
+            <h6 class="text-danger mb-2">Chi tiết đơn hàng</h6>
+            <table class="table table-bordered mb-0">
+                <thead class="table-danger">
+                    <tr>
+                        <th style="width: 60px;">STT</th>
+                        <th>Sản phẩm</th>
+                        <th style="width: 180px;">Loại</th>
+                        <th class="text-end" style="width: 130px;">Đơn giá (đ)</th>
+                        <th class="text-center" style="width: 90px;">Số lượng</th>
+                        <th class="text-end" style="width: 150px;">Thành tiền (đ)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int stt = 1;
+                        decimal subTotal = 0;
+                    }
+                    @if (Model.OrderDetails != null && Model.OrderDetails.Any())
+                    {
+                        @foreach (var item in Model.OrderDetails)
+                        {
+                            var itemTotal = item.Price * item.Quantity;
+                            subTotal += itemTotal;
+                            <tr>
+                                <td>@stt</td>
+                                <td>@item.Product?.Name</td>
+                                <td>@(item.Variant?.VariantName ?? "Không có")</td>
+                                <td class="text-end">@item.Price.ToString("N0")</td>
+                                <td class="text-center">@item.Quantity</td>
+                                <td class="text-end">@itemTotal.ToString("N0")</td>
+                            </tr>
+                            stt++;
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center">Không có sản phẩm</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <!-- Order summary (tổng kết) -->
+            <div class="order-summary mt-3 ms-auto">
+                <table class="table table-borderless mb-0">
+                    <tr>
+                        <td class="text-end"><strong>Tạm tính:</strong></td>
+                        <td class="text-end">@subTotal.ToString("N0") đ</td>
+                    </tr>
+                    <tr>
+                        <td class="text-end"><strong>Giảm giá:</strong></td>
+                        <td class="text-end">0 đ</td>
+                    </tr>
+                    <tr>
+                        <td class="text-end"><strong>Phí vận chuyển:</strong></td>
+                        <td class="text-end">0 đ</td>
+                    </tr>
+                    <tr class="table-active">
+                        <td class="text-end"><strong>Tổng cộng thanh toán:</strong></td>
+                        <td class="text-end">
+                            <strong class="text-danger">@Model.TotalPrice.ToString("N0") đ</strong>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Notes -->
+        @if (!string.IsNullOrWhiteSpace(Model.Note))
+        {
+            <div class="mb-4">
+                <h5 class="text-danger">Ghi chú</h5>
+                <p class="border p-3">@Model.Note</p>
+            </div>
+        }
+
+        <!-- Invoice Footer -->
+        <div class="invoice-footer">
+            <div class="row">
+                <div class="col-6 text-center">
+                    <p class="mb-0"><strong>Người lập</strong></p>
+                    <p class="mt-4">(Ký, ghi rõ họ tên)</p>
+                </div>
+                <div class="col-6 text-center">
+                    <p class="mb-0"><strong>Khách hàng</strong></p>
+                    <p class="mt-4">(Ký, ghi rõ họ tên)</p>
+                </div>
+            </div>
+            <div class="text-center mt-3">
+                <p class="mb-0">Cảm ơn quý khách. Hẹn gặp lại!</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+

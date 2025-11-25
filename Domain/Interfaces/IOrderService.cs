@@ -13,5 +13,14 @@ namespace FastFoodShop.Domain.Interfaces
         // Cho Client
         Task<List<Order>> FetchOrderByUserAsync(User user);
         Task<int> GetCartCountAsync(long userId);
+        
+        // Thống kê
+        Task<decimal> GetTotalRevenueAsync();
+        Task<Dictionary<string, int>> GetOrdersByStatusAsync();
+        Task<int> GetOrdersCountByStatusAsync(string status);
+        Task<decimal[]> GetMonthlyRevenueAsync(int year);
+        
+        // Payment Status
+        Task UpdatePaymentStatusAsync(long orderId, string paymentStatus);
     }
 }

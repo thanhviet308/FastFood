@@ -95,22 +95,23 @@ namespace FastFoodShop.Services
             return (items, total);
         }
 
-        public async Task<(IReadOnlyList<Product> Items, int Total)> FetchBaseAsync(int page, int size)
+        public async Task<(IReadOnlyList<Product> Items, int Total)> FetchBaseAsync(int page, int size, long? categoryId = null)
         {
             page = Math.Max(1, page);
             size = Math.Clamp(size, 1, 100);
 
-            var baseQuery = _db.Products.AsNoTracking().Where(p => p.IsActive);
+            var baseQuery = _db.Products.AsNoTracking()
+                .Where(p => p.IsActive);
+            if (categoryId.HasValue)
+            {
+                baseQuery = baseQuery.Where(p => p.CategoryId == categoryId.Value);
+            }
             
-            // Get all products and group them in memory to avoid EF projection issues
+            // Get all products without grouping to show all variants
             var allProducts = await baseQuery.ToListAsync();
-            var groupedProducts = allProducts
-                .GroupBy(p => p.Name)
-                .Select(g => g.OrderByDescending(p => p.Id).First())
-                .ToList();
                 
-            var total = groupedProducts.Count;
-            var items = groupedProducts
+            var total = allProducts.Count;
+            var items = allProducts
                 .OrderByDescending(p => p.Id)
                 .Skip((page - 1) * size)
                 .Take(size)
@@ -121,11 +122,10 @@ namespace FastFoodShop.Services
 
         public async Task<IReadOnlyList<Product>> FetchAllAsync()
         {
-            var baseQuery = _db.Products.AsNoTracking().Where(p => p.IsActive);
+            var baseQuery = _db.Products.AsNoTracking()
+                .Where(p => p.IsActive);
             var allProducts = await baseQuery.ToListAsync();
             var items = allProducts
-                .GroupBy(p => p.Name)
-                .Select(g => g.OrderByDescending(p => p.Id).First())
                 .OrderByDescending(p => p.Id)
                 .ToList();
             return items;
@@ -139,7 +139,9 @@ namespace FastFoodShop.Services
         }
 
         public Task<Product?> GetByIdAsync(long id)
-            => _db.Products.AsTracking().FirstOrDefaultAsync(p => p.Id == id);
+            => _db.Products.AsTracking()
+                .Include(p => p.Category)
+                .FirstOrDefaultAsync(p => p.Id == id);
 
         public async Task DeleteAsync(long id)
         {
@@ -406,7 +408,7 @@ namespace FastFoodShop.Services
 
         // ------------------- Order -------------------
 
-        public async Task HandlePlaceOrderAsync(
+        public async Task<long> HandlePlaceOrderAsync(
             User user, ISession session,
             string receiverName, string receiverAddress, string receiverPhone, string? note = null)
         {
@@ -419,7 +421,7 @@ namespace FastFoodShop.Services
 
             if (cart is null || cart.CartDetails?.Count == 0)
             {
-                return;
+                return 0;
             }
 
             decimal sum = 0;
@@ -436,6 +438,8 @@ namespace FastFoodShop.Services
                 ReceiverAddress = receiverAddress,
                 ReceiverPhone = receiverPhone,
                 Status = "PENDING",
+                PaymentStatus = "UNPAID", // Mặc định chưa thanh toán
+                CreatedAt = DateTime.Now,
                 TotalPrice = sum,
                 Note = note
             };
@@ -460,13 +464,207 @@ namespace FastFoodShop.Services
             await _db.SaveChangesAsync();
 
             session.SetInt32("sum", 0);
+            return order.Id;
         }
 
         async Task<int> IProductService.HandleAddProductToCartAsync(string email, long productId, ISession session, int quantity, long? variantId)
         {
             return await HandleAddProductToCartAsync(email, productId, session, quantity, variantId);
         }
+
+        // Cập nhật số lượng của một CartDetail và trả về tổng tiền mới của giỏ hàng
+        public async Task<decimal> UpdateCartQuantityAsync(long cartDetailId, int quantity, long userId, ISession session)
+        {
+            if (quantity < 1) quantity = 1;
+            if (quantity > 999) quantity = 999;
+
+            // Lấy cart detail kèm cart + variant để tính giá
+            var detail = await _db.CartDetails
+                .Include(d => d.Cart!)
+                    .ThenInclude(c => c.CartDetails!)
+                .FirstOrDefaultAsync(d => d.Id == cartDetailId);
+
+            if (detail is null)
+                throw new InvalidOperationException("Cart detail không tồn tại");
+
+            if (detail.Cart?.UserId != userId)
+                throw new InvalidOperationException("Không có quyền cập nhật mục này");
+
+            detail.Quantity = quantity;
+            _db.CartDetails.Update(detail);
+
+            // Cập nhật lại tổng số lượng (Sum) và tính tổng tiền
+            var cart = detail.Cart!;
+            cart.Sum = cart.CartDetails?.Sum(cd => (int)cd.Quantity) ?? 0;
+            _db.Carts.Update(cart);
+
+            await _db.SaveChangesAsync();
+
+            // Tính tổng tiền mới
+            decimal newTotal = 0m;
+            foreach (var cd in cart.CartDetails!)
+            {
+                newTotal += cd.Price * cd.Quantity;
+            }
+
+            // Distinct count cho badge
+            var distinct = cart.CartDetails
+                .Select(cd => cd.ProductId)
+                .Distinct()
+                .Count();
+
+            session?.SetInt32("sum", cart.Sum);
+            session?.SetInt32("distinct", distinct);
+
+            return newTotal;
+        }
+
+        // ------------------- Session Cart (for anonymous users) -------------------
+
+        public async Task<int> HandleAddProductToCartSessionAsync(long productId, ISession session, int quantity, long? variantId)
+        {
+            if (quantity <= 0) quantity = 1;
+            if (quantity > 999) quantity = 999;
+
+            // Lấy giỏ hàng từ Session
+            var cartJson = session.GetString("AnonymousCart");
+            var cartItems = string.IsNullOrEmpty(cartJson)
+                ? new List<CartItemSession>()
+                : System.Text.Json.JsonSerializer.Deserialize<List<CartItemSession>>(cartJson) ?? new List<CartItemSession>();
+
+            // Lấy sản phẩm
+            var product = await _db.Products.FindAsync(productId);
+            if (product is null) return cartItems.Count;
+
+            // Lấy variant
+            ProductVariant? variant = null;
+            if (variantId.HasValue)
+            {
+                variant = await _db.ProductVariants.FirstOrDefaultAsync(v => v.Id == variantId && v.ProductId == product.Id);
+            }
+
+            if (variant is null)
+            {
+                variant = await _db.ProductVariants.Where(v => v.ProductId == product.Id && v.IsActive)
+                    .OrderBy(v => v.Price).FirstOrDefaultAsync();
+                if (variant is null) return cartItems.Count;
+            }
+
+            // Tìm item trong giỏ hàng
+            var existingItem = cartItems.FirstOrDefault(x => x.ProductId == product.Id && x.VariantId == variant.Id);
+
+            if (existingItem != null)
+            {
+                existingItem.Quantity = Math.Min(existingItem.Quantity + quantity, 999);
+            }
+            else
+            {
+                cartItems.Add(new CartItemSession
+                {
+                    ProductId = product.Id,
+                    VariantId = variant.Id,
+                    Price = variant.Price,
+                    Quantity = quantity
+                });
+            }
+
+            // Lưu lại vào Session
+            var updatedJson = System.Text.Json.JsonSerializer.Serialize(cartItems);
+            session.SetString("AnonymousCart", updatedJson);
+            var distinct = cartItems.Count;
+            var sum = cartItems.Sum(x => x.Quantity);
+            session.SetInt32("distinct", distinct);
+            session.SetInt32("sum", sum);
+
+            return distinct;
+        }
+
+        public List<CartItemSession> GetCartFromSession(ISession session)
+        {
+            var cartJson = session.GetString("AnonymousCart");
+            return string.IsNullOrEmpty(cartJson)
+                ? new List<CartItemSession>()
+                : System.Text.Json.JsonSerializer.Deserialize<List<CartItemSession>>(cartJson) ?? new List<CartItemSession>();
+        }
+
+        public async Task<long> HandlePlaceOrderFromSessionAsync(
+            ISession session,
+            string receiverName, string receiverAddress, string receiverPhone, string? note = null)
+        {
+            var cartItems = GetCartFromSession(session);
+            if (cartItems.Count == 0) return 0;
+
+            decimal sum = 0;
+            foreach (var item in cartItems)
+            {
+                var variant = await _db.ProductVariants
+                    .Include(v => v.Product)
+                    .FirstOrDefaultAsync(v => v.Id == item.VariantId);
+                if (variant != null)
+                {
+                    sum += item.Price * item.Quantity;
+                }
+            }
+
+            var order = new Order
+            {
+                UserId = null, // Anonymous order
+                ReceiverName = receiverName,
+                ReceiverAddress = receiverAddress,
+                ReceiverPhone = receiverPhone,
+                Status = "PENDING",
+                PaymentStatus = "UNPAID", // Mặc định chưa thanh toán
+                CreatedAt = DateTime.Now,
+                TotalPrice = sum,
+                Note = note
+            };
+            _db.Orders.Add(order);
+            await _db.SaveChangesAsync();
+
+            foreach (var item in cartItems)
+            {
+                var variant = await _db.ProductVariants.FirstOrDefaultAsync(v => v.Id == item.VariantId);
+                if (variant != null)
+                {
+                    var od = new OrderDetail
+                    {
+                        OrderId = order.Id,
+                        ProductId = item.ProductId,
+                        Price = item.Price,
+                        Quantity = item.Quantity,
+                        VariantId = item.VariantId
+                    };
+                    _db.OrderDetails.Add(od);
+                }
+            }
+
+            await _db.SaveChangesAsync();
+            return order.Id;
+
+            // Xóa giỏ hàng trong Session
+            session.Remove("AnonymousCart");
+            session.SetInt32("sum", 0);
+            session.SetInt32("distinct", 0);
+        }
+
+        public async Task<ProductVariant?> GetVariantByIdAsync(long variantId)
+        {
+            return await _db.ProductVariants
+                .Include(v => v.Product)
+                .FirstOrDefaultAsync(v => v.Id == variantId);
+        }
+
+        public void RemoveCartItemFromSession(ISession session, long productId, long variantId)
+        {
+            var cartItems = GetCartFromSession(session);
+            cartItems.RemoveAll(x => x.ProductId == productId && x.VariantId == variantId);
+            var updatedJson = System.Text.Json.JsonSerializer.Serialize(cartItems);
+            session.SetString("AnonymousCart", updatedJson);
+            var distinct = cartItems.Count;
+            var sum = cartItems.Sum(x => x.Quantity);
+            session.SetInt32("distinct", distinct);
+            session.SetInt32("sum", sum);
+        }
+
     }
-
-
 }

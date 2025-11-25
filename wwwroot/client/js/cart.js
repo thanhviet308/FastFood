@@ -137,19 +137,61 @@ function updateQuantity(cartDetailId, quantity) {
             // Update item total
             const item = document.querySelector(`.ff-cart-item[data-cart-detail-id="${cartDetailId}"]`);
             if (item) {
-                const priceText = item.querySelector('.ff-cart-item-price').textContent;
-                const price = parseFloat(priceText.replace(/[^0-9.-]+/g, ""));
-                const newTotal = (price * quantity).toLocaleString('vi-VN');
                 const totalElement = item.querySelector('.ff-item-total-price');
                 if (totalElement) {
-                    totalElement.textContent = newTotal + 'đ';
+                    // Get price from the displayed price element (most reliable - what user sees)
+                    let price = 0;
+                    const priceElement = item.querySelector('.ff-cart-item-price');
+                    
+                    if (priceElement) {
+                        const priceText = priceElement.textContent.trim();
+                        // Remove 'đ' and all non-numeric characters (including dots), then parse
+                        // Vietnamese format uses dots as thousands separator, so we remove them all
+                        const cleanPrice = priceText.replace(/[^0-9]/g, "");
+                        price = parseInt(cleanPrice, 10);
+                    }
+                    
+                    // Fallback: try data attributes if price element not found
+                    if (isNaN(price) || price === 0) {
+                        let priceStr = item.getAttribute('data-item-price') || totalElement.getAttribute('data-price');
+                        if (priceStr) {
+                            // Remove all non-numeric characters (dots are thousands separator in Vietnamese)
+                            const cleanPrice = priceStr.toString().replace(/[^0-9]/g, "");
+                            price = parseInt(cleanPrice, 10);
+                        }
+                    }
+                    
+                    // Ensure price is valid
+                    if (isNaN(price) || price <= 0) {
+                        console.error('Invalid price:', price, 'from element:', priceElement?.textContent);
+                        return;
+                    }
+                    
+                    // Calculate total (price * quantity)
+                    const newTotal = price * quantity; // No need to round for whole numbers
+                    
+                    // Format with Vietnamese number format (90.000)
+                    // Convert to string and add dots every 3 digits from right
+                    const totalStr = newTotal.toString();
+                    const formattedTotal = totalStr.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                    
+                    totalElement.textContent = formattedTotal + 'đ';
+                    totalElement.setAttribute('data-quantity', quantity);
+                    totalElement.setAttribute('data-price', price);
                 }
             }
             
             // Update cart summary
             const totalElement = document.querySelector('.ff-total-price');
-            if (totalElement && data.newTotal) {
-                totalElement.textContent = data.newTotal.toLocaleString('vi-VN') + 'đ';
+            if (totalElement && data.newTotal !== undefined && data.newTotal !== null) {
+                // Format total price with Vietnamese number format
+                const totalPrice = typeof data.newTotal === 'number' ? data.newTotal : parseFloat(data.newTotal);
+                if (!isNaN(totalPrice) && totalPrice >= 0) {
+                    const roundedTotal = Math.round(totalPrice);
+                    // Format with Vietnamese number format (55.000)
+                    const formattedTotal = roundedTotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                    totalElement.textContent = formattedTotal + 'đ';
+                }
             }
             
             // Update cart count in header

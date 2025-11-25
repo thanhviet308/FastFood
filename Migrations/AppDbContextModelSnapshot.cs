@@ -126,6 +126,11 @@ namespace FastFoodShop.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
+                    b.Property<string>("PaymentStatus")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("payment_status");
+
                     b.Property<string>("ReceiverAddress")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");

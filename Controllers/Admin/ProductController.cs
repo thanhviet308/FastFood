@@ -25,7 +25,7 @@ namespace FastFoodShop.Controllers
         [HttpGet("")]
         public async Task<IActionResult> Index([FromQuery] int page = 1)
         {
-            const int pageSize = 5;
+            const int pageSize = 10;
             // Admin should see ALL products (including inactive) for management
             var result = await _products.FetchAllAsync(page, pageSize);
 
@@ -231,6 +231,7 @@ namespace FastFoodShop.Controllers
             var pr = await _products.GetByIdAsync(id);
             if (pr is null) return RedirectToAction(nameof(Index), new { error = "khong_tim_thay" });
             ViewBag.Variants = await _products.GetVariantsAsync(id);
+            ViewBag.CategoryName = pr.Category?.Name;
             return View("~/Views/Admin/Product/Detail.cshtml", pr);
         }
     }

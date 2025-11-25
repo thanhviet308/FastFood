@@ -1,0 +1,286 @@
+@{
+    ViewData["Title"] = "Thống kê - FastFood Shop";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="FastFood Shop" />
+    <meta name="author" content="FastFood Shop" />
+    <title>@ViewData["Title"]</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
+    <link href="~/css/admin-styles.css" rel="stylesheet" />
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css?t=@DateTime.Now.Ticks"
+        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"
+        integrity="sha512-fD9DI5bZwQxOi7MhYWnnNPlvXdp/2Pj3XSTRrFs5FQa4mizyGLnJcN6tuvUS6LbmgN1ut+XGSABKvjN0H6Aoow=="
+        crossorigin="anonymous"></script>
+</head>
+
+<body class="sb-nav-fixed">
+    @* Header *@
+    @await Html.PartialAsync("~/Views/Admin/Layout/_Header.cshtml")
+
+    <div id="layoutSidenav">
+        @* Sidebar *@
+        @await Html.PartialAsync("~/Views/Admin/Layout/_Sidebar.cshtml")
+
+        <div id="layoutSidenav_content">
+            <main>
+                <div class="container-fluid px-4">
+                    <h1 class="mt-4">Thống kê</h1>
+                    <ol class="breadcrumb mb-4">
+                        <li class="breadcrumb-item">
+                            <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Bảng điều khiển</a>
+                        </li>
+                        <li class="breadcrumb-item active">Thống kê</li>
+                    </ol>
+
+                    <!-- Charts Section -->
+                    <div class="row mt-4">
+                        <div class="col-xl-6">
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <i class="fas fa-chart-bar me-1"></i>
+                                    Thống kê đơn hàng theo trạng thái
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="ordersStatusChart" width="100" height="50"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-6">
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <i class="fas fa-chart-pie me-1"></i>
+                                    Doanh thu theo tháng
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="revenueChart" width="100" height="50"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Orders List Section -->
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <i class="fas fa-shopping-cart me-1"></i>
+                                    Danh sách đơn hàng
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Mã đơn hàng</th>
+                                                    <th>Khách hàng</th>
+                                                    <th>Tổng tiền</th>
+                                                    <th>Thanh toán</th>
+                                                    <th>Ngày đặt</th>
+                                                    <th>Thao tác</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @{
+                                                    var orders = ViewBag.Orders as IEnumerable<FastFoodShop.Domain.Entities.Order>
+                                                        ?? Enumerable.Empty<FastFoodShop.Domain.Entities.Order>();
+                                                    int currentPage = (int)(ViewBag.CurrentPage ?? 1);
+                                                    int totalPages = (int)(ViewBag.TotalPages ?? 1);
+                                                }
+                                                @foreach (var order in orders)
+                                                {
+                                                    <tr>
+                                                        <td>DH-@order.Id.ToString("D6")</td>
+                                                        <td>@(order.User?.FullName ?? order.ReceiverName ?? "Khách vãng lai")</td>
+                                                        <td>@order.TotalPrice.ToString("N0")đ</td>
+                                                        <td>
+                                                            @{
+                                                                var (paymentClass, paymentText) = order.PaymentStatus switch
+                                                                {
+                                                                    "PAID" => ("badge bg-success text-white", "Đã thanh toán"),
+                                                                    "UNPAID" => ("badge bg-warning text-dark", "Chưa thanh toán"),
+                                                                    _ => ("badge bg-warning text-dark", "Chưa thanh toán")
+                                                                };
+                                                            }
+                                                            <span class="@paymentClass">@paymentText</span>
+                                                        </td>
+                                                        <td>@(DateTime.Now.ToString("dd/MM/yyyy"))</td>
+                                                        <td>
+                                                            <a class="btn btn-success btn-sm" asp-area="Admin" asp-controller="Statistics"
+                                                                asp-action="GenerateInvoice" asp-route-id="@order.Id" target="_blank" title="Xuất hóa đơn">
+                                                                <i class="fas fa-file-invoice me-1"></i>Xuất hóa đơn
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                                
+                                                @if (!orders.Any())
+                                                {
+                                                    <tr>
+                                                        <td colspan="6" class="text-center text-muted py-4">
+                                                            <i class="fas fa-inbox fa-2x mb-2"></i>
+                                                            <div>Chưa có đơn hàng nào</div>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <!-- Pagination -->
+                                    @if (totalPages > 1)
+                                    {
+                                        <nav aria-label="Page navigation">
+                                            <ul class="pagination justify-content-center">
+                                                <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                                                    <a class="page-link" asp-area="Admin" asp-controller="Statistics"
+                                                        asp-action="Index" asp-route-page="@(currentPage - 1)">
+                                                        <span aria-hidden="true">&laquo;</span>
+                                                    </a>
+                                                </li>
+                                                @for (int i = 1; i <= totalPages; i++)
+                                                {
+                                                    <li class="page-item @(i == currentPage ? "active" : "")">
+                                                        <a class="page-link" asp-area="Admin" asp-controller="Statistics"
+                                                            asp-action="Index" asp-route-page="@i">@i</a>
+                                                    </li>
+                                                }
+                                                <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                                                    <a class="page-link" asp-area="Admin" asp-controller="Statistics"
+                                                        asp-action="Index" asp-route-page="@(currentPage + 1)">
+                                                        <span aria-hidden="true">&raquo;</span>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </nav>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </main>
+
+            @* Footer *@
+            @await Html.PartialAsync("~/Views/Admin/Layout/_Footer.cshtml")
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        crossorigin="anonymous"></script>
+    <script src="~/js/scripts.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+    
+    <script>
+        // Chart: Đơn hàng theo trạng thái
+        var ctxStatus = document.getElementById("ordersStatusChart");
+        if (ctxStatus) {
+            var ordersByStatus = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.OrdersByStatus));
+            
+            // Map status code -> tiếng Việt cho dễ hiểu
+            var statusMap = {
+                'PENDING': 'Chờ xử lý',
+                'CONFIRMED': 'Đã xác nhận',
+                'SHIPPING': 'Đang giao',
+                'DELIVERED': 'Đã giao',
+                'CANCELLED': 'Đã hủy',
+                'UNKNOWN': 'Khác'
+            };
+
+            var rawKeys = Object.keys(ordersByStatus);
+            var statusLabels = rawKeys.map(function (k) { return statusMap[k] || k; });
+            var statusData = Object.values(ordersByStatus);
+            
+            new Chart(ctxStatus, {
+                type: 'bar',
+                data: {
+                    labels: statusLabels,
+                    datasets: [{
+                        label: 'Số lượng đơn hàng',
+                        data: statusData,
+                        backgroundColor: [
+                            'rgba(255, 206, 86, 0.8)',
+                            'rgba(54, 162, 235, 0.8)',
+                            'rgba(75, 192, 192, 0.8)',
+                            'rgba(153, 102, 255, 0.8)',
+                            'rgba(255, 99, 132, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 99, 132, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+
+        // Chart: Doanh thu theo tháng (dữ liệu thật từ API)
+        var ctxRevenue = document.getElementById("revenueChart");
+        if (ctxRevenue) {
+            fetch('/admin/statistics/monthly-revenue')
+                .then(response => response.json())
+                .then(result => {
+                    var labels = result.labels || [];
+                    var data = result.data || [];
+
+                    new Chart(ctxRevenue, {
+                        type: 'bar',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Doanh thu (VNĐ)',
+                                data: data,
+                                backgroundColor: 'rgba(54, 162, 235, 0.8)',
+                                borderColor: 'rgba(54, 162, 235, 1)',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            },
+                            responsive: true,
+                            maintainAspectRatio: false
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error('Lỗi khi tải dữ liệu doanh thu theo tháng:', error);
+                });
+        }
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js"
+        crossorigin="anonymous"></script>
+    <script src="~/js/datatables-simple-demo.js"></script>
+</body>
+
+</html>
+
