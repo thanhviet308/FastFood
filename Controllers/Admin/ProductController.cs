@@ -3,7 +3,7 @@ using FastFoodShop.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
- 
+using System.Globalization;
 
 namespace FastFoodShop.Controllers
 {
@@ -143,19 +143,20 @@ namespace FastFoodShop.Controllers
 
         [HttpPost("variant/add")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddVariant([FromForm] long productId, [FromForm] string? variantName, [FromForm] decimal? price)
+        public async Task<IActionResult> AddVariant([FromForm] long productId, [FromForm] string? variantName, [FromForm] decimal? price, [FromForm] int? stock)
         {
             try
             {
                 var name = (variantName ?? string.Empty).Trim();
                 var p = price.GetValueOrDefault(0);
+                var s = stock.GetValueOrDefault(0);
                 if (string.IsNullOrWhiteSpace(name) || p <= 0)
                 {
                     TempData["VariantError"] = "Tên và giá biến thể phải hợp lệ";
                     return RedirectToAction(nameof(Update), new { id = productId });
                 }
 
-                await _products.AddVariantAsync(productId, name, p);
+                await _products.AddVariantAsync(productId, name, p, s);
                 TempData["VariantSuccess"] = "Đã thêm biến thể";
             }
             catch (Exception ex)
@@ -167,11 +168,34 @@ namespace FastFoodShop.Controllers
 
         [HttpPost("variant/update")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdateVariant([FromForm] long id, [FromForm] long productId, [FromForm] string variantName, [FromForm] decimal price, [FromForm] bool isActive)
+        public async Task<IActionResult> UpdateVariant(
+            [FromForm] long id,
+            [FromForm] long productId,
+            [FromForm] string variantName,
+            [FromForm] string price,
+            [FromForm] int stock,
+            [FromForm] bool isActive)
         {
             try
             {
-                await _products.UpdateVariantAsync(new ProductVariant { Id = id, ProductId = productId, VariantName = variantName?.Trim() ?? string.Empty, Price = price, IsActive = isActive });
+                // Chấp nhận người dùng gõ "5.500.000" hoặc "5500000"
+                var normalized = (price ?? string.Empty).Trim();
+                // Bỏ dấu phân cách nghìn
+                normalized = normalized.Replace(".", "").Replace(",", "");
+                if (!decimal.TryParse(normalized, NumberStyles.Number, CultureInfo.InvariantCulture, out var parsedPrice))
+                {
+                    parsedPrice = 0;
+                }
+
+                await _products.UpdateVariantAsync(new ProductVariant
+                {
+                    Id = id,
+                    ProductId = productId,
+                    VariantName = variantName?.Trim() ?? string.Empty,
+                    Price = parsedPrice,
+                    Stock = stock,
+                    IsActive = isActive
+                });
                 TempData["VariantSuccess"] = "Đã cập nhật biến thể";
             }
             catch (Exception ex)

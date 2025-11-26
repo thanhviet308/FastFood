@@ -27,6 +27,10 @@ namespace FastFoodShop.Domain.Entities
         [Display(Name = "Trạng thái biến thể")]
         public bool IsActive { get; set; } = true;
 
+        [Display(Name = "Tồn kho")]
+        [Range(0, int.MaxValue, ErrorMessage = "Tồn kho phải >= 0")]
+        public int Stock { get; set; } = 0;
+
         [Display(Name = "Ngày tạo")]
         public DateTime? CreatedAt { get; set; }
         [Display(Name = "Ngày cập nhật")]

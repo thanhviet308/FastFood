@@ -4,6 +4,8 @@
     Layout = null;
     var variants = ViewBag.Variants as IEnumerable<FastFoodShop.Domain.Entities.ProductVariant> 
                   ?? Enumerable.Empty<FastFoodShop.Domain.Entities.ProductVariant>();
+    var availableVariants = variants.Where(v => v.IsActive && v.Stock > 0).ToList();
+    var firstAvailable = availableVariants.FirstOrDefault();
 }
 
 <!DOCTYPE html>
@@ -84,9 +86,13 @@
                         <p class="lead text-muted mb-4">@Model.ShortDesc</p>
                         
                         <div class="product-price-large mb-4">
-                            @if (variants.Any())
+                            @if (firstAvailable != null)
                             {
-                                <span id="product-price-display">@variants.First().Price.ToString("N0")₫</span>
+                                <span id="product-price-display">@firstAvailable.Price.ToString("N0")₫</span>
+                            }
+                            else if (variants.Any())
+                            {
+                                <span class="text-danger fw-semibold">Hết hàng</span>
                             }
                             else
                             {
@@ -106,7 +112,7 @@
                                     @foreach (var v in variants)
                                     {
                                         <div class="col-md-6">
-                                            @if (v.IsActive)
+                                            @if (v.IsActive && v.Stock > 0)
                                             {
                                                 <div class="variant-option" data-variant-id="@v.Id" data-price="@v.Price">
                                                     <div class="d-flex justify-content-between align-items-center">
@@ -116,7 +122,7 @@
                                                         </div>
                                                         <div class="form-check">
                                                             <input class="form-check-input" type="radio" name="variantId" value="@v.Id" 
-                                                                   id="variant_@v.Id" @(variants.FirstOrDefault(vv => vv.IsActive) == v ? "checked" : "")>
+                                                                   id="variant_@v.Id" @(firstAvailable == v ? "checked" : "")>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -127,7 +133,7 @@
                                                     <div class="d-flex justify-content-between align-items-center">
                                                         <div>
                                                             <h6 class="mb-1 fw-bold text-muted">@v.VariantName</h6>
-                                                            <small class="text-danger">Tạm hết</small>
+                                                            <small class="text-danger">Tạm hết hàng</small>
                                                         </div>
                                                         <div class="form-check">
                                                             <input class="form-check-input" type="radio" disabled 
@@ -146,7 +152,7 @@
                         <form method="post" asp-controller="Item" asp-action="HandleAddProductFromViewDetail" class="mb-4" onsubmit="return false;">
                             @Html.AntiForgeryToken()
                             <input type="hidden" name="id" value="@Model.Id" />
-                            <input type="hidden" name="variantId" id="selectedVariantId" value="@(variants.FirstOrDefault()?.Id ?? 0)" />
+                            <input type="hidden" name="variantId" id="selectedVariantId" value="@(firstAvailable?.Id ?? 0)" />
                             <input type="hidden" id="isUserAuthenticated" value="@User.Identity.IsAuthenticated.ToString().ToLower()" />
                             
                             <div class="mb-4">

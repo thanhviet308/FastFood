@@ -217,6 +217,21 @@ namespace FastFoodShop.Services
 
                 var line = cart.CartDetails?.FirstOrDefault(x => x.ProductId == product.Id && x.VariantId == variant.Id);
 
+                // Tính số lượng mới mong muốn
+                long desiredQty = quantity;
+                if (line != null)
+                {
+                    desiredQty = line.Quantity + quantity;
+                }
+
+                // Kiểm tra tồn kho: không cho vượt quá Stock
+                if (desiredQty > variant.Stock)
+                {
+                    // -1: mã lỗi riêng cho trường hợp không đủ tồn kho
+                    await tx.RollbackAsync();
+                    return -1;
+                }
+
                 if (line is null)
                 {
                     line = new CartDetail
@@ -316,24 +331,26 @@ namespace FastFoodShop.Services
                 .OrderBy(v => v.VariantName)
                 .ToListAsync();
 
-        public async Task<ProductVariant> AddVariantAsync(long productId, string variantName, decimal price)
+        public async Task<ProductVariant> AddVariantAsync(long productId, string variantName, decimal price, int stock)
         {
             var name = (variantName ?? string.Empty).Trim();
             if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("variantName required");
             if (price <= 0) throw new ArgumentException("price must be > 0");
+            if (stock < 0) stock = 0;
 
             var exist = await _db.ProductVariants.FirstOrDefaultAsync(v => v.ProductId == productId && v.VariantName == name);
             if (exist != null)
             {
-                // nếu đã tồn tại, cập nhật giá và bật active
+                // nếu đã tồn tại, cập nhật giá, cộng thêm tồn kho và bật active
                 exist.Price = price;
+                exist.Stock += stock;
                 exist.IsActive = true;
                 _db.ProductVariants.Update(exist);
                 await _db.SaveChangesAsync();
                 return exist;
             }
 
-            var v = new ProductVariant { ProductId = productId, VariantName = name, Price = price, IsActive = true };
+            var v = new ProductVariant { ProductId = productId, VariantName = name, Price = price, Stock = stock, IsActive = true };
             _db.ProductVariants.Add(v);
             await _db.SaveChangesAsync();
             return v;
@@ -345,6 +362,10 @@ namespace FastFoodShop.Services
             if (exist == null) return;
             exist.VariantName = variant.VariantName;
             exist.Price = variant.Price;
+            if (variant.Stock >= 0)
+            {
+                exist.Stock = variant.Stock;
+            }
             exist.IsActive = variant.IsActive;
             _db.ProductVariants.Update(exist);
             await _db.SaveChangesAsync();
@@ -424,8 +445,32 @@ namespace FastFoodShop.Services
                 return 0;
             }
 
+            // Kiểm tra tồn kho cho từng biến thể trước khi tạo đơn
+            var cartDetails = cart.CartDetails!.ToList();
+            var variantIds = cartDetails
+                .Where(d => d.VariantId.HasValue)
+                .Select(d => d.VariantId!.Value)
+                .Distinct()
+                .ToList();
+
+            var variants = await _db.ProductVariants
+                .Where(v => variantIds.Contains(v.Id))
+                .ToDictionaryAsync(v => v.Id);
+
+            foreach (var d in cartDetails)
+            {
+                if (d.VariantId.HasValue && variants.TryGetValue(d.VariantId.Value, out var v))
+                {
+                    if (v.Stock < d.Quantity)
+                    {
+                        // Không đủ tồn kho cho biến thể này
+                        return 0;
+                    }
+                }
+            }
+
             decimal sum = 0;
-            foreach (var d in cart.CartDetails!)
+            foreach (var d in cartDetails)
             {
                 var itemTotal = d.Price * d.Quantity;
                 sum += itemTotal;
@@ -446,7 +491,7 @@ namespace FastFoodShop.Services
             _db.Orders.Add(order);
             await _db.SaveChangesAsync();
 
-            foreach (var d in cart.CartDetails)
+            foreach (var d in cartDetails)
             {
                 var od = new OrderDetail
                 {
@@ -457,6 +502,14 @@ namespace FastFoodShop.Services
                     VariantId = d.VariantId
                 };
                 _db.OrderDetails.Add(od);
+
+                // Trừ tồn kho theo biến thể
+                if (d.VariantId.HasValue && variants.TryGetValue(d.VariantId.Value, out var v))
+                {
+                    v.Stock -= (int)d.Quantity;
+                    if (v.Stock < 0) v.Stock = 0;
+                    _db.ProductVariants.Update(v);
+                }
             }
             _db.CartDetails.RemoveRange(cart.CartDetails);
             _db.Carts.Remove(cart);
@@ -553,9 +606,23 @@ namespace FastFoodShop.Services
             // Tìm item trong giỏ hàng
             var existingItem = cartItems.FirstOrDefault(x => x.ProductId == product.Id && x.VariantId == variant.Id);
 
+            // Số lượng mong muốn
+            int desiredQty = quantity;
             if (existingItem != null)
             {
-                existingItem.Quantity = Math.Min(existingItem.Quantity + quantity, 999);
+                desiredQty = existingItem.Quantity + quantity;
+            }
+
+            // Không cho đặt vượt quá tồn kho
+            if (desiredQty > variant.Stock)
+            {
+                // -1: mã lỗi riêng cho thiếu tồn kho
+                return -1;
+            }
+
+            if (existingItem != null)
+            {
+                existingItem.Quantity = Math.Min(desiredQty, 999);
             }
             else
             {
@@ -594,13 +661,32 @@ namespace FastFoodShop.Services
             var cartItems = GetCartFromSession(session);
             if (cartItems.Count == 0) return 0;
 
+            // Kiểm tra tồn kho cho từng biến thể trong giỏ anonymous
+            var variantIds = cartItems
+                .Select(i => i.VariantId)
+                .Distinct()
+                .ToList();
+
+            var variants = await _db.ProductVariants
+                .Where(v => variantIds.Contains(v.Id))
+                .ToDictionaryAsync(v => v.Id);
+
+            foreach (var item in cartItems)
+            {
+                if (variants.TryGetValue(item.VariantId, out var v))
+                {
+                    if (v.Stock < item.Quantity)
+                    {
+                        // Không đủ tồn kho cho biến thể này
+                        return 0;
+                    }
+                }
+            }
+
             decimal sum = 0;
             foreach (var item in cartItems)
             {
-                var variant = await _db.ProductVariants
-                    .Include(v => v.Product)
-                    .FirstOrDefaultAsync(v => v.Id == item.VariantId);
-                if (variant != null)
+                if (variants.TryGetValue(item.VariantId, out var variant))
                 {
                     sum += item.Price * item.Quantity;
                 }
@@ -623,8 +709,7 @@ namespace FastFoodShop.Services
 
             foreach (var item in cartItems)
             {
-                var variant = await _db.ProductVariants.FirstOrDefaultAsync(v => v.Id == item.VariantId);
-                if (variant != null)
+                if (variants.TryGetValue(item.VariantId, out var variant))
                 {
                     var od = new OrderDetail
                     {
@@ -635,6 +720,11 @@ namespace FastFoodShop.Services
                         VariantId = item.VariantId
                     };
                     _db.OrderDetails.Add(od);
+
+                    // Trừ tồn kho
+                    variant.Stock -= (int)item.Quantity;
+                    if (variant.Stock < 0) variant.Stock = 0;
+                    _db.ProductVariants.Update(variant);
                 }
             }
 

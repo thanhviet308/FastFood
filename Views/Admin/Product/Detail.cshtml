@@ -106,19 +106,21 @@
                                     </div>
                                     <div class="table-responsive">
                                         <table class="table mb-0">
-                                        <thead>
-                                            <tr>
-                                                <th>Tên</th>
-                                                <th>Giá</th>
-                                                <th>Trạng thái</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach (var v in (IEnumerable<FastFoodShop.Domain.Entities.ProductVariant>)ViewBag.Variants ?? Enumerable.Empty<FastFoodShop.Domain.Entities.ProductVariant>())
-                                            {
+                                            <thead>
                                                 <tr>
-                                                    <td>@v.VariantName</td>
-                                                    <td>@string.Format("{0:N0} đ", v.Price)</td>
+                                                    <th>Tên</th>
+                                                    <th>Giá</th>
+                                                    <th>Tồn kho</th>
+                                                    <th>Trạng thái</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var v in (IEnumerable<FastFoodShop.Domain.Entities.ProductVariant>)ViewBag.Variants ?? Enumerable.Empty<FastFoodShop.Domain.Entities.ProductVariant>())
+                                                {
+                                                    <tr>
+                                                        <td>@v.VariantName</td>
+                                                        <td>@string.Format("{0:N0} đ", v.Price)</td>
+                                                        <td>@v.Stock</td>
                                                         <td>
                                                             <span class="badge @(v.IsActive ? "bg-success" : "bg-secondary")">
                                                                 @(v.IsActive ? "Hoạt động" : "Không hoạt động")
@@ -129,13 +131,13 @@
                                                 @if (ViewBag.Variants == null || !((IEnumerable<FastFoodShop.Domain.Entities.ProductVariant>)ViewBag.Variants).Any())
                                                 {
                                                     <tr>
-                                                        <td colspan="3" class="text-center text-muted py-4">
+                                                        <td colspan="4" class="text-center text-muted py-4">
                                                             Chưa có biến thể nào cho sản phẩm này.
                                                         </td>
-                                                </tr>
-                                            }
-                                        </tbody>
-                                    </table>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
                                 </div>
                                 </div>
                             </div>

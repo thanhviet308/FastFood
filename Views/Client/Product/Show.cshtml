@@ -405,10 +405,19 @@
                         `;
 
                         response.variants.forEach(function (variant) {
-                            if (variant.isActive) {
+                            // Chuẩn hóa tồn kho (API có thể trả string)
+                            const stockValue = Number(variant.stock ?? 0);
+                            const outOfStock = !variant.isActive || stockValue <= 0;
+                            if (!outOfStock) {
                                 content += `
                                     <div class="form-check mb-2">
-                                        <input class="form-check-input" type="radio" name="variantId" id="variant_${variant.id}" value="${variant.id}" data-price="${variant.price}">
+                                        <input class="form-check-input" type="radio"
+                                               name="variantId"
+                                               id="variant_${variant.id}"
+                                               value="${variant.id}"
+                                               data-price="${variant.price}"
+                                               data-stock="${stockValue}"
+                                               data-active="${variant.isActive}">
                                         <label class="form-check-label" for="variant_${variant.id}">
                                             ${variant.variantName} - ${variant.price.toLocaleString('vi-VN')}đ
                                         </label>
@@ -419,7 +428,7 @@
                                     <div class="form-check mb-2" style="opacity: 0.6;">
                                         <input class="form-check-input" type="radio" disabled id="variant_${variant.id}" style="cursor: not-allowed;">
                                         <label class="form-check-label text-muted" for="variant_${variant.id}" style="cursor: not-allowed;">
-                                            ${variant.variantName} - ${variant.price.toLocaleString('vi-VN')}đ <span class="text-danger">(Tạm hết)</span>
+                                            ${variant.variantName} - ${variant.price.toLocaleString('vi-VN')}đ <span class="text-danger">(Tạm hết hàng)</span>
                                         </label>
                                     </div>
                                 `;
@@ -597,6 +606,20 @@
             console.log('Selected variant:', variantId);
 
             if (variantId) {
+                // Double-check tồn kho ở client: nếu stock <= 0 thì không cho thêm
+                const stockValue = Number(selectedVariant.data('stock') ?? 0);
+                const isActive = String(selectedVariant.data('active')) === 'true';
+                if (!isActive || stockValue <= 0) {
+                    $.toast({
+                        heading: 'Thông báo',
+                        text: 'Biến thể này tạm hết hàng, vui lòng chọn loại khác.',
+                        showHideTransition: 'slide',
+                        icon: 'warning',
+                        position: 'top-right'
+                    });
+                    return;
+                }
+
                 $('#variantModal').modal('hide');
                 addToCart(currentProductId, variantId);
             } else {

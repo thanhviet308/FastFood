@@ -134,7 +134,9 @@ namespace FastFoodShop.Controllers
                     id = v.Id,
                     variantName = v.VariantName,
                     price = v.Price,
-                    isActive = v.IsActive
+                    // Nếu tồn kho = 0 thì coi như không còn hoạt động đối với phía client
+                    isActive = v.IsActive && v.Stock > 0,
+                    stock = v.Stock
                 })
             };
             
@@ -403,18 +405,26 @@ namespace FastFoodShop.Controllers
                 }
                 else
                 {
+                    long orderId = 0;
                     if (!isAnonymous)
                     {
                         var user = await _userService.GetByIdAsync(userId);
                         if (user != null)
                         {
-                            await _products.HandlePlaceOrderAsync(user, HttpContext.Session, receiverName, receiverAddress, receiverPhone, orderNote);
+                            orderId = await _products.HandlePlaceOrderAsync(user, HttpContext.Session, receiverName, receiverAddress, receiverPhone, orderNote);
                         }
                     }
                     else
                     {
-                        await _products.HandlePlaceOrderFromSessionAsync(HttpContext.Session, receiverName, receiverAddress, receiverPhone, orderNote);
+                        orderId = await _products.HandlePlaceOrderFromSessionAsync(HttpContext.Session, receiverName, receiverAddress, receiverPhone, orderNote);
                     }
+
+                    if (orderId <= 0)
+                    {
+                        ViewBag.ErrorMessage = "Không đủ tồn kho cho một hoặc nhiều sản phẩm trong giỏ hàng. Vui lòng kiểm tra lại.";
+                        return await GetCheckOutPage();
+                    }
+
                     return RedirectToAction(nameof(Thanks));
                 }
             }
@@ -542,15 +552,18 @@ namespace FastFoodShop.Controllers
                 }
 
                 var result = await _products.HandleAddProductToCartAsync(user.Email ?? "", id, HttpContext.Session, quantity, variantId);
-                
+
+                if (result == -1)
+                {
+                    return Json(new { success = false, message = "Sản phẩm không đủ tồn kho cho số lượng bạn chọn.", testMode = true });
+                }
+
                 if (result > 0)
                 {
                     return Json(new { success = true, message = "Thêm sản phẩm vào giỏ hàng thành công! (Test Mode)", testMode = true });
                 }
-                else
-                {
-                    return Json(new { success = false, message = "Không thể thêm sản phẩm vào giỏ hàng. Vui lòng thử lại.", testMode = true });
-                }
+
+                return Json(new { success = false, message = "Không thể thêm sản phẩm vào giỏ hàng. Vui lòng thử lại.", testMode = true });
             }
             catch (Exception ex)
             {
@@ -600,14 +613,22 @@ namespace FastFoodShop.Controllers
                     distinct = HttpContext.Session.GetInt32("distinct") ?? 0;
                 }
 
+                // -1: không đủ tồn kho
+                if (result == -1)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = "Sản phẩm không đủ tồn kho cho số lượng bạn chọn."
+                    });
+                }
+
                 if (result > 0)
                 {
                     return Json(new { success = true, message = "Thêm sản phẩm vào giỏ hàng thành công!", count = distinct });
                 }
-                else
-                {
-                    return Json(new { success = false, message = "Không thể thêm sản phẩm vào giỏ hàng." });
-                }
+
+                return Json(new { success = false, message = "Không thể thêm sản phẩm vào giỏ hàng." });
             }
             catch (Exception ex)
             {

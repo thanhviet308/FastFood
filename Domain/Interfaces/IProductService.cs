@@ -51,7 +51,7 @@ namespace FastFoodShop.Domain.Interfaces
         Task UpdateCategoryAsync(Category category);
         Task DeleteCategoryAsync(long id);
         Task<IReadOnlyList<ProductVariant>> GetVariantsAsync(long productId);
-        Task<ProductVariant> AddVariantAsync(long productId, string variantName, decimal price);
+        Task<ProductVariant> AddVariantAsync(long productId, string variantName, decimal price, int stock);
         Task UpdateVariantAsync(ProductVariant variant);
         Task DeleteVariantAsync(long variantId);
         Task<ProductVariant?> GetVariantByIdAsync(long variantId);

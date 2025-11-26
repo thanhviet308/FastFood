@@ -53,7 +53,28 @@ document.addEventListener('DOMContentLoaded', function() {
     // Variant selection - also wait for DOM
     const variantOptions = document.querySelectorAll('.variant-option');
     console.log('Variant options found:', variantOptions.length);
-    
+
+    // Đánh dấu sẵn biến thể đang được chọn (radio checked) là active khi vừa vào trang
+    const initialChecked = document.querySelector('.variant-option input[type="radio"]:checked');
+    if (initialChecked) {
+        const initialOption = initialChecked.closest('.variant-option');
+        if (initialOption && !initialOption.classList.contains('disabled')) {
+            initialOption.classList.add('active', 'is-valid');
+            const variantId = initialOption.dataset.variantId;
+            const price = parseInt(initialOption.dataset.price);
+            const hiddenInput = document.getElementById('selectedVariantId');
+            if (hiddenInput && variantId) {
+                hiddenInput.value = variantId;
+            }
+            if (!isNaN(price)) {
+                const priceContainer = document.querySelector('.product-price-large');
+                if (priceContainer) {
+                    priceContainer.textContent = price.toLocaleString('vi-VN') + '₫';
+                }
+            }
+        }
+    }
+
     document.querySelectorAll('.variant-option').forEach(option => {
         option.addEventListener('click', function () {
             // Kiểm tra xem variant này có đang active không
