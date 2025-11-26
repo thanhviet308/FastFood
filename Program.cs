@@ -67,9 +67,6 @@ app.UseSession();          // ✅ dùng trước Auth vì service cần Session
 app.UseAuthentication();
 app.UseAuthorization();
 
-// ✅ BẮT BUỘC cho attribute routing (API như /api/add-product-to-cart)
-app.MapControllers();
-
 // Admin area (conventional)
 app.MapAreaControllerRoute(
     name: "admin",

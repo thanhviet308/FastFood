@@ -45,15 +45,15 @@
                     </ol>
 
                     <!-- Charts Section -->
-                    <div class="row mt-4">
+                    <div class="row mt-4 g-4">
                         <div class="col-xl-6">
                             <div class="card mb-4">
                                 <div class="card-header">
                                     <i class="fas fa-chart-bar me-1"></i>
                                     Thống kê đơn hàng theo trạng thái
                                 </div>
-                                <div class="card-body">
-                                    <canvas id="ordersStatusChart" width="100" height="50"></canvas>
+                                <div class="card-body" style="height: 260px;">
+                                    <canvas id="ordersStatusChart"></canvas>
                                 </div>
                             </div>
                         </div>
@@ -63,8 +63,8 @@
                                     <i class="fas fa-chart-pie me-1"></i>
                                     Doanh thu theo tháng
                                 </div>
-                                <div class="card-body">
-                                    <canvas id="revenueChart" width="100" height="50"></canvas>
+                                <div class="card-body" style="height: 260px;">
+                                    <canvas id="revenueChart"></canvas>
                                 </div>
                             </div>
                         </div>
@@ -228,13 +228,16 @@
                     }]
                 },
                 options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    },
                     responsive: true,
-                    maintainAspectRatio: false
+                    maintainAspectRatio: false,
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true,
+                                stepSize: 1
+                            }
+                        }]
+                    }
                 }
             });
         }
@@ -261,13 +264,15 @@
                             }]
                         },
                         options: {
-                            scales: {
-                                y: {
-                                    beginAtZero: true
-                                }
-                            },
                             responsive: true,
-                            maintainAspectRatio: false
+                            maintainAspectRatio: false,
+                            scales: {
+                                yAxes: [{
+                                    ticks: {
+                                        beginAtZero: true
+                                    }
+                                }]
+                            }
                         }
                     });
                 })

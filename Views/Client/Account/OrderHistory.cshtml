@@ -10,6 +10,7 @@
 
 <!-- Order History Start -->
 <div class="container-fluid py-5" style="min-height: 80vh;">
+    <meta name="X-CSRF-TOKEN" content="@af.RequestToken" />
     
     <!-- Force CSS Reload -->
     <script>
@@ -124,15 +125,19 @@
                             </div>
                             <div class="order-status">
                                 @{
-                                    var (paymentStatusClass, paymentStatusText) = order.PaymentStatus switch
+                                    // Hiển thị TRẠNG THÁI ĐƠN HÀNG cho người dùng (không phải trạng thái thanh toán)
+                                    var (statusClass, statusText) = order.Status switch
                                     {
-                                        "UNPAID" => ("status-badge status-unpaid", "Chưa thanh toán"),
-                                        "PAID" => ("status-badge status-paid", "Thanh toán thành công"),
-                                        _ => ("status-badge status-unknown", order.PaymentStatus ?? "Không rõ")
+                                        "PENDING"   => ("status-badge status-unpaid", "Chờ xác nhận"),
+                                        "CONFIRMED" => ("status-badge status-unpaid", "Đã xác nhận"),
+                                        "SHIPPING"  => ("status-badge status-unpaid", "Đang giao"),
+                                        "DELIVERED" => ("status-badge status-paid",   "Đã giao"),
+                                        "CANCELLED" => ("status-badge status-unknown","Đã hủy"),
+                                        _           => ("status-badge status-unknown", order.Status ?? "Không rõ")
                                     };
                                 }
-                                <span class="@paymentStatusClass">
-                                    @paymentStatusText
+                                <span class="@statusClass">
+                                    @statusText
                                 </span>
                             </div>
                         </div>
@@ -158,7 +163,7 @@
                             }
                         </div>
                         
-                        <div class="order-card-footer">
+                        <div class="order-card-footer d-flex gap-2">
                             <button class="btn btn-outline-primary btn-sm view-details-btn" data-order-id="@order.Id">
                                 <i class="fa-solid fa-eye me-1"></i>
                                 Xem chi tiết
@@ -168,6 +173,14 @@
                                 <button class="btn btn-outline-danger btn-sm cancel-order-btn" data-order-id="@order.Id">
                                     <i class="fa-solid fa-xmark me-1"></i>
                                     Hủy đơn hàng
+                                </button>
+                            }
+                            @* Nút "Đã nhận hàng" chỉ hiển thị khi đơn đang giao và chưa thanh toán *@
+                            @if (order.Status == "SHIPPING" && order.PaymentStatus == "UNPAID")
+                            {
+                                <button class="btn btn-outline-success btn-sm confirm-received-btn" data-order-id="@order.Id">
+                                    <i class="fa-solid fa-check me-1"></i>
+                                    Đã nhận hàng
                                 </button>
                             }
                         </div>

@@ -47,8 +47,8 @@
                                 <h3>Cập nhật đơn hàng</h3>
                                 <hr />
 
-                                <form asp-area="Admin" asp-controller="Order" asp-action="Update" method="post"
-                                    class="row">
+                                <form method="post" action="/admin/orders/update" class="row">
+                                    @Html.AntiForgeryToken()
                                     @* Hidden Id *@
                                     <input asp-for="Id" type="hidden" />
 
@@ -66,28 +66,7 @@
                                     </div>
 
                                     <div class="mb-3 col-12 col-md-6">
-                                        <label asp-for="Status" class="form-label">Trạng thái:</label>
-                                        <!-- Hiển thị trạng thái hiện tại dạng đơn giản -->
-                                        @{
-                                            var paymentStatusText = Model.Status switch
-                                            {
-                                                "PENDING" or "CONFIRMED" => "Chưa thanh toán",
-                                                "SHIPPING" or "DELIVERED" => "Thanh toán thành công",
-                                                "CANCELLED" => "Đã hủy",
-                                                _ => "Không xác định"
-                                            };
-                                            var paymentStatusClass = Model.Status switch
-                                            {
-                                                "PENDING" or "CONFIRMED" => "badge bg-warning text-dark",
-                                                "SHIPPING" or "DELIVERED" => "badge bg-success text-white",
-                                                "CANCELLED" => "badge bg-danger text-white",
-                                                _ => "badge bg-secondary text-white"
-                                            };
-                                        }
-                                        <div class="mb-2">
-                                            <span class="@paymentStatusClass">@paymentStatusText</span>
-                                        </div>
-                                        <!-- Giữ dropdown backend để cập nhật nếu cần -->
+                                        <label asp-for="Status" class="form-label">Trạng thái đơn hàng:</label>
                                         <select asp-for="Status" class="form-select">
                                             <option value="PENDING">Chờ xác nhận</option>
                                             <option value="CONFIRMED">Đã xác nhận</option>
@@ -95,7 +74,6 @@
                                             <option value="DELIVERED">Đã giao</option>
                                             <option value="CANCELLED">Đã hủy</option>
                                         </select>
-                                        <small class="text-muted">Ghi chú: Chọn "Đang giao" hoặc "Đã giao" để đánh dấu đã thanh toán</small>
                                     </div>
 
                                     <div class="col-12 mb-5">

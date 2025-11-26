@@ -42,6 +42,12 @@ $(document).ready(function() {
             const orderId = $(this).data('order-id');
             cancelOrder(orderId);
         });
+
+        // Confirm received buttons
+        $(document).on('click', '.confirm-received-btn', function() {
+            const orderId = $(this).data('order-id');
+            confirmReceived(orderId);
+        });
     }
 
     function loadOrders() {
@@ -277,6 +283,31 @@ $(document).ready(function() {
         }
     }
 
+    function confirmReceived(orderId) {
+        if (!confirm('Bạn xác nhận đã nhận được đơn hàng này?')) {
+            return;
+        }
+
+        $.ajax({
+            url: `/orders/confirm-received/${orderId}`,
+            method: 'POST',
+            headers: {
+                'RequestVerificationToken': $('meta[name="X-CSRF-TOKEN"]').attr('content')
+            },
+            success: function(response) {
+                if (response.success) {
+                    showToast('success', 'Thành công', response.message);
+                    setTimeout(() => location.reload(), 1500);
+                } else {
+                    showToast('error', 'Lỗi', response.message);
+                }
+            },
+            error: function() {
+                showToast('error', 'Lỗi', 'Không thể xác nhận đã nhận hàng. Vui lòng thử lại.');
+            }
+        });
+    }
+
     function formatCurrency(amount) {
         return new Intl.NumberFormat('vi-VN', {
             style: 'currency',
@@ -285,14 +316,16 @@ $(document).ready(function() {
     }
 
     function getStatusText(status) {
+        // Chuẩn hóa về UPPERCASE để khớp với giá trị từ backend (PENDING, CONFIRMED,...)
+        const key = (status || '').toUpperCase();
         const statusMap = {
-            'Pending': 'Chờ xác nhận',
-            'Confirmed': 'Đã xác nhận',
-            'Shipping': 'Đang giao',
-            'Delivered': 'Đã giao',
-            'Cancelled': 'Đã hủy'
+            'PENDING': 'Chờ xác nhận',
+            'CONFIRMED': 'Đã xác nhận',
+            'SHIPPING': 'Đang giao',
+            'DELIVERED': 'Đã giao',
+            'CANCELLED': 'Đã hủy'
         };
-        return statusMap[status] || status;
+        return statusMap[key] || status;
     }
 
     function showToast(type, title, message) {

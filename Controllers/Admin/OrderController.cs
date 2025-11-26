@@ -44,7 +44,10 @@ namespace FastFoodShop.Controllers
 
             // order đã Include OrderDetails + Product trong service
             ViewBag.Id = id;
-            return View("~/Views/Admin/Order/Detail.cshtml", order);
+            return View(
+                "~/Views/Admin/Order/Detail.cshtml",
+                order.OrderDetails ?? new List<OrderDetail>()
+            );
         }
 
         // GET /admin/orders/delete/{id}
@@ -80,9 +83,18 @@ namespace FastFoodShop.Controllers
         // POST /admin/orders/update
         [HttpPost("update")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Update([FromForm] Order form)
+        public async Task<IActionResult> Update([FromForm] long id, [FromForm] string status)
         {
-            await _orders.UpdateAsync(form); // chỉ cập nhật Status như service của bạn
+            var order = await _orders.GetByIdAsync(id);
+            if (order is null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            // Chỉ cập nhật trạng thái, tránh bind các trường decimal gây lỗi format
+            order.Status = status;
+
+            await _orders.UpdateAsync(order);
             return RedirectToAction(nameof(Index));
         }
     }

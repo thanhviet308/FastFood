@@ -1,5 +1,6 @@
 using FastFoodShop.Domain.Entities;
 using FastFoodShop.Domain.Interfaces;
+using FastFoodShop.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
@@ -30,7 +31,8 @@ namespace FastFoodShop.Controllers.Client
             
             if (user == null)
             {
-                return Redirect("/auth/login");
+                // Nếu không tìm thấy user thì quay lại đúng trang đăng nhập đang dùng
+                return Redirect("/login");
             }
 
             return View("~/Views/Client/Account/Manage.cshtml", user);
@@ -42,7 +44,7 @@ namespace FastFoodShop.Controllers.Client
         [HttpPost]
         [Route("account/update")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Update(User model)
+        public async Task<IActionResult> Update([FromForm] UpdateAccountDTO model)
         {
             if (!ModelState.IsValid)
             {
@@ -152,6 +154,27 @@ namespace FastFoodShop.Controllers.Client
             };
 
             return Json(new { success = true, data = orderData });
+        }
+
+        /// <summary>
+        /// User confirms that the order has been received
+        /// </summary>
+        [HttpPost]
+        [Route("orders/confirm-received/{id}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ConfirmReceived(long id)
+        {
+            var userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var success = await _accountService.ConfirmOrderReceivedAsync(userId, id);
+
+            if (success)
+            {
+                return Json(new { success = true, message = "Cảm ơn bạn, đơn hàng đã được xác nhận là đã nhận." });
+            }
+            else
+            {
+                return Json(new { success = false, message = "Không thể xác nhận đơn hàng này. Vui lòng thử lại hoặc liên hệ hỗ trợ." });
+            }
         }
 
         /// <summary>

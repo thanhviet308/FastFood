@@ -803,7 +803,6 @@ D:\DACN\FastFood\FastFood\obj\Debug\net9.0\compressed\3t868v1amg-lmrgd29wsd.gz
 D:\DACN\FastFood\FastFood\obj\Debug\net9.0\compressed\hbx17rqavm-hk0weyf9zw.gz
 D:\DACN\FastFood\FastFood\obj\Debug\net9.0\compressed\trbyl9rvev-krxujj7muz.gz
 D:\DACN\FastFood\FastFood\obj\Debug\net9.0\compressed\0ix6k9kfzw-lni9628iqy.gz
-D:\DACN\FastFood\FastFood\obj\Debug\net9.0\compressed\5guaerpoft-trzzqnzb7p.gz
 D:\DACN\FastFood\FastFood\obj\Debug\net9.0\compressed\nygn4pznxp-rfhckubfta.gz
 D:\DACN\FastFood\FastFood\obj\Debug\net9.0\compressed\owsrb8dlzj-3x33h9eo8t.gz
 D:\DACN\FastFood\FastFood\obj\Debug\net9.0\compressed\3ujzfix3m5-cbfgf787io.gz
@@ -926,3 +925,4 @@ D:\DACN\FastFood\FastFood\obj\Debug\net9.0\refint\FastFoodShop.dll
 D:\DACN\FastFood\FastFood\obj\Debug\net9.0\FastFoodShop.pdb
 D:\DACN\FastFood\FastFood\obj\Debug\net9.0\FastFoodShop.genruntimeconfig.cache
 D:\DACN\FastFood\FastFood\obj\Debug\net9.0\ref\FastFoodShop.dll
+D:\DACN\FastFood\FastFood\obj\Debug\net9.0\compressed\5guaerpoft-rbcynnewie.gz

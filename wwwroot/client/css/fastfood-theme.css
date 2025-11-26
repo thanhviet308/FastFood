@@ -258,6 +258,17 @@ body {
     overflow: hidden;
 }
 
+/* Pagination - always horizontal */
+.ff-pagination-wrapper .pagination {
+    display: inline-flex;
+    flex-direction: row;
+    gap: 8px;
+}
+
+.ff-pagination-wrapper .page-item {
+    margin: 0;
+}
+
 .ff-product-price {
     font-family: var(--ff-font-display);
     font-size: 1.4rem;

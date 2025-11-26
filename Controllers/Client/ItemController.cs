@@ -418,9 +418,17 @@ namespace FastFoodShop.Controllers
                     return RedirectToAction(nameof(Thanks));
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                ViewBag.ErrorMessage = "Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại.";
+                // Log chi tiết lỗi ra console để dễ debug trong môi trường dev
+                Console.WriteLine("==== ERROR WHEN PLACING ORDER (COD/VNPAY) ====");
+                Console.WriteLine(ex.ToString());
+
+                // Lấy thông điệp chi tiết nhất từ InnerException (nếu có)
+                var innerMessage = ex.InnerException?.Message ?? ex.Message;
+
+                // Hiển thị thông báo chi tiết hơn cho người dùng trong môi trường phát triển
+                ViewBag.ErrorMessage = $"Có lỗi xảy ra khi đặt hàng. Chi tiết: {innerMessage}";
                 return await GetCheckOutPage();
             }
         }

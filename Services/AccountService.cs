@@ -1,6 +1,7 @@
 using FastFoodShop.Data;
 using FastFoodShop.Domain.Entities;
 using FastFoodShop.Domain.Interfaces;
+using FastFoodShop.DTOs;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -51,7 +52,7 @@ namespace FastFoodShop.Services
             }
         }
 
-        public async Task<bool> UpdateUserAsync(long userId, User model)
+        public async Task<bool> UpdateUserAsync(long userId, UpdateAccountDTO model)
         {
             try
             {
@@ -222,6 +223,47 @@ namespace FastFoodShop.Services
             {
                 _logger.LogError(ex, "Error uploading avatar for user: {UserId}", userId);
                 return null;
+            }
+        }
+
+        public async Task<bool> ConfirmOrderReceivedAsync(long userId, long orderId)
+        {
+            try
+            {
+                var order = await _context.Orders
+                    .FirstOrDefaultAsync(o => o.Id == orderId && o.UserId == userId);
+
+                if (order == null)
+                {
+                    _logger.LogWarning("Order not found or does not belong to user. OrderId={OrderId}, UserId={UserId}", orderId, userId);
+                    return false;
+                }
+
+                if (order.Status == "CANCELLED")
+                {
+                    _logger.LogWarning("Cannot confirm received for cancelled order. OrderId={OrderId}, UserId={UserId}", orderId, userId);
+                    return false;
+                }
+
+                // Đánh dấu đơn đã giao
+                order.Status = "DELIVERED";
+
+                // Nếu trạng thái thanh toán chưa cập nhật, có thể đánh dấu đã thanh toán
+                if (string.IsNullOrEmpty(order.PaymentStatus) || order.PaymentStatus == "UNPAID")
+                {
+                    order.PaymentStatus = "PAID";
+                }
+
+                _context.Orders.Update(order);
+                await _context.SaveChangesAsync();
+
+                _logger.LogInformation("User confirmed order received. OrderId={OrderId}, UserId={UserId}", orderId, userId);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error confirming order received. OrderId={OrderId}, UserId={UserId}", orderId, userId);
+                return false;
             }
         }
     }
